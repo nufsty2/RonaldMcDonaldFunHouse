@@ -1,0 +1,42 @@
+/*
+Homework 1
+ECEN 425
+Jeff DeGraw
+Fall 2019
+*/
+
+// Problem 1
+int IsLeapYear(int year) {
+    if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+// Problem 2
+By inspection, what value do you expect result to have after the assignment?
+- I would expect the result to be a float with value 3.333.
+Does result actually end up with the value you expected? Explain why result is assigned this value.
+- After running the code, the value actually ends up being 3.0. I thought it would be 3.333 because
+  the value is stored in a float variable, but the operation actually does integer division to get
+  the result. If we changed x or y to be a float or double, it would come out to 3.333.
+
+// Problem 3 **I'm doing this with the assumption that "highest-order" means most significant.**
+- It's not in a single line, but it's a single expression:
+int32_t t2 = (t1 & 0x00FF0000) << 8 | // Byte 1
+            (~t1 & 0xFF000000) >> 8 | // Byte 2
+             (t1 & 0x000000FF) << 8 | // Byte 3
+             (t1 & 0x0000FF00) >> 8;  // Byte 4
+
+// Problem 4
+a. x + y * z        = x + (y * z)               = 2
+b. x == 0 && y != 4 = (x == 0) && (y != 4)      = 1
+c. y < x < z        = (y < x) < z               = 1
+d. y+-z             = y + (-z)                  = -1
+e. !z||y            = (!z) || y                 = 1
+f. y ? x : z        = if (y) {x;} else{z;} = x  = 0
+g. x - y < z        = (x - y) < z               = 1
+h. x = 0 || z <= y  = 0 || (z <= y)             = 0  // (Give value of expression and final value of x)
+i. z & 3 == 2       = z & (3 == 2)              = 0
