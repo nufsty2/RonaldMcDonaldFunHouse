@@ -4,8 +4,13 @@
     #include <sys/mman.h>
      
     #define INTC_SUCCESS 0 
+    #define UIO_ERROR -1
+    #define UIO_SUCCESS 1
+    #define UIO_MMAP_SIZE 0x1000
+    #define MMAP_OFFSET 0
 
-    static int file;
+    static int file; // this is the file descriptor that describes an open UIO device
+    static char *ptr; // this is the virtual address of the UIO device registers
      
     // Initializes the driver (opens UIO file and calls mmap)
     // devDevice: The file path to the uio dev file
@@ -15,22 +20,22 @@
     {
         file = open(devDevice, O_RDWR);
 
-        if (file == UIO_EXAMPLE_ERROR)
+        if (file == UIO_ERROR)
         {
             //file descriptors have to be > 0 to be valid
-            return UIO_EXAMPLE_ERROR;
+            return UIO_ERROR;
         }
 
         //memory map the physical address of the hardware into virtual address space
-        ptr = mmap(NULL, UIO_EXAMPLE_MMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, file, MMAP_OFFSET);
+        ptr = mmap(NULL, UIO_MMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, file, MMAP_OFFSET);
         if (ptr == MAP_FAILED)
         {
-            return UIO_EXAMPLE_ERROR;
+            return UIO_ERROR;
         }
 
         /* put hardware setup here */
 
-        return UIO_EXAMPLE_SUCCESS;
+        return UIO_SUCCESS;
     }
 
     // write to a register of the UIO device
@@ -51,7 +56,7 @@
     //	to properly unmap the memory and close the file descriptor
     void generic_exit()
     {
-        munmap(ptr, UIO_EXAMPLE_MMAP_SIZE);
+        munmap(ptr, UIO_MMAP_SIZE);
         close(file);
     }
 
