@@ -1,7 +1,5 @@
     #include <stdint.h>
      
-    #define INTC_SUCCESS 0 
-     
     // Initializes the driver (opens UIO file and calls mmap)
     // devDevice: The file path to the uio dev file
     // Returns: A negative error code on error, INTC_SUCCESS otherwise
