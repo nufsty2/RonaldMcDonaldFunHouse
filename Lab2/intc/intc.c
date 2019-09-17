@@ -5,14 +5,15 @@
      
     /* Error codes */ 
     #define INTC_SUCCESS 1 // if success for the INTC, return 1
-    #define UIO_ERROR -1 // if it ain't a success, return -1
-    #define UIO_SUCCESS 1 // if it is a success, returns 1
+    #define INTC_OPEN_ERROR -1 // if it ain't a success, return -1
+    #define INTC_MMAP_ERROR -2 // MMAP error code
 
-    /* Sizes */
-    #define UIO_MMAP_SIZE 0x1000 // size of the mmap - 8 bytes
+    /* INTC Attributes */
+    #define INTC_MMAP_SIZE 0x10000 // found in /sys/class/uio/uio4/maps/map0
+    #define INTC_OFFSET 0 // found in /sys/class/uio/uio4/maps/map0 
+    #define INTC_ADDR 0x41800000 // found in /sys/class/uio/uio4/maps/map0
 
     /* Useful offsets */
-    #define MMAP_OFFSET 0 // offset of the mmap
     #define GIER_OFFSET 0x011C // offset of the global interrupt enable register
     
     /* Global statics for this file */
@@ -28,21 +29,21 @@
     {
         file = open(devDevice, O_RDWR); // open the device, read and write
 
-        if (file == UIO_ERROR) // if it can't open file, return error
+        if (file == INTC_OPEN_ERROR) // if it can't open file, return error
         {
-            return UIO_ERROR; //f ile descriptors have to be > 0 to be valid
+            return INTC_OPEN_ERROR; //f ile descriptors have to be > 0 to be valid
         }
 
         // memory map the physical address of the hardware into virtual address space
-        ptr = mmap(NULL, UIO_MMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, file, MMAP_OFFSET); // mmap - creates a new mapping in the virtual address
+        ptr = mmap(INTC_ADDR, INTC_MMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, file, INTC_OFFSET); // mmap - creates a new mapping in the virtual address
         if (ptr == MAP_FAILED) // if it failes, return error
         {
-            return UIO_ERROR;
+            return INTC_MMAP_ERROR;
         }
 
         /* put hardware setup here */
 
-        return UIO_SUCCESS;
+        return INTC_SUCCESS;
     }
 
     // write to a register of the UIO device
@@ -57,19 +58,11 @@
         return *((volatile uint32_t *)(ptr + offset)); // reeads from a register
     }
 
-    // close the UIO device
-    //	this function must be called after all read/write operations are done
-    //	to properly unmap the memory and close the file descriptor
-    void generic_exit()
-    {
-        munmap(ptr, UIO_MMAP_SIZE); // munmap - system call deletes the mappings for the specified address range
-        close(file);
-    }
-
     // Called to exit the driver (unmap and close UIO file)
     void intc_exit()
     {
-
+        munmap(ptr, INTC_MMAP_SIZE); // munmap - system call deletes the mappings for the specified address range
+        close(file);
     }
      
     // This function will block until an interrupt occurs

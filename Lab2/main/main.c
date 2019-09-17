@@ -1,6 +1,7 @@
     #include <stdint.h>
-    #include "intc.h"
+    #include "../intc/intc.h"
     #include "../buttons/buttons.h"
+    #include "../switches/switches.h"
      
     // This is invoked in response to a timer interrupt.
     // It does 2 things: 1) debounce switches, and 2) advances the time.
@@ -15,12 +16,19 @@
         // ... do something ...
         // Acknowledge the button interrupt
     }
+
+    // Init function for the main file
+    void init()
+    {
+        intc_init("/dev/uio4"); // init the interrupt controller driver
+        init_buttons("/dev/uio1"); // Initialize buttons 
+        init_switches("dev/uio2"); // inits the switches
+    }
      
     int main() 
-    {    
-        intc_init("/dev/uio4"); // init the interrupt controller driver
-        init_buttons("/dev/uio1"); // Initialize buttons  
-     
+    {
+        init(); // INITS EVERYTHING
+        
         // Enable interrupt output from buttons
         // Enable button and FIT interrupt lines on interrupt controller
      

@@ -8,6 +8,8 @@
 // Returns whether it was a success (1) or not (-1)
 int32_t init_buttons(char devDevice[]);
 
-// Reads the buttons
-// Returns the bitmask of said read buttons
-int32_t read_buttons();
+// Generic read on the buttons
+uint32_t read_buttons(uint32_t offset);
+
+// close the UIO device after all read/write operations
+void buttons_exit();
