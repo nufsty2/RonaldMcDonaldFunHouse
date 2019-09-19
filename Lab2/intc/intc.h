@@ -1,7 +1,5 @@
     #include <stdint.h>
      
-    #define INTC_SUCCESS 0 
-     
     // Initializes the driver (opens UIO file and calls mmap)
     // devDevice: The file path to the uio dev file
     // Returns: A negative error code on error, INTC_SUCCESS otherwise
@@ -31,4 +29,6 @@
      
     // Same as intc_irq_enable, except this disables interrupt lines
     void intc_irq_disable(uint32_t irq_mask);
+
+    uint32_t intc_get_interrupt_val(); 
 
