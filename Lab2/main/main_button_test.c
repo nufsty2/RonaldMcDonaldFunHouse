@@ -67,7 +67,7 @@ int main()
     /****************************************************************/
 
     /******************* Read Switches Test *************************/
-    printf("Switch Read Test Started\n\rFlip both switches up to exit loop");
+    printf("Switch Read Test Started\n\rFlip both switches up to exit loop\n\r");
 
     while(1)
     {
@@ -107,6 +107,7 @@ int main()
     }
     /************************************************************/
 
+    intc_enable_uio_interrupts(); // enables interrupts
 
     printf("All Tests Done\n\r");
     

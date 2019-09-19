@@ -1,4 +1,5 @@
     #include <stdint.h>
+    #include <stdio.h>
     #include <unistd.h>
     #include <fcntl.h>
     #include <sys/mman.h>
@@ -13,8 +14,22 @@
     #define INTC_OFFSET 0 // found in /sys/class/uio/uio4/maps/map0 
     #define INTC_ADDR 0x41800000 // found in /sys/class/uio/uio4/maps/map0
 
-    /* Useful offsets */
-    #define GIER_OFFSET 0x011C // offset of the global interrupt enable register
+    /* Useful offsets from the docs */
+    // #define GIER_OFFSET 0x011C // offset of the global interrupt enable register
+    // #define IER_OFFSET 0x0128 // IP Interrupt Enable Register
+    // #define ISR_OFFSET 0x0120 // IP Interrupt Status Register
+    // #define GPIO_DATA_OFFSET 0x0000 // offset of the GPIO Data register
+    // #define GPIO_TRI_OFFSET 0x0004 // TRI
+    #define ISR_OFFSET 0x00
+    #define IER_OFFSET 0x08
+    #define IAR_OFFSET 0x0C
+    #define MER_OFFSET 0x1C
+
+    #define FIT_INPUT 0x0
+    #define BTN_INPUT 0x1
+    #define SW_INPUT 0x2
+
+    #define REG_SIZE_BYTES 1024
     
     /* Global statics for this file */
     static int file; // this is the file descriptor that describes an open UIO device
@@ -58,6 +73,10 @@
         return *((volatile uint32_t *)(ptr + offset)); // reeads from a register
     }
 
+    uint32_t intc_get_interrupt_val() {
+        return generic_read(ISR_OFFSET);
+    } 
+
     // Called to exit the driver (unmap and close UIO file)
     void intc_exit()
     {
@@ -68,8 +87,20 @@
     // This function will block until an interrupt occurs
     // Returns: Bitmask of activated interrupts
     uint32_t intc_wait_for_interrupt()
-    {
-        // USE select() HERE SOMEWHERE - IT WAITS FOR AN INTERRUPT
+    {   
+        // Declaring a union will allow us to access the buffer in the right format   
+        union u
+        {
+            char buf[REG_SIZE_BYTES];
+            uint32_t result;
+        } u;
+
+        read(file, u.buf, REG_SIZE_BYTES-1);
+
+        // printf("Entering read\n\r");
+        // read(file, u.buf, REG_SIZE_BYTES);
+        // printf("exiting function\n\r");
+        return u.result; 
     }
      
     // Acknowledge interrupt(s) in the interrupt controller
@@ -83,7 +114,12 @@
     // (see the UIO documentation for how to do this)
     void intc_enable_uio_interrupts()
     {
-
+        // generic_write(GPIO_TRI_OFFSET, 0xFF000001);
+        // generic_write(GIER_OFFSET, 0x80000000); // enables interrupts(?)
+        // generic_write(ISR_OFFSET, 0x00000001);
+        // generic_write(IER_OFFSET, 0x00000001);
+        generic_write(IER_OFFSET, 0x7);
+        generic_write(MER_OFFSET, 0x2);
     }
      
     // Enable interrupt line(s)

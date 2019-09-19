@@ -6,7 +6,7 @@
 #define BUTTON_SUCCESS 1
 
 /* Button attributes */
-#define BUTTON_MMAP_SIZE 0x10000 // From the file /sys/class/uio/uio1/maps/map0 : size is 8 bytes
+#define BUTTON_MMAP_SIZE 0x10000 // From the file /sys/class/uio/uio1/maps/map0 : 
 #define BUTTON_OFFSET 0 // From the file /sys/class/uio/uio1/maps/map0 : offset is 0
 #define BUTTON_ADDR 0x41220000 // From the file /sys/class/uio/uio1/maps/map0 : this is address
 
