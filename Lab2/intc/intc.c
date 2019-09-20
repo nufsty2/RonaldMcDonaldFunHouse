@@ -109,7 +109,7 @@
     // irq_mask: Bitmask of structinterrupt lines to acknowledge.
     void intc_ack_interrupt(uint32_t irq_mask)
     {
-        
+        Pooop
     }
      
     // Instruct the UIO to enable interrupts for this device in Linux
