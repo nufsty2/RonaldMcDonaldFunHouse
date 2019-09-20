@@ -24,16 +24,19 @@
     #define IER_OFFSET 0x08
     #define IAR_OFFSET 0x0C
     #define MER_OFFSET 0x1C
+    #define ILR_OFFSET 0x24
 
     #define FIT_INPUT 0x0
     #define BTN_INPUT 0x1
     #define SW_INPUT 0x2
 
-    #define REG_SIZE_BYTES 1024
+    #define REG_SIZE_BYTES 0x00010000
     
     /* Global statics for this file */
-    static int file; // this is the file descriptor that describes an open UIO device
+    static uint32_t file; // this is the file descriptor that describes an open UIO device
     static char *ptr; // this is the virtual address of the UIO device registers
+
+     
 
     // Initializes the driver (opens UIO file and calls mmap)
     // devDevice: The file path to the uio dev file
@@ -56,7 +59,11 @@
             return INTC_MMAP_ERROR;
         }
 
-        /* put hardware setup here */
+        /* All interrupts disabled on init */
+        // generic_write(ISR_OFFSET, 0);
+        // generic_write(IER_OFFSET, 0);
+        // generic_write(IAR_OFFSET, 0);
+        // generic_write(MER_OFFSET, 0);
 
         return INTC_SUCCESS;
     }
@@ -73,8 +80,9 @@
         return *((volatile uint32_t *)(ptr + offset)); // reeads from a register
     }
 
-    uint32_t intc_get_interrupt_val() {
-        return generic_read(ISR_OFFSET);
+    uint32_t intc_get_interrupt_val() 
+    {
+        return generic_read(ISR_OFFSET); // reading from the ISR
     } 
 
     // Called to exit the driver (unmap and close UIO file)
@@ -89,37 +97,28 @@
     uint32_t intc_wait_for_interrupt()
     {   
         // Declaring a union will allow us to access the buffer in the right format   
-        union u
-        {
-            char buf[REG_SIZE_BYTES];
-            uint32_t result;
-        } u;
 
-        read(file, u.buf, REG_SIZE_BYTES-1);
+        char buf[REG_SIZE_BYTES]; 
 
-        // printf("Entering read\n\r");
-        // read(file, u.buf, REG_SIZE_BYTES);
-        // printf("exiting function\n\r");
-        return u.result; 
+        return read(file, ptr, REG_SIZE_BYTES);
+        
+        //return 0; 
     }
      
     // Acknowledge interrupt(s) in the interrupt controller
-    // irq_mask: Bitmask of interrupt lines to acknowledge.
+    // irq_mask: Bitmask of structinterrupt lines to acknowledge.
     void intc_ack_interrupt(uint32_t irq_mask)
     {
-
+        
     }
      
     // Instruct the UIO to enable interrupts for this device in Linux
     // (see the UIO documentation for how to do this)
     void intc_enable_uio_interrupts()
     {
-        // generic_write(GPIO_TRI_OFFSET, 0xFF000001);
-        // generic_write(GIER_OFFSET, 0x80000000); // enables interrupts(?)
-        // generic_write(ISR_OFFSET, 0x00000001);
-        // generic_write(IER_OFFSET, 0x00000001);
-        generic_write(IER_OFFSET, 0x7);
-        generic_write(MER_OFFSET, 0x2);
+        generic_write(IER_OFFSET, 0xFFFFFFFF); // write a 0111 to the IER
+        generic_write(MER_OFFSET, 0xFFFFFFFF); // write a 010 to the MER
+        generic_write(ILR_OFFSET, 0xFFFFFFFF);
     }
      
     // Enable interrupt line(s)
@@ -134,6 +133,6 @@
     // Same as intc_irq_enable, except this disables interrupt lines
     void intc_irq_disable(uint32_t irq_mask)
     {
-        
+
     }
 
