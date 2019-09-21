@@ -1,5 +1,8 @@
 {
     "files.associations": {
         "uio.h": "c"
-    }
+    },
+    "cSpell.words": [
+        "cmake"
+    ]
 }

@@ -9,7 +9,7 @@
     // Called to exit the driver (unmap and close UIO file)
     void intc_exit();
      
-    // This function will block until an interrupt occurrs
+    // This function will block until an interrupt occurs
     // Returns: Bitmask of activated interrupts
     uint32_t intc_wait_for_interrupt();
      
