@@ -16,6 +16,12 @@
 #define SW1_BITMASK 2 // if switch 1 is high
 #define HIGH_BITMASK 3 // if both switches are high
 
+#define GIER_OFFSET 0x011C // offset of the global interrupt enable register
+#define IER_OFFSET 0x0128 // IP Interrupt Enable Register
+#define ISR_OFFSET 0x0120 // IP Interrupt Status Register
+#define GPIO_DATA_OFFSET 0x0000 // offset of the GPIO Data register
+#define GPIO_TRI_OFFSET 0x0004
+
 static int file; // this is the file descriptor that describes an open UIO device
 static char *ptr; // this is the virtual address of the UIO device registers
 
@@ -43,9 +49,25 @@ int32_t init_switches(char devDevice[])
 }
 
 // Reads the switches and returns the bitmask of whichever was flipped
-uint32_t read_switches(uint32_t offset)
+uint32_t read_switches()
 {
-    return *((volatile uint32_t *)(ptr + offset));
+    return *((volatile uint32_t *)(ptr + GPIO_DATA_OFFSET));
+}
+
+void write_switches(uint32_t offset, uint32_t value)
+{
+    *((volatile uint32_t *)(ptr + offset)) = value;
+}
+
+void enable_switches_interrupts()
+{
+    write_switches(IER_OFFSET, 0x1);
+    write_switches(GIER_OFFSET, 0x80000000);
+}
+
+void clear_switches_interrupts()
+{
+    write_switches(ISR_OFFSET, 0x1);
 }
 
 // Closes Switches UIO device

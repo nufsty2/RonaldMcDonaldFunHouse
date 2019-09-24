@@ -16,6 +16,13 @@
 #define BUTTON_2_BITMASK 4
 #define BUTTON_3_BITMASK 8
 
+/* Offsets */
+#define GIER_OFFSET 0x011C // offset of the global interrupt enable register
+#define IER_OFFSET 0x0128 // IP Interrupt Enable Register
+#define ISR_OFFSET 0x0120 // IP Interrupt Status Register
+#define GPIO_DATA_OFFSET 0x0000 // offset of the GPIO Data register
+#define GPIO_TRI_OFFSET 0x0004
+
 /* Global statics used in this file */
 static int file; // this is the file descriptor that describes an open UIO device
 static char *ptr; // this is the virtual address of the UIO device registers
@@ -44,9 +51,25 @@ int32_t init_buttons(char devDevice[])
 }
 
 // This reads from the button and returns which one was readvia bitmask found in #defines
-uint32_t read_buttons(uint32_t offset)
+uint32_t read_buttons()
 {
-    return *((volatile uint32_t *)(ptr + offset));
+    return *((volatile uint32_t *)(ptr + GPIO_DATA_OFFSET)); 
+}
+
+void write_buttons(uint32_t offset, uint32_t value)
+{
+    *((volatile uint32_t *)(ptr + offset)) = value;
+}
+
+void enable_button_interrupts()
+{
+    write_buttons(IER_OFFSET, 0x1);
+    write_buttons(GIER_OFFSET, 0x80000000);
+}
+
+void clear_button_interrupts()
+{
+    write_buttons(ISR_OFFSET, 0x1);
 }
 
 void buttons_exit()

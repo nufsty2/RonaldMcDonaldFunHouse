@@ -9,7 +9,11 @@
 int32_t init_switches(char devDevice[]);
 
 // Generic read on the switches
-uint32_t read_switches(uint32_t offset);
+uint32_t read_switches();
+
+void enable_switches_interrupts();
+
+void clear_switches_interrupts();
 
 // Close uio device after read/write operations
 void switches_exit();

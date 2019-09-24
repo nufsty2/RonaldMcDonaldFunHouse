@@ -37,8 +37,6 @@
     static uint32_t file; // this is the file descriptor that describes an open UIO device
     static char *ptr; // this is the virtual address of the UIO device registers
 
-        
-
     // Initializes the driver (opens UIO file and calls mmap)
     // devDevice: The file path to the uio dev file
     // Returns: A negative error code on error, INTC_SUCCESS otherwise
@@ -120,8 +118,8 @@
     //	will not disable the interrupt line
     void intc_irq_enable(uint32_t irq_mask)
     {
-        generic_write(IER_OFFSET, irq_mask); // write a 0111 to the IER
-        generic_write(MER_OFFSET, 0x3); // write a 010 to the MER
+        generic_write(IER_OFFSET, irq_mask); // write the irq mask to the IER
+        generic_write(MER_OFFSET, 0x3); // write a 011 to the MER
     }
         
     // Same as intc_irq_enable, except this disables interrupt lines

@@ -9,7 +9,9 @@
 int32_t init_buttons(char devDevice[]);
 
 // Generic read on the buttons
-uint32_t read_buttons(uint32_t offset);
+uint32_t read_buttons();
+
+void clear_button_interrupts();
 
 // close the UIO device after all read/write operations
 void buttons_exit();
