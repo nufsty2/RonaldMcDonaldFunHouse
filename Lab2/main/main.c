@@ -18,9 +18,10 @@
 
 /* 
  values */
-#define DEBOUNCE_MAX_VAL 2
-#define INCREMENT_MAX_VAL 5
-#define FIT_1_SEC 100 // 10ms * 100  1000ms = 1s
+#define DEBOUNCE_MAX_VAL  5
+#define HALF_SECOND       50
+#define INCREMENT_MAX_VAL 10
+#define FIT_1_SEC         100 // 10ms * 100  1000ms = 1s
 
 /* Enum-like structure to determine which part to inc based on buttons and switches */
 #define SEC 0
@@ -28,28 +29,36 @@
 #define HR  2
 
 /* Initial values for the clock, where we start */
-#define INIT_SEC 50
-#define INIT_MIN 59
-#define INIT_HR 23
+#define INIT_SEC 0
+#define INIT_MIN 0
+#define INIT_HR  0
 
 /* Rollover, min, and max values for the clock */
 #define SEC_MAX 59 // second maximum
 #define MIN_MAX 59 // minute maximum
-#define HR_MAX 23 // hr maximum
+#define HR_MAX  23 // hr maximum
 
 /* Global statics needed for the class */
-static uint32_t fit_ctr = 0;
+static uint32_t fit_ctr       = 0;
+static uint32_t half_sec_ctr  = 0;
 static uint32_t increment_ctr = 0;
 
 static int32_t second_ctr = INIT_SEC; // second counter
 static int32_t minute_ctr = INIT_MIN; // min counter
-static int32_t hour_ctr = INIT_HR; // hour counter
+static int32_t hour_ctr   = INIT_HR;  // hour counter
 
-static uint32_t debounce_ctr = 0; // debounce counter
-static uint32_t buttons_val = 0; // buttons value
-static uint32_t new_buttons_val = 0; // new buttons value
-static uint32_t switches_val = 0; // switches value
+static uint32_t debounce_ctr     = 0; // debounce counter
+static uint32_t buttons_val      = 0; // buttons value
+static uint32_t new_buttons_val  = 0; // new buttons value
+static uint32_t switches_val     = 0; // switches value
 static uint32_t new_switches_val = 0; // new switches value
+
+// Reset all counters
+void reset_counters() {
+    debounce_ctr  = 0; // reset db counter
+    increment_ctr = 0;
+    half_sec_ctr  = 0;
+}
 
 // This is our main function to print the time on the console
 void print_time() 
@@ -212,9 +221,13 @@ void isr_fit()
         switches_val = new_switches_val; // assign the switches vals
     }
 
-    if (++increment_ctr >= INCREMENT_MAX_VAL) {
+    if (++half_sec_ctr >= HALF_SECOND) {
         if (buttons_val == new_buttons_val) {
-            set_time();
+            if (increment_ctr >= INCREMENT_MAX_VAL) {
+                set_time();
+                increment_ctr = 0;
+            }
+            increment_ctr++;
         }
     }
 
@@ -228,8 +241,7 @@ void isr_fit()
 // This is invoked each time there is a change in the button state (result of a push or a bounce).
 void isr_buttons()
 {
-    debounce_ctr = 0; // reset debounce counter
-    increment_ctr = 0;
+    reset_counters();
     new_buttons_val = read_buttons(); // get the button value
     clear_button_interrupts(); // clear button interrupts
     set_time(); // sets the time
@@ -238,8 +250,7 @@ void isr_buttons()
 // This is invoked each time there is a change in switch state
 void isr_switches()
 {
-    debounce_ctr = 0; // reset db counter
-    increment_ctr = 0;
+    reset_counters();
     new_switches_val = read_switches(); // read the switches
     clear_switches_interrupts(); // clear the interrupts
 }
