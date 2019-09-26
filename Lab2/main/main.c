@@ -16,11 +16,13 @@
 #define BTN_2 0x4
 #define SW_0  0x1
 
-/* Debouce values */
-#define DEBOUNCE_MAX_VAL 3
+/* 
+ values */
+#define DEBOUNCE_MAX_VAL 2
+#define INCREMENT_MAX_VAL 5
 #define FIT_1_SEC 100 // 10ms * 100  1000ms = 1s
 
-/* Enum-like structure to determine which part to inc based on btns and switches */
+/* Enum-like structure to determine which part to inc based on buttons and switches */
 #define SEC 0
 #define MIN 1
 #define HR  2
@@ -37,6 +39,7 @@
 
 /* Global statics needed for the class */
 static uint32_t fit_ctr = 0;
+static uint32_t increment_ctr = 0;
 
 static int32_t second_ctr = INIT_SEC; // second counter
 static int32_t minute_ctr = INIT_MIN; // min counter
@@ -57,7 +60,7 @@ void print_time()
 
 // This is our function to advance the time
 // The unit paramater is what the unit we are incrementing
-// The bool counting is to make sure that we advnace the time when the button is not being pressed
+// The bool counting is to make sure that we advance the time when the button is not being pressed
 void advance_time(int16_t unit, bool counting)
 {
     /* Switch statement for what we are incrementing */
@@ -148,7 +151,7 @@ void reverse_time(int16_t unit)
     print_time(); // print the time after we finish
 }
 
-// This is the set_time function that either advances or revereses the time based on the btn and switches
+// This is the set_time function that either advances or reverses the time based on the btn and switches
 void set_time()
 {
     // This if statement is to make sure two buttons aren't being pressed at the same tim
@@ -209,6 +212,12 @@ void isr_fit()
         switches_val = new_switches_val; // assign the switches vals
     }
 
+    if (++increment_ctr >= INCREMENT_MAX_VAL) {
+        if (buttons_val == new_buttons_val) {
+            set_time();
+        }
+    }
+
     // Advanced the time after 1 second
     if (++fit_ctr == FIT_1_SEC)
     {
@@ -220,11 +229,9 @@ void isr_fit()
 void isr_buttons()
 {
     debounce_ctr = 0; // reset debounce counter
-
+    increment_ctr = 0;
     new_buttons_val = read_buttons(); // get the button value
-
     clear_button_interrupts(); // clear button interrupts
-
     set_time(); // sets the time
 }
 
@@ -232,7 +239,7 @@ void isr_buttons()
 void isr_switches()
 {
     debounce_ctr = 0; // reset db counter
-
+    increment_ctr = 0;
     new_switches_val = read_switches(); // read the switches
     clear_switches_interrupts(); // clear the interrupts
 }
