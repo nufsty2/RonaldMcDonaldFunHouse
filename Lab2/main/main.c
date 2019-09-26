@@ -176,7 +176,7 @@ void set_time()
     switch(buttons_val)
     {
         case BTN_0:
-            if (switches_val == SW_0)
+            if (switches_val & SW_0)
             {
                 advance_time(SEC, false);
             }
@@ -186,7 +186,7 @@ void set_time()
             }
             break;
         case BTN_1:
-            if (switches_val == SW_0)
+            if (switches_val & SW_0) // ==
             {
                 advance_time(MIN, false);
             }
@@ -196,7 +196,7 @@ void set_time()
             }
             break;
         case BTN_2:
-            if (switches_val == SW_0)
+            if (switches_val & SW_0)
             {
                 advance_time(HR, false);
             }
