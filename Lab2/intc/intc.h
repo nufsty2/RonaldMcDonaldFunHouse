@@ -17,6 +17,12 @@ void intc_ack_interrupt(uint32_t irq_mask);
 // Instruct the UIO to enable interrupts for this device in Linux
 // (see the UIO documentation for how to do this)
 void intc_enable_uio_interrupts();
+
+// write to a register of the UIO device
+void generic_write(uint32_t offset, uint32_t value);
+
+// read from a register of the UIO device
+uint32_t generic_read(uint32_t offset);
      
 // Enable interrupt line(s)
 // irq_mask: Bitmask of lines to enable

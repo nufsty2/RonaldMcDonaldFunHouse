@@ -53,9 +53,11 @@ static uint32_t new_buttons_val  = 0; // new buttons value
 static uint32_t switches_val     = 0; // switches value
 static uint32_t new_switches_val = 0; // new switches value
 
+static bool debounced = false; // Flag used to determine if debounce timer is done
+
 // Reset all counters
 void reset_counters() {
-    debounce_ctr  = 0; // reset db counter
+    debounce_ctr  = 0;
     increment_ctr = 0;
     half_sec_ctr  = 0;
 }
@@ -167,10 +169,13 @@ void set_time()
     if (buttons_val == (BTN_0 | BTN_1) ||
         buttons_val == (BTN_0 | BTN_2) ||
         buttons_val == (BTN_1 | BTN_2) ||
-        buttons_val == (BTN_0 | BTN_1 | BTN_2))
-        {
-            return;
-        }
+        buttons_val == (BTN_0 | BTN_1 | BTN_2))   
+
+        {    
+
+            return;   
+
+        }    
 
     /* This switch reads the button value and sw value to determine to either advance or stop time */
     switch(buttons_val)
@@ -186,7 +191,7 @@ void set_time()
             }
             break;
         case BTN_1:
-            if (switches_val & SW_0) // ==
+            if (switches_val & SW_0)
             {
                 advance_time(MIN, false);
             }
@@ -219,15 +224,18 @@ void isr_fit()
         debounce_ctr = 0; // reset debounce counter when max value hit
         buttons_val = new_buttons_val; // assign the buttons val
         switches_val = new_switches_val; // assign the switches vals
+        debounced = true;
     }
 
+    // The time will auto-increment if pressed for 1/2 second
     if (++half_sec_ctr >= HALF_SECOND) {
+        // If the buttons val hasn't changed, still presssing
         if (buttons_val == new_buttons_val) {
-            if (increment_ctr >= INCREMENT_MAX_VAL) {
+            // Counter used to auto-increment
+            if (++increment_ctr >= INCREMENT_MAX_VAL) {
                 set_time();
                 increment_ctr = 0;
             }
-            increment_ctr++;
         }
     }
 
@@ -244,7 +252,10 @@ void isr_buttons()
     reset_counters();
     new_buttons_val = read_buttons(); // get the button value
     clear_button_interrupts(); // clear button interrupts
-    set_time(); // sets the time
+    if (debounced) {
+        set_time(); // sets the time
+        debounced = false;
+    }
 }
 
 // This is invoked each time there is a change in switch state

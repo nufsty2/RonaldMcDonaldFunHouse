@@ -40,7 +40,7 @@ int32_t init_buttons(char devDevice[])
         }
 
         // memory map the physical address of the hardware into virtual address space
-        ptr = mmap(BUTTON_ADDR, BUTTON_MMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, file, BUTTON_OFFSET); // mmap - creates a new mapping in the virtual address
+        ptr = mmap(NULL, BUTTON_MMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, file, BUTTON_OFFSET); // mmap - creates a new mapping in the virtual address
         if (ptr == MAP_FAILED) // if it fails, return error
         {
             return BUTTON_MMAP_ERROR;

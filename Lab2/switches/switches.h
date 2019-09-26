@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
+#include "../intc/intc.h"
+
 
 // Inits GPIO hardware for the switches
 // The parameter devDevice is the string (char array) of the location of the switches UIO file
