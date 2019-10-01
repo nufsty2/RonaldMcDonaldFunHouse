@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
+#include "../intc/intc.h"
 
 // Inits GPIO hardware for the buttons
 // First, we open the file given the devDevice location, this returns either success or error
@@ -16,6 +17,9 @@ uint32_t read_buttons();
 
 // This function enables the GPIO interrupts by writing to the IER and GIER registers
 void clear_button_interrupts();
+
+// This function enables the GPIO interrupts by writing to the IER and GIER registers
+void enable_button_interrupts();
 
 // close the UIO device after all read/write operations
 void buttons_exit();

@@ -1,3 +1,4 @@
+#include "intc.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -49,7 +50,7 @@ int32_t intc_init(char devDevice[])
     }
 
     // memory map the physical address of the hardware into virtual address space
-    ptr = mmap(INTC_ADDR, INTC_MMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, file, INTC_OFFSET); // mmap - creates a new mapping in the virtual address
+    ptr = mmap(NULL, INTC_MMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, file, INTC_OFFSET); // mmap - creates a new mapping in the virtual address
     if (ptr == MAP_FAILED) // if it fails, return error
     {
         return INTC_MMAP_ERROR;
@@ -112,7 +113,7 @@ void intc_irq_enable(uint32_t irq_mask)
     generic_write(IER_OFFSET, irq_mask); // write the irq mask to the IER
     generic_write(MER_OFFSET, ENABLE_MER_BITS); // write a 011 to the MER
 }
-        
+
 // Same as intc_irq_enable, except this disables interrupt lines
 void intc_irq_disable(uint32_t irq_mask)
 {

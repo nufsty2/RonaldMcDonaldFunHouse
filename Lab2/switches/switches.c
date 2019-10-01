@@ -40,7 +40,7 @@ int32_t init_switches(char devDevice[])
     }
 
     // memory map the physical address of the hardware into virtual address space
-    ptr = mmap(SWITCH_ADDR, SWITCH_MMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, file, SWITCH_OFFSET); // mmap - creates a new mapping in the virtual address
+    ptr = mmap(NULL, SWITCH_MMAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, file, SWITCH_OFFSET); // mmap - creates a new mapping in the virtual address
     if (ptr == MAP_FAILED) // if it failes, return error
     {
         return SWITCH_MMAP_ERROR; // bad
