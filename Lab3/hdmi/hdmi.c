@@ -8,6 +8,9 @@
 #define OPEN_HDMI_ERROR -1
 #define OPEN_HDMI_SUCCESS 1
 
+/* Sizes */
+#define PIXEL_SIZE 6
+
 static int32_t file;
 
 int32_t open_hdmi()
@@ -21,7 +24,7 @@ int32_t open_hdmi()
     return OPEN_HDMI_SUCCESS;
 }
 
-void seek(uint32_t bytes)
+void seek_hdmi(uint32_t bytes)
 {
     lseek(file, bytes, SEEK_SET);
 }
@@ -29,12 +32,12 @@ void seek(uint32_t bytes)
 int32_t read_hdmi(uint32_t bytesToRead)
 {
     char buffer[bytesToRead];
-    return read(file, buffer, sizeof(buffer)-1);
+    return read(file, buffer, bytesToRead);
 }
 
 void write_hdmi(char pixel[])
 {
-    write(file, pixel, sizeof(pixel));
+    write(file, pixel, PIXEL_SIZE); // 3 = pixel
 }
 
 void close_hdmi()

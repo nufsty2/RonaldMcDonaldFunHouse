@@ -16,11 +16,15 @@ int main()
     }
 
     /* HDMI Write/Read Test */
-    char white[3] = {0xFF, 0xFF, 0xFF}; // single pixel
-    for (int i = 0; i < 640*5; i++) // write white to first 5 rows
+    char black[3] = {0xFF, 0xFF, 0xFF};
+    for (int i = 0; i < 640; i++)
     {
-        seek(i);
-        write_hdmi(white); // Write the color to the screem
+        if (i%3==0)
+        {
+            seek_hdmi(i);
+            write_hdmi(black);
+            printf("%d\n\r", read_hdmi(3));
+        }
     }
 
     close_hdmi();
