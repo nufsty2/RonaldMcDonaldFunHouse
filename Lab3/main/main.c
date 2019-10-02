@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include "../hdmi/hdmi.h"
 #include "../sprites/sprites.c"
+#include <stdbool.h>
  
 #define ALIEN_HEIGHT 16
 
@@ -13,6 +14,8 @@ static char black[3] = {0x00, 0x00, 0x00};
 #define WORD_WIDTH 32
 #define PIXEL_SIZE_GLOBAL 3
 #define LETTER_WIDTH 39
+
+#define SCORE_DIGITS 5
 
 /* defines I made */
 #define WHOLE_SCREEN_IN_BYTES 921600
@@ -26,6 +29,11 @@ const uint32_t* alien_army[5][11] = {
 };
 
 uint32_t score = 0;
+char score_digit_0 = 0;
+char score_digit_1 = 0;
+char score_digit_2 = 0;
+char score_digit_3 = 0;
+char score_digit_4 = 0;
 
 void init_hdmi()
 {
@@ -41,7 +49,7 @@ void black_whole_screen()
     }
 }
 
-void draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t height, uint16_t pixel_size, char[] color) {
+void draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t height, uint16_t pixel_size, char color[]) {
     uint32_t initPoint = pos; 
     uint32_t currentPoint = initPoint;
     uint32_t grid_dimension = pixel_size / PIXEL_SIZE_GLOBAL;
@@ -88,7 +96,7 @@ void init_alien_army()
     }
 }
 
-uint32_t* get_sprite_from_digit(uint16_t digit) {
+uint32_t* get_sprite_from_digit(uint8_t digit) {
     switch (digit) {
         case 0:
             return number0_5x5;
@@ -113,11 +121,53 @@ uint32_t* get_sprite_from_digit(uint16_t digit) {
     }
 }
 
-void draw_score() 
-{
-    uint32_t score_copy = score;
-    uint32_t score_space = LETTER_WIDTH*9;
+char* get_score_digit(uint16_t digit) {
+    switch (digit) {
+        case 0:
+            return &score_digit_0;
+        case 1:
+            return &score_digit_1;
+        case 2:
+            return &score_digit_2;
+        case 3:
+            return &score_digit_3;
+        case 4:
+            return &score_digit_4;
+        default:
+            return NULL;
+    }
+}
 
+void update_score(bool firstRun) {
+    uint32_t score_copy = score;
+    uint32_t digit_location = LETTER_WIDTH * 9;
+
+    // Print numbers
+    for (uint16_t i = 0; i < SCORE_DIGITS; i++)
+    {
+        uint8_t digit_val = score_copy % 10;
+
+        if (*get_score_digit(i) != digit_val && !firstRun)
+        {
+            // Erase
+            draw_sprite(get_sprite_from_digit(*get_score_digit(i)), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, black);
+            // Draw
+            draw_sprite(get_sprite_from_digit(digit_val), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, green);
+        }
+        else 
+        {
+            // Draw
+            draw_sprite(get_sprite_from_digit(digit_val), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, green);
+        }
+
+        *get_score_digit(i) = digit_val;
+        score_copy /= 10;
+        digit_location -= LETTER_WIDTH;
+    }
+}
+
+void init_score() 
+{
     // Print SCORE
     draw_sprite(letterS_5x5, LETTER_WIDTH*0, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
     draw_sprite(letterC_5x5, LETTER_WIDTH*1, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
@@ -125,19 +175,8 @@ void draw_score()
     draw_sprite(letterR_5x5, LETTER_WIDTH*3, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
     draw_sprite(letterE_5x5, LETTER_WIDTH*4, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
 
-    // Print numbers
-    while(score_copy)
-    {
-        draw_sprite(get_sprite_from_digit(score_copy % 10),
-                    score_space,
-                    5,
-                    5,
-                    PIXEL_SIZE_GLOBAL*2,
-                    green
-        );
-        score_copy /= 10;
-        score_space -= LETTER_WIDTH;
-    }
+    // Print Numbers
+    update_score(true);
 }
  
 int main() 
@@ -146,5 +185,5 @@ int main()
     black_whole_screen();
 
     init_alien_army();
-    draw_score();
+    init_score();
 }
