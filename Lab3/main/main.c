@@ -28,7 +28,7 @@ const uint32_t* alien_army[5][11] = {
     {alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8}
 };
 
-uint32_t score = 0;
+uint32_t score = 100;
 char score_digit_0 = 0;
 char score_digit_1 = 0;
 char score_digit_2 = 0;
@@ -96,7 +96,7 @@ void init_alien_army()
     }
 }
 
-uint32_t* get_sprite_from_digit(uint8_t digit) {
+const uint32_t* get_sprite_from_digit(uint8_t digit) {
     switch (digit) {
         case 0:
             return number0_5x5;
@@ -146,8 +146,12 @@ void update_score(bool firstRun) {
     for (uint16_t i = 0; i < SCORE_DIGITS; i++)
     {
         uint8_t digit_val = score_copy % 10;
+        if (i == 2) {
+            printf("Score: %d\n\rCopy: %d\n\rDigit2: %d\n\rdigit_val: %d\n\rdigit*: %d\n\r", score, score_copy, score_digit_2, digit_val, *get_score_digit(i));
+        }
 
-        if (*get_score_digit(i) != digit_val && !firstRun)
+
+        if ((*get_score_digit(i) != digit_val))
         {
             // Erase
             draw_sprite(get_sprite_from_digit(*get_score_digit(i)), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, black);
@@ -186,4 +190,6 @@ int main()
 
     init_alien_army();
     init_score();
+    update_score(false);
+    update_score(false);
 }
