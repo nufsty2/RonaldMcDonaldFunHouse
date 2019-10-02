@@ -3,58 +3,26 @@
 #include "../hdmi/hdmi.h"
 #include "../sprites/sprites.c"
  
-// Packs each horizontal line of the figures into a single 32 bit word. 
-#define packWord32(b31,b30,b29,b28,b27,b26,b25,b24,b23,b22,b21,b20,b19,b18,b17,b16,b15,b14,b13,b12,b11,b10,b9,b8,b7,b6,b5,b4,b3,b2,b1,b0) \
-((b31 << 31) | (b30 << 30) | (b29 << 29) | (b28 << 28) | (b27 << 27) | (b26 << 26) | (b25 << 25) | (b24 << 24) |						  \
- (b23 << 23) | (b22 << 22) | (b21 << 21) | (b20 << 20) | (b19 << 19) | (b18 << 18) | (b17 << 17) | (b16 << 16) |						  \
- (b15 << 15) | (b14 << 14) | (b13 << 13) | (b12 << 12) | (b11 << 11) | (b10 << 10) | (b9  << 9 ) | (b8  << 8 ) |						  \
- (b7  << 7 ) | (b6  << 6 ) | (b5  << 5 ) | (b4  << 4 ) | (b3  << 3 ) | (b2  << 2 ) | (b1  << 1 ) | (b0  << 0 ) )
- 
 #define ALIEN_HEIGHT 16
 
-static char white[3] = {0xFF, 0xFF, 0xFF};
-
-uint32_t topOutAlienSymbol[ALIEN_HEIGHT] =
-{ 
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1),
-	// packWord32(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)  
-
-    packWord32(0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,0,0,1,1,0,0,1,1,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,0,0,1,1,0,0,1,1,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,1,1,0,0,1,1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0),
-	packWord32(0,0,0,0,1,1,0,0,1,1,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0), 
-};                                                                                                                                                                       
+static char white[3] = {0xFF, 0xFF, 0xFF};                                                                                                                                                                      
  
 #define WORD_WIDTH 32
+#define PIXEL_SIZE_GLOBAL 3
+#define LETTER_WIDTH 39
 
 /* defines I made */
 #define WHOLE_SCREEN_IN_BYTES 921600
+
+const uint32_t* alien_army[5][11] = {
+    {alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8   },
+    {alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8},
+    {alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8},
+    {alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8},
+    {alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8}
+};
+
+uint32_t score = 0;
 
 void init_hdmi()
 {
@@ -71,58 +39,67 @@ void black_whole_screen()
     }
 }
 
-// params - pos, width, height, spriteArray
-void draw_top_alien_symbol()
-{
-    uint32_t initPoint = (960 + (3*640*20)); // 960 = half way across, 20 rows down
+void draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t height, uint16_t pixel_size) {
+    uint32_t initPoint = pos; 
     uint32_t currentPoint = initPoint;
+    uint32_t grid_dimension = pixel_size / PIXEL_SIZE_GLOBAL;
 
-    for (uint32_t i = 0; i < ALIEN_HEIGHT; i++)
+    for (uint32_t i = 0; i < height; i++)
     {
-        for (uint32_t j = 0; j < WORD_WIDTH; j++)
+        for (uint32_t j = 0; j < width; j++)
         {
-            if ((topOutAlienSymbol[i] & (1<<(WORD_WIDTH-1-j))))
+            if ((sprite[i] & (1<<(width-1-j))))
             {
-                currentPoint += (j*3);
-
-                seek_hdmi(currentPoint);
-                write_hdmi(white);
-                currentPoint = initPoint;
+                for (uint32_t y = 0; y < grid_dimension; y++) 
+                {
+                    for (uint32_t x = 0; x < grid_dimension; x++) 
+                    {
+                    currentPoint += (j*pixel_size + PIXEL_SIZE_GLOBAL*x + PIXEL_SIZE_GLOBAL*640*y);
+                    seek_hdmi(currentPoint);
+                    write_hdmi(white);
+                    currentPoint = initPoint;
+                    }
+                }
             }
         }
-        currentPoint += (3*640); // new line
+        currentPoint += (pixel_size*640); // new line
         initPoint = currentPoint;
         seek_hdmi(currentPoint);
     }
 }
 
-void draw_saucer_16x7() 
+void init_alien_army()
 {
-    uint32_t initPoint = (960 + (6*640*20)); // 960 = half way across, 20 rows down
-    uint32_t currentPoint = initPoint;
+    uint32_t starting_pos = 105 + 640*PIXEL_SIZE_GLOBAL*105;
 
-    for (uint32_t i = 0; i < 7; i++)
+    for (uint16_t y = 0; y < 5; y++) 
     {
-        for (uint32_t j = 0; j < 16; j++)
-        {
-            if ((saucer_16x7[i] & (1<<(16-1-j))))
-            {
-                currentPoint += (j*6);
-
-                seek_hdmi(currentPoint);
-                write_hdmi(white);
-                currentPoint = initPoint;
-            }
+        for (uint16_t x = 0; x < 11; x++) {
+            draw_sprite(alien_army[y][x], 
+                        starting_pos + 40*PIXEL_SIZE_GLOBAL*x + 25*640*PIXEL_SIZE_GLOBAL*y,
+                        12,
+                        8,
+                        PIXEL_SIZE_GLOBAL * 2);
         }
-        currentPoint += (6*640); // new line
-        initPoint = currentPoint;
-        seek_hdmi(currentPoint);
     }
+}
+
+void draw_score() 
+{
+    draw_sprite(letterS_5x5, LETTER_WIDTH*0, 5, 5, PIXEL_SIZE_GLOBAL*2);
+    draw_sprite(letterC_5x5, LETTER_WIDTH*1, 5, 5, PIXEL_SIZE_GLOBAL*2);
+    draw_sprite(letterO_5x5, LETTER_WIDTH*2, 5, 5, PIXEL_SIZE_GLOBAL*2);
+    draw_sprite(letterR_5x5, LETTER_WIDTH*3, 5, 5, PIXEL_SIZE_GLOBAL*2);
+    draw_sprite(letterE_5x5, LETTER_WIDTH*4, 5, 5, PIXEL_SIZE_GLOBAL*2);
+    
+    
 }
  
 int main() 
 {
     init_hdmi();
     black_whole_screen();
-    draw_saucer_16x7();
+
+    init_alien_army();
+    draw_score();
 }

@@ -9,7 +9,7 @@
 #define OPEN_HDMI_SUCCESS 1
 
 /* Sizes */
-#define PIXEL_SIZE 6
+#define PIXEL_SIZE 3
 
 static int32_t file;
 
