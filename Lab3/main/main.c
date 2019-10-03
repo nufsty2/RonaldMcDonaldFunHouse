@@ -165,6 +165,26 @@ const uint32_t* get_sprite_from_digit(char digit) {
             return number8_5x5;
         case 9:
             return number9_5x5;
+        case '0':
+            return number0_5x5;
+        case '1':
+            return number1_5x5;
+        case '2':
+            return number2_5x5;
+        case '3':
+            return number3_5x5;
+        case '4':
+            return number4_5x5;
+        case '5':
+            return number5_5x5;
+        case '6':
+            return number6_5x5;
+        case '7':
+            return number7_5x5;
+        case '8':
+            return number8_5x5;
+        case '9':
+            return number9_5x5;
         case 'A':
             return letterA_5x5;
         case 'B':
@@ -263,7 +283,6 @@ void update_score(bool firstRun) {
 
         if ((*get_score_digit(i) != digit_val) && !firstRun)
         {
-            printf("Tried to erase on number %d\n\rdigit_location:\t%d\n\r", i, digit_location);
             // Erase
             draw_sprite(get_sprite_from_digit(*get_score_digit(i)), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, black);
             // Draw
@@ -393,6 +412,43 @@ void reset_counters()
     increment_ctr = 0;
 }
 
+void main_print_score(score_t score, uint32_t pos) {
+    draw_sprite(get_sprite_from_digit(score.name[0]),       pos + LETTER_WIDTH*0, 5, 5, PIXEL_SIZE_GLOBAL*2, cyan);
+    draw_sprite(get_sprite_from_digit(score.name[1]),       pos + LETTER_WIDTH*1, 5, 5, PIXEL_SIZE_GLOBAL*2, cyan);
+    draw_sprite(get_sprite_from_digit(score.name[2]),       pos + LETTER_WIDTH*2, 5, 5, PIXEL_SIZE_GLOBAL*2, cyan);
+    draw_sprite(get_sprite_from_digit(score.value_char[0]), pos + LETTER_WIDTH*4, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
+    draw_sprite(get_sprite_from_digit(score.value_char[1]), pos + LETTER_WIDTH*5, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
+    draw_sprite(get_sprite_from_digit(score.value_char[2]), pos + LETTER_WIDTH*6, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
+    draw_sprite(get_sprite_from_digit(score.value_char[3]), pos + LETTER_WIDTH*7, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
+    draw_sprite(get_sprite_from_digit(score.value_char[4]), pos + LETTER_WIDTH*8, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
+}
+
+void main_print_scores()
+{
+    // ENTER
+    draw_sprite(letterE_5x5, LETTER_WIDTH*20 + 640*40*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
+    draw_sprite(letterN_5x5, LETTER_WIDTH*21 + 640*40*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
+    draw_sprite(letterT_5x5, LETTER_WIDTH*22 + 640*40*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
+    draw_sprite(letterE_5x5, LETTER_WIDTH*23 + 640*40*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
+    draw_sprite(letterR_5x5, LETTER_WIDTH*24 + 640*40*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
+    // NAME
+    draw_sprite(letterN_5x5, LETTER_WIDTH*26 + 640*40*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
+    draw_sprite(letterA_5x5, LETTER_WIDTH*27 + 640*40*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
+    draw_sprite(letterM_5x5, LETTER_WIDTH*28 + 640*40*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
+    draw_sprite(letterE_5x5, LETTER_WIDTH*29 + 640*40*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
+    // AAA
+    draw_sprite(get_sprite_from_digit(char_0), LETTER_WIDTH*24 + 640*80*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
+    draw_sprite(get_sprite_from_digit(char_1), LETTER_WIDTH*25 + 640*80*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
+    draw_sprite(get_sprite_from_digit(char_2), LETTER_WIDTH*26 + 640*80*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
+
+    score_t top_ten[10];
+    scores_get_top_10_scores(top_ten);
+    for (uint8_t i = 0; i < 10; i++) 
+    {
+        main_print_score(top_ten[i], PIXEL_SIZE_GLOBAL*((80+20*i)*640) + LETTER_WIDTH*20);
+    }
+}
+
 // BTN0: Increase letter
 // BTN1: Decrease letter
 // BTN3: Submit letter
@@ -421,38 +477,18 @@ void respond_to_press() {
     {
         if (++selected_char > 2) {
            name_entered = true;
+           score_t new_score = {.name = {char_0, char_1, char_2}, .value = score};
+           scores_write_new_score(new_score);
            main_print_scores();
         }
     }
 
-    blink_cursor(true);
-    half_sec_ctr = 0;
-    blink = true;
-}
-
-void main_print_score(score_t score, uint32_t pos) {
-    draw_sprite(get_sprite_from_digit(score.name[0]),       pos + LETTER_WIDTH*0, 5, 5, PIXEL_SIZE_GLOBAL*2, cyan);
-    draw_sprite(get_sprite_from_digit(score.name[1]),       pos + LETTER_WIDTH*1, 5, 5, PIXEL_SIZE_GLOBAL*2, cyan);
-    draw_sprite(get_sprite_from_digit(score.name[2]),       pos + LETTER_WIDTH*2, 5, 5, PIXEL_SIZE_GLOBAL*2, cyan);
-    draw_sprite(get_sprite_from_digit(score.value_char[0]), pos + LETTER_WIDTH*4, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
-    draw_sprite(get_sprite_from_digit(score.value_char[1]), pos + LETTER_WIDTH*5, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
-    draw_sprite(get_sprite_from_digit(score.value_char[2]), pos + LETTER_WIDTH*6, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
-    draw_sprite(get_sprite_from_digit(score.value_char[3]), pos + LETTER_WIDTH*7, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
-    draw_sprite(get_sprite_from_digit(score.value_char[4]), pos + LETTER_WIDTH*8, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
-}
-
-void main_print_scores()
-{
-    printf("Got here\n\r");
-    draw_sprite(get_sprite_from_digit(char_0), LETTER_WIDTH*24 + 640*80*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
-    draw_sprite(get_sprite_from_digit(char_1), LETTER_WIDTH*25 + 640*80*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
-    draw_sprite(get_sprite_from_digit(char_2), LETTER_WIDTH*26 + 640*80*PIXEL_SIZE_GLOBAL, 5, 5, PIXEL_SIZE_GLOBAL*2, black);
-
-    score_t* top_ten = scores_get_top_10_scores();
-    for (uint8_t i = 0; i < 10; i++) 
+    if (selected_char <= 2) 
     {
-        main_print_score(top_ten[i], PIXEL_SIZE_GLOBAL*(80*640)*(1+(i*50)) + LETTER_WIDTH*120);
-    }
+        blink_cursor(true);
+        half_sec_ctr = 0;
+        blink = true;
+    }   
 }
 
 // This is invoked in response to a timer interrupt.
@@ -528,7 +564,7 @@ int main()
 
     fit_ctr = 0; // reset fit counter
 
-    while(1) 
+    while(!name_entered) 
     {
         // Call interrupt controller function to wait for interrupt
         uint32_t num_interrupts = intc_wait_for_interrupt(); // wait

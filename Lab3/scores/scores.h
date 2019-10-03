@@ -3,8 +3,10 @@
 
 typedef struct score_t {
     uint32_t value;
-    char value_char[5];
     char name[4];
+    char value_char[5];
 } score_t;
 
-score_t* scores_get_top_10_scores();
+void scores_get_top_10_scores();
+
+void scores_write_new_score(score_t new_score);

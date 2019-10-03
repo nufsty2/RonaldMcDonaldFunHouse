@@ -23,7 +23,7 @@ score_t* scores_insertion_sort(score_t scores[]) {
     return scores;
 }
 
-score_t* scores_get_top_10_scores() 
+void scores_get_top_10_scores(score_t top_ten[]) 
 {
     score_t high_scores[TONS_OF_HIGH_SCORES];
     FILE *ptr_file;
@@ -31,23 +31,19 @@ score_t* scores_get_top_10_scores()
 
     ptr_file = fopen("../scores/high_scores.txt", "r");
     if (!ptr_file)
-        return NULL;
+        return;
 
     while (fgets(buf, MAX_CHAR, ptr_file) != NULL)
     {
-        char score_char[5] = 
+        score_t newScore = 
         {
-            buf[4],
-            buf[5],
-            buf[6],
-            buf[7],
-            buf[8]
+            .name = {buf[0], buf[1], buf[2]},
+            .value_char = {buf[4], buf[5], buf[6], buf[7], buf[8]}
         };
-        uint32_t score_int;
-        sscanf(score_char, "%d", &score_int);
-        score_t newScore = {.name = {buf[0], buf[1], buf[2]}, 
-                            .value = score_int,
-                            .value_char = score_char};
+
+        printf("%s\n\r", buf);
+
+        sscanf(newScore.value_char, "%d", &newScore.value);
         high_scores[num_scores] = newScore;
         num_scores++;
     }
@@ -55,9 +51,14 @@ score_t* scores_get_top_10_scores()
     fclose(ptr_file);
     scores_insertion_sort(high_scores);
 
-    score_t top_ten[10];
     for (uint8_t i = 0; i < 10; i++) {
         top_ten[i] = high_scores[i];
     }
-    return top_ten;
+}
+
+void scores_write_new_score(score_t new_score) 
+{   
+    FILE *out = fopen("../scores/high_scores.txt", "a");
+    fprintf(out, "%s %05d\n\r", new_score.name, new_score.value);
+    fclose(out);
 }
