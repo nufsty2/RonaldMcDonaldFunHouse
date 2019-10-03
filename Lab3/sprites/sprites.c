@@ -632,3 +632,11 @@
     	packWord5(0,0,0,0,0)
     };
 
+	static const uint32_t letterBLOCK_6x6[] = {
+    	packWord6(1,1,1,1,1,1),
+		packWord6(1,1,1,1,1,1),
+		packWord6(1,1,1,1,1,1),
+		packWord6(1,1,1,1,1,1),
+		packWord6(1,1,1,1,1,1),
+		packWord6(1,1,1,1,1,1)
+    };
