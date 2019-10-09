@@ -5,4 +5,4 @@ int32_t read_hdmi();
 
 void seek_hdmi(uint32_t bytes);
 
-void write_hdmi(char pixel[]);
+void write_hdmi(char pixel[], uint16_t size);

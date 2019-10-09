@@ -35,9 +35,9 @@ int32_t read_hdmi(uint32_t bytesToRead)
     return read(file, buffer, bytesToRead);
 }
 
-void write_hdmi(char pixel[])
+void write_hdmi(char pixel[], uint16_t size)
 {
-    write(file, pixel, PIXEL_SIZE); // 3 = pixel
+    write(file, pixel, size); // 3 = pixel
 }
 
 void close_hdmi()
