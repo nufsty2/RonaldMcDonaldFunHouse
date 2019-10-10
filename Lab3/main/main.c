@@ -6,8 +6,6 @@ void move_player()
     {
         if ((current_pos_player+15) % NEW_LINE != 1839)
         {
-            // draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, black);
-
             draw_alien(block_2x8, current_pos_player, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
 
             current_pos_player += PIXEL_SIZE_GLOBAL * 4;
@@ -20,7 +18,6 @@ void move_player()
     {
         if (current_pos_player % NEW_LINE != 0)
         {
-            // draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, black);
             draw_alien(block_2x8, current_pos_player+13*6, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
 
             current_pos_player -= PIXEL_SIZE_GLOBAL * 4;
