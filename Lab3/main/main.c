@@ -1,4 +1,4 @@
-#include "../draw/draw.h"
+#include "../globals/globals.h"
 
 void move_player() 
 {

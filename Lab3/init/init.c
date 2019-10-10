@@ -1,4 +1,5 @@
 #include "../globals/globals.h"
+#include "init.h"
 
 void init_hdmi()
 {

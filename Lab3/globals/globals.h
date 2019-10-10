@@ -8,9 +8,12 @@
 #include "../../Lab2/intc/intc.h"
 #include "../../Lab2/buttons/buttons.h"
 #include "../../Lab2/switches/switches.h"
- 
+#include "../draw/draw_generic.h"
+#include "../draw/draw_alien.h"
+#include "../draw/draw_ui.h"
+#include "../draw/draw_game_over.h"
 
-/* Scalar to multiply size of pixel */
+ /* Scalar to multiply size of pixel */
 #define PIXEL_SIZE_GLOBAL 3
 #define SIZE_SCALAR 2
 
