@@ -31,24 +31,29 @@
 /* values */
 #define DEBOUNCE_MAX_VAL   5
 #define HALF_SECOND        50
-#define INCREMENT_MAX_VAL  10
+#define INCREMENT_MAX_VAL  2
 #define FIT_1_SEC          100 // 10ms * 100  1000ms = 1s
 #define ALIEN_MOVE_MAX_VAL 10
+#define SAUCER_MAX_VAL     3000
 
 
 /* defines I made */
 #define WHOLE_SCREEN_IN_BYTES 921600
 #define RIGHT_EDGE (NEW_LINE - 3)
 #define NEW_LINE (640 * PIXEL_SIZE_GLOBAL)
-#define ALIEN_START_POS 105 + NEW_LINE*105
-#define SPACE_BW_ALIENS 40
+#define ALIEN_START_POS NEW_LINE*50
+#define PLAYER_START_POS NEW_LINE*460
+#define SPACE_BW_ALIENS 5
+#define SAUCER_STARTING_POS NEW_LINE*40
 
 static char   white[3]  = {0xFF, 0xFF, 0xFF};
 static char   green[3]  = {0x00, 0xFF, 0x77};
 static char   black[3]  = {0x00, 0x00, 0x00};
+static char black_x_2[6] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 static char    cyan[3]  = {0x11, 0xFF, 0xFF};
 static char     tan[3]  = {0xFF, 0x55, 0x55};
 static char magenta[3]  = {0xFF, 0x66, 0xFF};
+static char black_pixels[(13 + SPACE_BW_ALIENS) * 2 * PIXEL_SIZE_GLOBAL * 11];
 
 static uint32_t debounce_ctr     = 0; // debounce counter
 static uint32_t buttons_val      = 0; // buttons value
@@ -59,6 +64,7 @@ static uint32_t fit_ctr       =  0;
 static uint32_t half_sec_ctr  =  0;
 static uint32_t increment_ctr =  0;
 static uint32_t alien_move_ctr = 0;
+static uint32_t saucer_ctr = 0;
 
 static bool debounced = false; // Flag used to determine if debounce timer is done
 static bool blink = true;
@@ -66,11 +72,11 @@ static bool game_over = false;
 static bool name_entered = false;
 
 const uint32_t* alien_army_sprites[5][11] = {
-    {alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8,    alien_top_in_12x8   },
-    {alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8},
-    {alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8, alien_middle_in_12x8},
-    {alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8},
-    {alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8, alien_bottom_in_12x8}
+    {alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8   },
+    {alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8},
+    {alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8},
+    {alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8},
+    {alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8}
 };
 
 bool alien_army_is_alive[5][11] = {
@@ -101,9 +107,15 @@ char char_1 = 'B';
 char char_2 = 'C';
 uint8_t selected_char = 0;
 
+uint32_t current_pos_alien = ALIEN_START_POS;
+bool moving_right_alien = false;
+
 uint8_t lives = 3;
-uint32_t current_pos = ALIEN_START_POS;
-bool moving_right = true;
+uint32_t current_pos_player = PLAYER_START_POS;
+bool moving_right_player = false;
+
+uint32_t saucer_pos = SAUCER_STARTING_POS;
+bool saucer_moving = false;
 
 void init_hdmi()
 {
@@ -148,43 +160,44 @@ void draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t
     }
 }
 
-void draw_lots_o_aliens(uint32_t pos, uint32_t width, uint32_t height, uint16_t pixel_size, char color[]) {
+void draw_lots_o_aliens(uint32_t pos, uint32_t width, uint32_t sprite_row, uint32_t alien_y, uint16_t pixel_size, char color[], bool erase_aliens) {
     uint32_t currentPoint = pos;
     uint32_t grid_dimension = pixel_size / PIXEL_SIZE_GLOBAL;
 
-    for (uint16_t alien_y = 0; alien_y < 5; alien_y++) 
+    // printf("************ Resetting char[]! ****************\n\r");
+    char pixels_for_entire_line[(width + SPACE_BW_ALIENS) * grid_dimension * PIXEL_SIZE_GLOBAL * 11];               // Create a char array of the whole line of aliens
+    if (!erase_aliens)
     {
-        char pixels_for_entire_line[(width + SPACE_BW_ALIENS) * grid_dimension * PIXEL_SIZE_GLOBAL * 11];
-        for (uint32_t i = 0; i < height; i++)
+        for (uint16_t alien_x = 0; alien_x < 11; alien_x++)                                                         // For each alien in a given row
         {
-            for (uint16_t alien_x = 0; alien_x < 11; alien_x++) 
+            const uint32_t* sprite = alien_army_sprites[alien_y][alien_x];                                          // Create a sprite based on which alien we are on
+            for (uint32_t j = (alien_x*(width+SPACE_BW_ALIENS)); j < (alien_x+1) * (width + SPACE_BW_ALIENS); j++)           // Starting from the upper corner of the alien we are on to the last corner
             {
-                const uint32_t* sprite = alien_army_sprites[alien_y][alien_x];
-                for (uint32_t j = (alien_x*(width+40)); j < (width + SPACE_BW_ALIENS) * 11; j++)
+                // if (alien_x >= 0) { printf("J: %d\n\r Alien_x: %d\n\r", j, alien_x); }
+                for (uint32_t x = j * PIXEL_SIZE_GLOBAL * grid_dimension; x < (j + 1) * grid_dimension * PIXEL_SIZE_GLOBAL; x+=PIXEL_SIZE_GLOBAL) // This is our pixel layer
                 {
-                    for (uint32_t x = j * PIXEL_SIZE_GLOBAL * grid_dimension; x < (j + 1) * grid_dimension * PIXEL_SIZE_GLOBAL; x+=PIXEL_SIZE_GLOBAL) 
-                    {
-                        // printf("Setting %d-%d\n\r", x + 0, x + 2);
-                        pixels_for_entire_line[x + 0] = (sprite[i] & (1<<(width-1-j))) && (j < width + (alien_x*(width+40))) ? color[0] : 0x00;
-                        pixels_for_entire_line[x + 1] = (sprite[i] & (1<<(width-1-j))) && (j < width + (alien_x*(width+40))) ? color[1] : 0x00;
-                        pixels_for_entire_line[x + 2] = (sprite[i] & (1<<(width-1-j))) && (j < width + (alien_x*(width+40))) ? color[2] : 0x00;
-                    }
-                    // printf("****INCREMENTING J****\n\n\r");
+                    // printf("%d <= j < %d : %d\n\r", alien_x*(width+40), width*(alien_x+1)+(40*alien_x), ((j >= alien_x*(width+40)) && (j < width*(alien_x+1)+(40*alien_x))));
+                    // printf("** Setting char[%d-%d]. Colored?: %d\n\r", x + 0, x + 2, (sprite[i] & (1<<(width-1-(j-(width+40)*alien_x)))));
+                    pixels_for_entire_line[x + 0] = (((j >= alien_x*(width+SPACE_BW_ALIENS)) && (j < width*(alien_x+1)+(SPACE_BW_ALIENS*alien_x))) && (sprite[sprite_row] & (1<<(width-1-(j-(width+SPACE_BW_ALIENS)*alien_x))))) ? color[0] : 0x00;
+                    pixels_for_entire_line[x + 1] = (((j >= alien_x*(width+SPACE_BW_ALIENS)) && (j < width*(alien_x+1)+(SPACE_BW_ALIENS*alien_x))) && (sprite[sprite_row] & (1<<(width-1-(j-(width+SPACE_BW_ALIENS)*alien_x))))) ? color[1] : 0x00;
+                    pixels_for_entire_line[x + 2] = (((j >= alien_x*(width+SPACE_BW_ALIENS)) && (j < width*(alien_x+1)+(SPACE_BW_ALIENS*alien_x))) && (sprite[sprite_row] & (1<<(width-1-(j-(width+SPACE_BW_ALIENS)*alien_x))))) ? color[2] : 0x00;
                 }
-                // printf("****INCREMENTING ALIEN_X****\n\n\r");
             }
-            for (uint32_t y = 0; y < grid_dimension; y++) 
-            {
-                seek_hdmi(currentPoint+(NEW_LINE)*y);
-                write_hdmi(pixels_for_entire_line, (width + SPACE_BW_ALIENS) * grid_dimension * PIXEL_SIZE_GLOBAL * 11);
-            }
-            currentPoint += NEW_LINE * grid_dimension;
-            seek_hdmi(currentPoint);
-            // printf("****INCREMENTING I****\n\n\r");
         }
-        currentPoint += NEW_LINE * 15;
+    }
+    // for (uint32_t w = 0; w < (width + SPACE_BW_ALIENS) * grid_dimension * PIXEL_SIZE_GLOBAL * 11; w++) {
+    //     printf("%d:\t0x%X\t\t", w, pixels_for_entire_line[w]);
+    //     if (w % 6 == 5) { printf("\n\r"); }
+    //     if (w % 3 == 2) { printf("\n\r"); }
+    // }
+    for (uint32_t y = 0; y < grid_dimension; y++) 
+    {        
+        seek_hdmi(currentPoint+(NEW_LINE)*y);
+        write_hdmi((erase_aliens) ? black_pixels : pixels_for_entire_line, (width + SPACE_BW_ALIENS) * grid_dimension * PIXEL_SIZE_GLOBAL * 11);
     }
 }
+
+
 
 void draw_alien(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t height, uint16_t pixel_size, char color[]) {
     uint32_t initPoint = pos; 
@@ -214,81 +227,107 @@ void draw_alien(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t 
 }
 
 void toggle_alien_sprite(const uint32_t* sprite_val, int16_t x, int16_t y) {
-    if (sprite_val == alien_top_in_12x8)
+    if (sprite_val == alien_top_in_13x8)
     {
-        alien_army_sprites[y][x] = alien_top_out_12x8;
+        alien_army_sprites[y][x] = alien_top_out_13x8;
     }
         
-    else if (sprite_val == alien_top_out_12x8)
+    else if (sprite_val == alien_top_out_13x8)
     {
-        alien_army_sprites[y][x] = alien_top_in_12x8;
+        alien_army_sprites[y][x] = alien_top_in_13x8;
     }
         
-    else if (sprite_val == alien_middle_in_12x8)
+    else if (sprite_val == alien_middle_in_13x8)
     {
-        alien_army_sprites[y][x] = alien_middle_out_12x8;
+        alien_army_sprites[y][x] = alien_middle_out_13x8;
     }
         
-    else if (sprite_val == alien_middle_out_12x8)
+    else if (sprite_val == alien_middle_out_13x8)
     {
-        alien_army_sprites[y][x] = alien_middle_in_12x8;
+        alien_army_sprites[y][x] = alien_middle_in_13x8;
     }
         
-    else if (sprite_val == alien_bottom_in_12x8)
+    else if (sprite_val == alien_bottom_in_13x8)
     {
-        alien_army_sprites[y][x] = alien_bottom_out_12x8;
+        alien_army_sprites[y][x] = alien_bottom_out_13x8;
     }
         
-    else if (sprite_val == alien_bottom_out_12x8)
+    else if (sprite_val == alien_bottom_out_13x8)
     {
-        alien_army_sprites[y][x] = alien_bottom_in_12x8;
+        alien_army_sprites[y][x] = alien_bottom_in_13x8;
     }          
 }
 
-void move_alien_army_horizontal(bool right) {
+void toggle_all_sprites()
+{
     for (uint16_t y = 0; y < 5; y++) 
     {
         for (uint16_t x = 0; x < 11; x++) 
         {
-            // Erase old
-            draw_alien(alien_army_sprites[y][x], 
-                        current_pos + 40*PIXEL_SIZE_GLOBAL*x + 25*640*PIXEL_SIZE_GLOBAL*y,
-                        12,
-                        8,
-                        PIXEL_SIZE_GLOBAL * 2,
-                        black
-            );
-
             // Change sprite
             toggle_alien_sprite(alien_army_sprites[y][x], x, y);
-
-            // Redraw
-            draw_alien(alien_army_sprites[y][x], 
-                        current_pos + PIXEL_SIZE_GLOBAL * (2 + 40*x + 25*640*y),
-                        12,
-                        8,
-                        PIXEL_SIZE_GLOBAL * 2,
-                        magenta
-            );
         }
     }
-    current_pos += PIXEL_SIZE_GLOBAL * 2;
+
+}
+
+void move_alien_army() 
+{
+    int8_t move_distance;
+    uint32_t old_pos = current_pos_alien;
+    bool move_down;
+
+    toggle_all_sprites();
+
+    if ((current_pos_alien + (13 + SPACE_BW_ALIENS) * 2 * PIXEL_SIZE_GLOBAL * 11) % NEW_LINE == 0)
+    {
+        moving_right_alien = false;
+        current_pos_alien += NEW_LINE * 15;
+    }
+    else if (current_pos_alien % NEW_LINE == 0)
+    {
+        moving_right_alien = true;
+        current_pos_alien += NEW_LINE * 15;
+    }
+    
+    move_distance = moving_right_alien ? (PIXEL_SIZE_GLOBAL * 2) : -(PIXEL_SIZE_GLOBAL * 2);
+    move_down = (current_pos_alien != old_pos) ? true : false;
+    old_pos = current_pos_alien;
+
+    for (uint16_t alien_y = 0; alien_y < 5; alien_y++)                                                                  // for each row of aliens
+    {
+        for (uint32_t i = 0; i < 8; i++)                                                                           // For each row of the individual alien - 8
+        {
+            if (move_down)
+            {   
+                int16_t correction = (moving_right_alien) ? (NEW_LINE * 15) : (NEW_LINE * 15) - move_distance;
+                draw_lots_o_aliens(current_pos_alien - correction, 13, i, alien_y, PIXEL_SIZE_GLOBAL * 2, black, true);
+            }
+            //draw_lots_o_aliens(current_pos_alien - move_distance, 13, i, alien_y, PIXEL_SIZE_GLOBAL * 2, black,   true);
+            draw_lots_o_aliens(current_pos_alien,                 13, i, alien_y, PIXEL_SIZE_GLOBAL * 2, magenta, false);
+            current_pos_alien += NEW_LINE * 2;
+            seek_hdmi(current_pos_alien);
+        }
+        current_pos_alien += NEW_LINE * 15;
+        seek_hdmi(current_pos_alien);
+    }
+    current_pos_alien = old_pos + move_distance;
+    seek_hdmi(current_pos_alien);
 }
 
 void init_alien_army()
 {
-    for (uint16_t y = 0; y < 1; y++) 
+    uint32_t pos = ALIEN_START_POS;
+    for (uint16_t alien_y = 0; alien_y < 5; alien_y++)                                                                  // for each row of aliens
     {
-        for (uint16_t x = 0; x < 1; x++) 
+        for (uint32_t i = 0; i < 8; i++)                                                                           // For each row of the individual alien - 8
         {
-            draw_alien(alien_army_sprites[y][x], 
-                        ALIEN_START_POS + 40*PIXEL_SIZE_GLOBAL*x + 25*640*PIXEL_SIZE_GLOBAL*y,
-                        12,
-                        8,
-                        PIXEL_SIZE_GLOBAL * 2,
-                        magenta
-            );
+            draw_lots_o_aliens(pos, 13, i, alien_y, PIXEL_SIZE_GLOBAL * 2, magenta, false);
+            pos += NEW_LINE * 2;
+            seek_hdmi(pos);
         }
+        pos += NEW_LINE * 15;
+        seek_hdmi(pos);
     }
 }
 
@@ -300,7 +339,7 @@ void init_alien_army_true()
         {
             draw_alien(alien_army_sprites[y][x], 
                         ALIEN_START_POS + 40*PIXEL_SIZE_GLOBAL*x + 25*640*PIXEL_SIZE_GLOBAL*y,
-                        12,
+                        13,
                         8,
                         PIXEL_SIZE_GLOBAL * 2,
                         green
@@ -450,9 +489,9 @@ void update_score(bool firstRun) {
         if ((*get_score_digit(i) != digit_val) && !firstRun)
         {
             // Erase
-            draw_alien(get_sprite_from_digit(*get_score_digit(i)), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, black);
+            draw_sprite(get_sprite_from_digit(*get_score_digit(i)), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, black);
             // Draw
-            draw_alien(get_sprite_from_digit(digit_val), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, green);
+            draw_sprite(get_sprite_from_digit(digit_val), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, green);
             // Replace value
             *get_score_digit(i) = digit_val;
         }
@@ -510,9 +549,59 @@ void init_bunkers()
     }
 }
 
+void move_saucer()
+{
+    if (saucer_moving)
+    {
+        if (saucer_pos % NEW_LINE != 1818)
+        {
+            // draw_alien(saucer_16x7, saucer_pos, 16, 7, PIXEL_SIZE_GLOBAL*2, black);
+            draw_alien(block_2x8, saucer_pos, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
+            saucer_pos += PIXEL_SIZE_GLOBAL * 2;
+            draw_alien(saucer_16x7, saucer_pos, 16, 7, PIXEL_SIZE_GLOBAL*2, green);
+        }
+        else
+        {
+            saucer_moving = false;
+            draw_alien(saucer_16x7, saucer_pos, 16, 7, PIXEL_SIZE_GLOBAL*2, black);
+            saucer_pos = SAUCER_STARTING_POS;
+        }
+    }
+}
+
+void move_player() 
+{
+    if (buttons_val == BTN_0) // move right
+    {
+        if ((current_pos_player+15) % NEW_LINE != 1839)
+        {
+            // draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, black);
+
+            draw_alien(block_2x8, current_pos_player, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
+
+            current_pos_player += PIXEL_SIZE_GLOBAL * 4;
+
+            draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, cyan);
+        }
+    }
+
+    else if (buttons_val == BTN_1) // move left
+    {
+        if (current_pos_player % NEW_LINE != 0)
+        {
+            // draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, black);
+            draw_alien(block_2x8, current_pos_player+13*6, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
+
+            current_pos_player -= PIXEL_SIZE_GLOBAL * 4;
+
+            draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, cyan);
+        }
+    }
+}
+
 void init_player()
 {
-    draw_alien(tank_15x8, PIXEL_SIZE_GLOBAL*(640*460 + 10), 15, 8, PIXEL_SIZE_GLOBAL*2, cyan);
+    draw_alien(tank_15x8, PLAYER_START_POS, 15, 8, PIXEL_SIZE_GLOBAL*2, cyan);
 }
 
 void init_end_game() 
@@ -552,7 +641,7 @@ void init_end_game()
 
 void blink_cursor(bool force) 
 {
-    draw_alien(letterBLOCK_6x6, 
+    draw_sprite(letterBLOCK_6x6, 
                 LETTER_WIDTH*24 - 3 + (selected_char * LETTER_WIDTH) + 640*79*PIXEL_SIZE_GLOBAL, 
                 6, 
                 6, 
@@ -560,7 +649,7 @@ void blink_cursor(bool force)
                 force ? black : 
                     blink ? cyan : black
     );
-    draw_alien(get_sprite_from_digit(*get_selected_char()),     
+    draw_sprite(get_sprite_from_digit(*get_selected_char()),     
                 LETTER_WIDTH*24 +     (selected_char * LETTER_WIDTH) + 640*80*PIXEL_SIZE_GLOBAL, 
                 5, 
                 5, 
@@ -675,10 +764,26 @@ void isr_fit()
         half_sec_ctr = 0;
     }
 
-    if ((++alien_move_ctr >= ALIEN_MOVE_MAX_VAL) && !game_over) {
-        // move_alien_army_horizontal(moving_right);
-        alien_move_ctr = 0;
+    // If the buttons val hasn't changed, still presssing
+    if (buttons_val == new_buttons_val) {
+        // Counter used to auto-increment
+        if (++increment_ctr >= INCREMENT_MAX_VAL) {
+            move_player();
+            increment_ctr = 0;
+        }
     }
+
+    if ((++alien_move_ctr >= ALIEN_MOVE_MAX_VAL) && !game_over) {
+        alien_move_ctr = 0;
+        move_alien_army();
+    }
+
+    if ((++saucer_ctr >= SAUCER_MAX_VAL) && !game_over)
+    {
+        saucer_moving = true;
+        saucer_ctr = 0;
+    }
+    move_saucer();
 }
 
 // This is invoked each time there is a change in the button state (result of a push or a bounce).
@@ -690,7 +795,10 @@ void isr_buttons()
     
     if (debounced) 
     {
-        if (game_over && !name_entered) 
+        if (!game_over)
+            move_player(); 
+
+        else if (game_over && !name_entered) 
             respond_to_press();
 
         else
@@ -714,19 +822,18 @@ void init()
     intc_init("/dev/uio4"); // init the interrupt controller driver
     init_buttons("/dev/uio1"); // Initialize buttons 
     init_switches("/dev/uio2"); // inits the switches
+    for (uint32_t i = 0; i < (13 + SPACE_BW_ALIENS) * 2 * PIXEL_SIZE_GLOBAL * 11; i++) {
+        black_pixels[i] = 0x00;
+    }
 }
      
 int main() 
 {
     init_hdmi();
     black_whole_screen();
-    // init_alien_army();
+    init_alien_army();
     // init_alien_army_true();
-    draw_lots_o_aliens(ALIEN_START_POS,
-                        12,
-                        8,
-                        PIXEL_SIZE_GLOBAL * 2,
-                        magenta);
+
     init_score();
     init_lives();
     init_bunkers();
