@@ -155,7 +155,6 @@ void move_saucer()
     {
         if (saucer_pos % NEW_LINE != 1818)
         {
-            // draw_alien(saucer_16x7, saucer_pos, 16, 7, PIXEL_SIZE_GLOBAL*2, black);
             draw_alien(block_2x8, saucer_pos, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
             saucer_pos += PIXEL_SIZE_GLOBAL * 2;
             draw_alien(saucer_16x7, saucer_pos, 16, 7, PIXEL_SIZE_GLOBAL*2, green);

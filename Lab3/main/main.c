@@ -23,7 +23,32 @@ void move_player()
             current_pos_player -= PIXEL_SIZE_GLOBAL * 4;
 
             draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, cyan);
+
+            bullet_ctr++;
         }
+    }
+}
+
+void fire_bullet()
+{
+    // Declare variables
+    uint32_t old_pos_bullet = current_pos_bullet;
+
+    // Draw the bullet
+    draw_alien(tankbullet_1x5, current_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, cyan); // draw the bullet
+
+    // Move bullet up
+    old_pos_bullet = current_pos_bullet;
+    current_pos_bullet -= NEW_LINE; // make bullet go up
+
+    draw_alien(tankbullet_gone_1x5, old_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
+
+    draw_alien(tankbullet_1x5, current_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, cyan); // draw new bullet
+
+    if (current_pos_bullet < (640 + (NEW_LINE * 10))) 
+    {
+        bullet_moving = false;
+        draw_alien(tankbullet_1x5, current_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
     }
 }
 
@@ -81,15 +106,25 @@ void isr_fit()
     }
 
     // The time will auto-increment if pressed for 1/2 second
-    if ((++half_sec_ctr >= HALF_SECOND) && game_over && !name_entered) {
+    if ((++half_sec_ctr >= HALF_SECOND) && game_over && !name_entered)
+    {
         blink_cursor(false);
         half_sec_ctr = 0;
     }
 
     // If the buttons val hasn't changed, still presssing
-    if (buttons_val == new_buttons_val) {
+    if (buttons_val == new_buttons_val) 
+    {
         // Counter used to auto-increment
-        if (++increment_ctr >= INCREMENT_MAX_VAL) {
+        if (++increment_ctr >= INCREMENT_MAX_VAL) 
+        {
+            if (buttons_val == BTN_3) 
+            {
+                bullet_moving = true;
+                current_pos_bullet = (current_pos_player + 42) - NEW_LINE * 10; 
+                fire_bullet(); // inital fire
+            }
+
             move_player();
             increment_ctr = 0;
         }
@@ -106,6 +141,11 @@ void isr_fit()
         saucer_ctr = 0;
     }
     move_saucer();
+
+    if ((!game_over) && (bullet_moving))
+    {
+        fire_bullet();
+    }
 }
 
 

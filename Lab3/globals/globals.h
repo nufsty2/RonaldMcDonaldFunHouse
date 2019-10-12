@@ -56,6 +56,7 @@
 #define SAUCER_STARTING_POS NEW_LINE*40
 #define ALIEN_START_POS NEW_LINE*50
 #define PLAYER_START_POS NEW_LINE*460
+#define BULLET_STARTING_POS (PLAYER_START_POS + 42) - NEW_LINE * 10 // 42 = at tank gun and subratct to move up
 
 /* Aliens defines */
 #define NO_ALIEN_X 11 // number of aliens width
@@ -97,6 +98,8 @@ static uint32_t increment_ctr =  0;
 // alien move counters
 static uint32_t alien_move_ctr = 0;
 static uint32_t saucer_ctr = 0;
+// bullet counter
+static uint32_t bullet_ctr = 0;
 
 /* Flags */
 static bool debounced = false; // Flag used to determine if debounce timer is done
@@ -156,7 +159,10 @@ static bool moving_right_alien = false;
 static uint8_t lives = NO_LIVES;
 static uint32_t current_pos_player = PLAYER_START_POS;
 static bool moving_right_player = false;
+static uint32_t current_pos_bullet = BULLET_STARTING_POS;
 
 /* Saucer attributes */
 static uint32_t saucer_pos = SAUCER_STARTING_POS;
 static bool saucer_moving = false;
+
+static bool bullet_moving = false;
