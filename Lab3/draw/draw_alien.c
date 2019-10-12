@@ -6,20 +6,19 @@ void draw_lots_o_aliens(uint32_t pos, uint32_t width, uint32_t sprite_row, uint3
     uint32_t currentPoint = pos;
     uint32_t grid_dimension = pixel_size / PIXEL_SIZE_GLOBAL;
 
-    char pixels_for_entire_line[(width + SPACE_BW_ALIENS) * grid_dimension * PIXEL_SIZE_GLOBAL * 11]; 
+    char pixels_for_entire_line[(width + SPACE_BW_ALIENS) * grid_dimension * PIXEL_SIZE_GLOBAL * NO_ALIEN_X]; 
     if (!erase_aliens)
     {
-        for (uint16_t alien_x = 0; alien_x < 11; alien_x++)                                                        
+        for (uint16_t alien_x = 0; alien_x < NO_ALIEN_X; alien_x++)                                                        
         {
             const uint32_t* sprite = alien_army_sprites[alien_y][alien_x];                                          
             for (uint32_t j = (alien_x*(width+SPACE_BW_ALIENS)); j < (alien_x+1) * (width + SPACE_BW_ALIENS); j++)          
             {
-                // if (alien_x >= 0) { printf("J: %d\n\r Alien_x: %d\n\r", j, alien_x); }
                 for (uint32_t x = j * PIXEL_SIZE_GLOBAL * grid_dimension; x < (j + 1) * grid_dimension * PIXEL_SIZE_GLOBAL; x+=PIXEL_SIZE_GLOBAL)
                 {
-                    pixels_for_entire_line[x + 0] = (((j >= alien_x*(width+SPACE_BW_ALIENS)) && (j < width*(alien_x+1)+(SPACE_BW_ALIENS*alien_x))) && (sprite[sprite_row] & (1<<(width-1-(j-(width+SPACE_BW_ALIENS)*alien_x))))) ? color[0] : 0x00;
-                    pixels_for_entire_line[x + 1] = (((j >= alien_x*(width+SPACE_BW_ALIENS)) && (j < width*(alien_x+1)+(SPACE_BW_ALIENS*alien_x))) && (sprite[sprite_row] & (1<<(width-1-(j-(width+SPACE_BW_ALIENS)*alien_x))))) ? color[1] : 0x00;
-                    pixels_for_entire_line[x + 2] = (((j >= alien_x*(width+SPACE_BW_ALIENS)) && (j < width*(alien_x+1)+(SPACE_BW_ALIENS*alien_x))) && (sprite[sprite_row] & (1<<(width-1-(j-(width+SPACE_BW_ALIENS)*alien_x))))) ? color[2] : 0x00;
+                    pixels_for_entire_line[x + PIXEL_BYTE_0] = (((j >= alien_x*(width+SPACE_BW_ALIENS)) && (j < width*(alien_x+1)+(SPACE_BW_ALIENS*alien_x))) && (sprite[sprite_row] & (1<<(width-1-(j-(width+SPACE_BW_ALIENS)*alien_x))))) ? color[PIXEL_BYTE_0] : BLACK_PIXEL;
+                    pixels_for_entire_line[x + PIXEL_BYTE_1] = (((j >= alien_x*(width+SPACE_BW_ALIENS)) && (j < width*(alien_x+1)+(SPACE_BW_ALIENS*alien_x))) && (sprite[sprite_row] & (1<<(width-1-(j-(width+SPACE_BW_ALIENS)*alien_x))))) ? color[PIXEL_BYTE_1] : BLACK_PIXEL;
+                    pixels_for_entire_line[x + PIXEL_BYTE_2] = (((j >= alien_x*(width+SPACE_BW_ALIENS)) && (j < width*(alien_x+1)+(SPACE_BW_ALIENS*alien_x))) && (sprite[sprite_row] & (1<<(width-1-(j-(width+SPACE_BW_ALIENS)*alien_x))))) ? color[PIXEL_BYTE_2] : BLACK_PIXEL;
                 }
             }
         }
@@ -28,7 +27,7 @@ void draw_lots_o_aliens(uint32_t pos, uint32_t width, uint32_t sprite_row, uint3
     for (uint32_t y = 0; y < grid_dimension; y++) 
     {        
         seek_hdmi(currentPoint+(NEW_LINE)*y);
-        write_hdmi((erase_aliens) ? black_pixels : pixels_for_entire_line, (width + SPACE_BW_ALIENS) * grid_dimension * PIXEL_SIZE_GLOBAL * 11);
+        write_hdmi((erase_aliens) ? black_pixels : pixels_for_entire_line, (width + SPACE_BW_ALIENS) * grid_dimension * PIXEL_SIZE_GLOBAL * NO_ALIEN_X);
     }
 }
 
@@ -45,9 +44,9 @@ void draw_alien(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t 
         {
             for (uint32_t x = j * PIXEL_SIZE_GLOBAL * grid_dimension; x < (j + 1) * grid_dimension * PIXEL_SIZE_GLOBAL; x+=PIXEL_SIZE_GLOBAL) 
             {
-                pixels_for_sprite_line[x + 0] = (sprite[i] & (1<<(width-1-j))) ? color[0] : 0x00;
-                pixels_for_sprite_line[x + 1] = (sprite[i] & (1<<(width-1-j))) ? color[1] : 0x00;
-                pixels_for_sprite_line[x + 2] = (sprite[i] & (1<<(width-1-j))) ? color[2] : 0x00;
+                pixels_for_sprite_line[x + PIXEL_BYTE_0] = (sprite[i] & (1<<(width-1-j))) ? color[0] : BLACK_PIXEL;
+                pixels_for_sprite_line[x + PIXEL_BYTE_1] = (sprite[i] & (1<<(width-1-j))) ? color[1] : BLACK_PIXEL;
+                pixels_for_sprite_line[x + PIXEL_BYTE_2] = (sprite[i] & (1<<(width-1-j))) ? color[2] : BLACK_PIXEL;
             }
         }
         for (uint32_t y = 0; y < grid_dimension; y++) 
@@ -95,15 +94,14 @@ void toggle_alien_sprite(const uint32_t* sprite_val, int16_t x, int16_t y)
 
 void toggle_all_sprites()
 {
-    for (uint16_t y = 0; y < 5; y++) 
+    for (uint16_t y = 0; y < NO_ALIEN_Y; y++) 
     {
-        for (uint16_t x = 0; x < 11; x++) 
+        for (uint16_t x = 0; x < NO_ALIEN_X; x++) 
         {
             // Change sprite
             toggle_alien_sprite(alien_army_sprites[y][x], x, y);
         }
     }
-
 }
 
 void move_alien_army() 
@@ -114,56 +112,37 @@ void move_alien_army()
 
     toggle_all_sprites();
 
-    if ((current_pos_alien + (13 + SPACE_BW_ALIENS) * 2 * PIXEL_SIZE_GLOBAL * 11) % NEW_LINE == 0)
+    if ((current_pos_alien + (SPACE_MOVING_ALIENS + SPACE_BW_ALIENS) * SIZE_SCALAR * PIXEL_SIZE_GLOBAL * NO_ALIEN_X) % NEW_LINE == 0)
     {
         moving_right_alien = false;
-        current_pos_alien += NEW_LINE * 15;
+        current_pos_alien += NEW_LINE * MOVE_ROWS_DOWN_FOR_ALIENS;
     }
     else if (current_pos_alien % NEW_LINE == 0)
     {
         moving_right_alien = true;
-        current_pos_alien += NEW_LINE * 15;
+        current_pos_alien += NEW_LINE * MOVE_ROWS_DOWN_FOR_ALIENS;
     }
     
-    move_distance = moving_right_alien ? (PIXEL_SIZE_GLOBAL * 2) : -(PIXEL_SIZE_GLOBAL * 2);
+    move_distance = moving_right_alien ? (PIXEL_SIZE_GLOBAL * SIZE_SCALAR) : -(PIXEL_SIZE_GLOBAL * SIZE_SCALAR);
     move_down = (current_pos_alien != old_pos) ? true : false;
     old_pos = current_pos_alien;
 
-    for (uint16_t alien_y = 0; alien_y < 5; alien_y++)                                                                  // for each row of aliens
+    for (uint16_t alien_y = 0; alien_y < NO_ALIEN_Y; alien_y++)
     {
-        for (uint32_t i = 0; i < 8; i++)                                                                           // For each row of the individual alien - 8
+        for (uint32_t i = 0; i < 8; i++)                                                                          
         {
             if (move_down)
             {   
-                int16_t correction = (moving_right_alien) ? (NEW_LINE * 15) : (NEW_LINE * 15) - move_distance;
-                draw_lots_o_aliens(current_pos_alien - correction, 13, i, alien_y, PIXEL_SIZE_GLOBAL * 2, black, true);
+                int16_t correction = (moving_right_alien) ? (NEW_LINE * MOVE_ROWS_DOWN_FOR_ALIENS) : (NEW_LINE * MOVE_ROWS_DOWN_FOR_ALIENS) - move_distance;
+                draw_lots_o_aliens(current_pos_alien - correction, ALIEN_SPRITE_WIDTH, i, alien_y, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black, true);
             }
-            draw_lots_o_aliens(current_pos_alien, 13, i, alien_y, PIXEL_SIZE_GLOBAL * 2, magenta, false);
-            current_pos_alien += NEW_LINE * 2;
+            draw_lots_o_aliens(current_pos_alien, ALIEN_SPRITE_WIDTH, i, alien_y, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, magenta, false);
+            current_pos_alien += NEW_LINE * SIZE_SCALAR;
             seek_hdmi(current_pos_alien);
         }
-        current_pos_alien += NEW_LINE * 15;
+        current_pos_alien += NEW_LINE * MOVE_ROWS_DOWN_FOR_ALIENS;
         seek_hdmi(current_pos_alien);
     }
     current_pos_alien = old_pos + move_distance;
     seek_hdmi(current_pos_alien);
-}
-
-void move_saucer()
-{
-    if (saucer_moving)
-    {
-        if (saucer_pos % NEW_LINE != 1818)
-        {
-            draw_alien(block_2x8, saucer_pos, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
-            saucer_pos += PIXEL_SIZE_GLOBAL * 2;
-            draw_alien(saucer_16x7, saucer_pos, 16, 7, PIXEL_SIZE_GLOBAL*2, green);
-        }
-        else
-        {
-            saucer_moving = false;
-            draw_alien(saucer_16x7, saucer_pos, 16, 7, PIXEL_SIZE_GLOBAL*2, black);
-            saucer_pos = SAUCER_STARTING_POS;
-        }
-    }
 }

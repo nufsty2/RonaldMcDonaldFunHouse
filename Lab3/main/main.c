@@ -1,30 +1,20 @@
 #include "../globals/globals.h"
 
-void move_player() 
+void move_saucer()
 {
-    if (buttons_val == BTN_0) // move right
+    if (saucer_moving)
     {
-        if ((current_pos_player+15) % NEW_LINE != 1839)
+        if (saucer_pos % NEW_LINE != FAR_RIGHT_BOUNDRY_FOR_SAUCER)
         {
-            draw_alien(block_2x8, current_pos_player, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
-
-            current_pos_player += PIXEL_SIZE_GLOBAL * 4;
-
-            draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, cyan);
+            draw_alien(block_2x8, saucer_pos, BLOCK_WIDTH, BLOCK_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+            saucer_pos += PIXEL_SIZE_GLOBAL * SIZE_SCALAR;
+            draw_alien(saucer_16x7, saucer_pos, SAUCER_WIDTH, SAUCER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, green);
         }
-    }
-
-    else if (buttons_val == BTN_1) // move left
-    {
-        if (current_pos_player % NEW_LINE != 0)
+        else
         {
-            draw_alien(block_2x8, current_pos_player+13*6, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
-
-            current_pos_player -= PIXEL_SIZE_GLOBAL * 4;
-
-            draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, cyan);
-
-            bullet_ctr++;
+            saucer_moving = false;
+            draw_alien(saucer_16x7, saucer_pos, SAUCER_WIDTH, SAUCER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+            saucer_pos = SAUCER_STARTING_POS;
         }
     }
 }
@@ -39,7 +29,7 @@ void fire_bullet()
 
     // Move bullet up
     old_pos_bullet = current_pos_bullet;
-    current_pos_bullet -= NEW_LINE; // make bullet go up
+    current_pos_bullet -= (NEW_LINE*4); // make bullet go up
 
     draw_alien(tankbullet_gone_1x5, old_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
 
@@ -51,6 +41,38 @@ void fire_bullet()
         bullet_moving = false;
         draw_alien(tankbullet_1x5, current_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
     }
+}
+
+void move_player_right()
+{
+    if ((current_pos_player+15) % NEW_LINE != 1839)
+    {
+        draw_alien(block_2x8, current_pos_player, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
+
+        current_pos_player += PIXEL_SIZE_GLOBAL * 4;
+
+        draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, cyan);
+    }
+}
+
+void move_player_left()
+{
+    if (current_pos_player % NEW_LINE != 0)
+    {
+        draw_alien(block_2x8, current_pos_player+13*6, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
+
+        current_pos_player -= PIXEL_SIZE_GLOBAL * 4;
+
+        draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, cyan);
+    }
+}
+
+void move_player()
+{
+    if (buttons_val == BTN_0)
+        move_player_right();
+    else if (buttons_val == BTN_1)
+        move_player_left();
 }
 
 // BTN0: Increase letter
@@ -119,14 +141,17 @@ void isr_fit()
         // Counter used to auto-increment
         if (++increment_ctr >= INCREMENT_MAX_VAL) 
         {
-            if (buttons_val == BTN_3 && !bullet_moving) 
+            // Move player
+            move_player();
+
+            // Fire bullet if statement
+            if ((buttons_val == BTN_3) && !(bullet_moving)) 
             {
                 bullet_moving = true;
                 current_pos_bullet = (current_pos_player + 42) - NEW_LINE * 10; 
                 fire_bullet(); // inital fire
             }
 
-            move_player();
             increment_ctr = 0;
         }
     }
@@ -144,10 +169,8 @@ void isr_fit()
     }
     move_saucer();
 
-    if ((!game_over) && (bullet_moving))
-    {
+    if ((!game_over) && (bullet_moving)) // bullet firing
         fire_bullet();
-    }
 }
 
 
@@ -160,8 +183,8 @@ void isr_buttons()
     
     if (debounced) 
     {
-        if (!game_over)
-            move_player(); 
+        if (!game_over) {}
+            //move_player(); 
 
         else if (game_over && !name_entered) 
             respond_to_press();

@@ -12,10 +12,16 @@
 #include "../draw/draw_alien.h"
 #include "../draw/draw_ui.h"
 #include "../draw/draw_game_over.h"
+#include "../draw/draw_player.h"
 
  /* Scalar to multiply size of pixel */
 #define PIXEL_SIZE_GLOBAL 3
 #define SIZE_SCALAR 2
+
+/* Which pixel to write on */
+#define PIXEL_BYTE_0 0
+#define PIXEL_BYTE_1 1
+#define PIXEL_BYTE_2 2
 
 /* Scalar for the width of the letter so it ain't small */
 #define LETTER_WIDTH 39
@@ -51,6 +57,7 @@
 #define RIGHT_EDGE (NEW_LINE - PIXEL_SIZE_GLOBAL)
 #define NEW_LINE (SCREEN_WIDTH * PIXEL_SIZE_GLOBAL)
 #define SPACE_BW_ALIENS 5
+#define BLACK_PIXEL 0x00
 
 /* Starting pos for elements on the screen */
 #define SAUCER_STARTING_POS NEW_LINE*40
@@ -61,6 +68,16 @@
 /* Aliens defines */
 #define NO_ALIEN_X 11 // number of aliens width
 #define NO_ALIEN_Y  5 // number of aliens height
+#define SPACE_MOVING_ALIENS 13
+#define MOVE_ROWS_DOWN_FOR_ALIENS 15
+#define ALIEN_SPRITE_WIDTH 13
+#define FAR_RIGHT_BOUNDRY_FOR_SAUCER 1818
+#define SAUCER_WIDTH 16
+#define SAUCER_HEIGHT 7
+
+/* Black block attributes */
+#define BLOCK_WIDTH 2
+#define BLOCK_HEIGHT 8
 
 /* Player defines */
 #define NO_LIVES 3
@@ -69,6 +86,9 @@
 #define DEFAULT_GAME_OVER_CHAR_0 'A'
 #define DEFAULT_GAME_OVER_CHAR_1 'B'
 #define DEFAULT_GAME_OVER_CHAR_2 'C'
+#define GAME_OVER_LETTERS_SCALAR 640*40
+#define LETTER_DIM 5
+#define NO_SCORES_TO_DISPLAY 10
 
 /* Array width defines */
 #define BLACK_SCALAR_POS 13
