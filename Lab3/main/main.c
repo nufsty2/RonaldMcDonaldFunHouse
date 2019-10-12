@@ -45,6 +45,7 @@ void fire_bullet()
 
     draw_alien(tankbullet_1x5, current_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, cyan); // draw new bullet
 
+    // At this point, bullet gone
     if (current_pos_bullet < (640 + (NEW_LINE * 10))) 
     {
         bullet_moving = false;
@@ -118,7 +119,7 @@ void isr_fit()
         // Counter used to auto-increment
         if (++increment_ctr >= INCREMENT_MAX_VAL) 
         {
-            if (buttons_val == BTN_3) 
+            if (buttons_val == BTN_3 && !bullet_moving) 
             {
                 bullet_moving = true;
                 current_pos_bullet = (current_pos_player + 42) - NEW_LINE * 10; 
@@ -130,7 +131,8 @@ void isr_fit()
         }
     }
 
-    if ((++alien_move_ctr >= ALIEN_MOVE_MAX_VAL) && !game_over) {
+    if ((++alien_move_ctr >= ALIEN_MOVE_MAX_VAL) && !game_over)
+    {
         alien_move_ctr = 0;
         move_alien_army();
     }
