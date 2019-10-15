@@ -1,4 +1,4 @@
-#include "../globals/globals.h"
+#include "../globals/globals.c"
 
 void main_print_score(score_t score, uint32_t pos)
 {

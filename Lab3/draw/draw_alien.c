@@ -1,5 +1,4 @@
-#include "../globals/globals.h"
-
+#include "../globals/globals.c"
 
 void draw_lots_o_aliens(uint32_t pos, uint32_t width, uint32_t sprite_row, uint32_t alien_y, uint16_t pixel_size, char color[], bool erase_aliens)
 {
@@ -11,7 +10,8 @@ void draw_lots_o_aliens(uint32_t pos, uint32_t width, uint32_t sprite_row, uint3
     {
         for (uint16_t alien_x = 0; alien_x < NO_ALIEN_X; alien_x++)                                                        
         {
-            const uint32_t* sprite = alien_army_sprites[alien_y][alien_x];                                          
+            const uint32_t* sprite = alien_army_sprites[alien_y][alien_x];
+
             for (uint32_t j = (alien_x*(width+SPACE_BW_ALIENS)); j < (alien_x+1) * (width + SPACE_BW_ALIENS); j++)          
             {
                 for (uint32_t x = j * PIXEL_SIZE_GLOBAL * grid_dimension; x < (j + 1) * grid_dimension * PIXEL_SIZE_GLOBAL; x+=PIXEL_SIZE_GLOBAL)
@@ -112,6 +112,7 @@ void move_alien_army()
 
     toggle_all_sprites();
 
+    /* If an alien has reached the end */
     if ((current_pos_alien + (SPACE_MOVING_ALIENS + SPACE_BW_ALIENS) * SIZE_SCALAR * PIXEL_SIZE_GLOBAL * NO_ALIEN_X) % NEW_LINE == 0)
     {
         moving_right_alien = false;
@@ -128,7 +129,7 @@ void move_alien_army()
     old_pos = current_pos_alien;
 
     for (uint16_t alien_y = 0; alien_y < NO_ALIEN_Y; alien_y++)
-    {
+    {  
         for (uint32_t i = 0; i < 8; i++)                                                                          
         {
             if (move_down)
@@ -145,4 +146,26 @@ void move_alien_army()
     }
     current_pos_alien = old_pos + move_distance;
     seek_hdmi(current_pos_alien);
+}
+
+bool move_saucer(bool saucer_moving_local)
+{
+    if (saucer_moving_local)
+    {
+        if (saucer_pos % NEW_LINE != FAR_RIGHT_BOUNDRY_FOR_SAUCER)
+        {
+            draw_alien(block_2x8, saucer_pos, BLOCK_WIDTH, BLOCK_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+            saucer_pos += PIXEL_SIZE_GLOBAL * SIZE_SCALAR;
+            draw_alien(saucer_16x7, saucer_pos, SAUCER_WIDTH, SAUCER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, green);
+
+            return true;
+        }
+        else
+        {
+            //saucer_moving = false;
+            draw_alien(saucer_16x7, saucer_pos, SAUCER_WIDTH, SAUCER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+            saucer_pos = SAUCER_STARTING_POS;
+            return false;
+        }
+    }
 }

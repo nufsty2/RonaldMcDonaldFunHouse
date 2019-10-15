@@ -1,4 +1,4 @@
-#include "../globals/globals.h"
+#include "../globals/globals.c"
 #include "init.h"
 
 void init_hdmi()
@@ -18,15 +18,15 @@ void init_screen()
 void init_alien_army()
 {
     uint32_t pos = ALIEN_START_POS;
-    for (uint16_t alien_y = 0; alien_y < 5; alien_y++)
+    for (uint16_t alien_y = 0; alien_y < NO_ALIEN_Y; alien_y++)
     {
         for (uint32_t i = 0; i < 8; i++)                                                                       
         {
-            draw_lots_o_aliens(pos, 13, i, alien_y, PIXEL_SIZE_GLOBAL * 2, magenta, false);
+            draw_lots_o_aliens(pos, ALIEN_SPRITE_WIDTH, i, alien_y, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, magenta, false);
             pos += NEW_LINE * 2;
             seek_hdmi(pos);
         }
-        pos += NEW_LINE * 15;
+        pos += NEW_LINE * MOVE_ROWS_DOWN_FOR_ALIENS;
         seek_hdmi(pos);
     }
 }
@@ -34,20 +34,20 @@ void init_alien_army()
 void init_black_pixels()
 {
     // Inits black pixels
-    for (uint32_t i = 0; i < (13 + SPACE_BW_ALIENS) * 2 * PIXEL_SIZE_GLOBAL * 11; i++)
+    for (uint32_t i = 0; i < (ALIEN_SPRITE_WIDTH + SPACE_BW_ALIENS) * SIZE_SCALAR * PIXEL_SIZE_GLOBAL * NO_ALIEN_X; i++)
     {
-        black_pixels[i] = 0x00;
+        black_pixels[i] = BLACK_PIXEL;
     }
 }
 
 void init_score() 
 {
     // Print SCORE
-    draw_alien(letterS_5x5, LETTER_WIDTH*0, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
-    draw_alien(letterC_5x5, LETTER_WIDTH*1, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
-    draw_alien(letterO_5x5, LETTER_WIDTH*2, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
-    draw_alien(letterR_5x5, LETTER_WIDTH*3, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
-    draw_alien(letterE_5x5, LETTER_WIDTH*4, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
+    draw_alien(letterS_5x5, LETTER_WIDTH*0, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    draw_alien(letterC_5x5, LETTER_WIDTH*1, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    draw_alien(letterO_5x5, LETTER_WIDTH*2, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    draw_alien(letterR_5x5, LETTER_WIDTH*3, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    draw_alien(letterE_5x5, LETTER_WIDTH*4, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
 
     // Print Numbers
     update_score(true);
@@ -56,11 +56,11 @@ void init_score()
 void init_lives() 
 {
     // Print LIVES
-    draw_alien(letterL_5x5, RIGHT_EDGE-LETTER_WIDTH*15, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
-    draw_alien(letterI_5x5, RIGHT_EDGE-LETTER_WIDTH*14, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
-    draw_alien(letterV_5x5, RIGHT_EDGE-LETTER_WIDTH*13, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
-    draw_alien(letterE_5x5, RIGHT_EDGE-LETTER_WIDTH*12, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
-    draw_alien(letterS_5x5, RIGHT_EDGE-LETTER_WIDTH*11, 5, 5, PIXEL_SIZE_GLOBAL*2, white);
+    draw_alien(letterL_5x5, RIGHT_EDGE-LETTER_WIDTH*15, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    draw_alien(letterI_5x5, RIGHT_EDGE-LETTER_WIDTH*14, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    draw_alien(letterV_5x5, RIGHT_EDGE-LETTER_WIDTH*13, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    draw_alien(letterE_5x5, RIGHT_EDGE-LETTER_WIDTH*12, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    draw_alien(letterS_5x5, RIGHT_EDGE-LETTER_WIDTH*11, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
 
     update_lives(false);
 }
@@ -69,7 +69,8 @@ void init_bunkers()
 {
     uint32_t pos = PIXEL_SIZE_GLOBAL*(640*400 + 75);
     // Print bunkers
-    for (uint8_t i = 0; i < 4; i++) {
+    for (uint8_t i = 0; i < 4; i++) 
+    {
         draw_alien(bunker_24x18, pos, 24, 18, PIXEL_SIZE_GLOBAL*2, tan);
         pos += (PIXEL_SIZE_GLOBAL * 24) * 6;
     }
@@ -115,6 +116,7 @@ void init_end_game()
     game_over = true;
 }
 
+// Main init function
 void init()
 {
         // Init INTC and GPIO Devices

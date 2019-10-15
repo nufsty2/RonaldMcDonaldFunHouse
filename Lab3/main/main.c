@@ -1,23 +1,4 @@
-#include "../globals/globals.h"
-
-void move_saucer()
-{
-    if (saucer_moving)
-    {
-        if (saucer_pos % NEW_LINE != FAR_RIGHT_BOUNDRY_FOR_SAUCER)
-        {
-            draw_alien(block_2x8, saucer_pos, BLOCK_WIDTH, BLOCK_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-            saucer_pos += PIXEL_SIZE_GLOBAL * SIZE_SCALAR;
-            draw_alien(saucer_16x7, saucer_pos, SAUCER_WIDTH, SAUCER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, green);
-        }
-        else
-        {
-            saucer_moving = false;
-            draw_alien(saucer_16x7, saucer_pos, SAUCER_WIDTH, SAUCER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-            saucer_pos = SAUCER_STARTING_POS;
-        }
-    }
-}
+#include "../globals/globals.c"
 
 void fire_bullet()
 {
@@ -69,6 +50,7 @@ void move_player_left()
 
 void move_player()
 {
+
     if (buttons_val == BTN_0)
         move_player_right();
     else if (buttons_val == BTN_1)
@@ -167,10 +149,10 @@ void isr_fit()
         saucer_moving = true;
         saucer_ctr = 0;
     }
-    move_saucer();
+    saucer_moving = move_saucer(saucer_moving);
 
     if ((!game_over) && (bullet_moving)) // bullet firing
-        fire_bullet();
+         fire_bullet();
 }
 
 

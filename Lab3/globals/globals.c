@@ -81,6 +81,8 @@
 
 /* Player defines */
 #define NO_LIVES 3
+#define TANK_WIDTH 15
+#define TANK_HEIGHT 8
 
 /* Game over Defines */
 #define DEFAULT_GAME_OVER_CHAR_0 'A'
@@ -137,18 +139,19 @@ static const uint32_t* alien_army_sprites[5][11] =
     {alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8}
 };
 
-/* bool array to see which one is still alive */
-static bool alien_army_is_alive[5][11] = 
+/* Array of position of all aliens */
+// inii'd to 0
+static uint32_t alien_pos[5][11] =
 {
-    {true, true, true, true, true, true, true, true, true, true, true},
-    {true, true, true, true, true, true, true, true, true, true, true},
-    {true, true, true, true, true, true, true, true, true, true, true},
-    {true, true, true, true, true, true, true, true, true, true, true},
-    {true, true, true, true, true, true, true, true, true, true, true}
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 };
 
-/* Bool array to toggle to in/out sprites of the alien */
-static bool alien_army_is_in[5][11] = 
+/* bool array to see which one is still alive */
+static bool alien_army_is_alive[5][11] = 
 {
     {true, true, true, true, true, true, true, true, true, true, true},
     {true, true, true, true, true, true, true, true, true, true, true},
@@ -179,10 +182,16 @@ static bool moving_right_alien = false;
 static uint8_t lives = NO_LIVES;
 static uint32_t current_pos_player = PLAYER_START_POS;
 static bool moving_right_player = false;
-static uint32_t current_pos_bullet = BULLET_STARTING_POS;
 
 /* Saucer attributes */
 static uint32_t saucer_pos = SAUCER_STARTING_POS;
 static bool saucer_moving = false;
 
+/* Player bullet attributes */
 static bool bullet_moving = false;
+static uint32_t current_pos_bullet = BULLET_STARTING_POS;
+
+/* Alien bullet attributes */
+static bool alien_bullets_moving[4] = { false, false, false, false };
+static uint32_t current_alien_pos_bullets[4] = { 0, 0, 0, 0 }; // the starting pos is a random number
+

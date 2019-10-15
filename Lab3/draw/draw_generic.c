@@ -1,4 +1,4 @@
-#include "../globals/globals.h"
+#include "../globals/globals.c"
 
 void draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t height, uint16_t pixel_size, char color[]) 
 {

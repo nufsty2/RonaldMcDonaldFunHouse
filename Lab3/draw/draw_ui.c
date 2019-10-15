@@ -1,4 +1,4 @@
-#include "../globals/globals.h"
+#include "../globals/globals.c"
 
 void update_score(bool firstRun) 
 {
