@@ -18,4 +18,6 @@ bool draw_alien_detect_hit();
 
 void erase_dead_aliens();
 
+void draw_alien_bullets();
+
 #endif

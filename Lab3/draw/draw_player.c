@@ -5,6 +5,7 @@ extern uint32_t current_pos_player;
 extern bool bullet_moving;
 extern char black[];
 extern char cyan[];
+extern uint32_t buttons_val;
 
 
 void fire_bullet()
@@ -56,4 +57,13 @@ void move_player_left()
 
         draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, cyan);
     }
+}
+
+void move_player()
+{
+
+    if (buttons_val == BTN_0)
+        move_player_right();
+    else if (buttons_val == BTN_1)
+        move_player_left();
 }

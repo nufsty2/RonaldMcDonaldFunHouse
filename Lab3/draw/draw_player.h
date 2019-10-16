@@ -6,3 +6,5 @@ void fire_bullet();
 void move_player_right();
 
 void move_player_left();
+
+void move_player();

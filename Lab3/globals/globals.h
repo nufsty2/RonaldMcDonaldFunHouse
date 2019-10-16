@@ -88,4 +88,14 @@
 #define BLACK_SCALAR_POS 13
 #define LINE_OF_BLACK_PIXELS (BLACK_SCALAR_POS + SPACE_BW_ALIENS) * SIZE_SCALAR * PIXEL_SIZE_GLOBAL * NO_ALIEN_X
 
+/* Game over defines */
+#define LETTER_0_SCORE 0
+#define LETTER_1_SCORE 1
+#define LETTER_2_SCORE 2
+#define SCORE_DIGET_0 0
+#define SCORE_DIGET_1 1
+#define SCORE_DIGET_2 2
+#define SCORE_DIGET_3 3
+#define SCORE_DIGET_4 4
+
 #endif

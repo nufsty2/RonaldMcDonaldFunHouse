@@ -2,20 +2,29 @@
 #include "../globals/globals.h"
 #include "../scores/scores.h"
 
+/* Buttons and Switches */
 extern uint32_t debounce_ctr;
 extern uint32_t buttons_val;
 extern uint32_t new_buttons_val;
 extern uint32_t switches_val;
 extern uint32_t new_switches_val;
+extern bool debounced;
+
+/* Ctrs for the FIT */
 extern uint32_t fit_ctr;
 extern uint32_t half_sec_ctr;
 extern uint32_t increment_ctr;
+
+/* Ctrs for the alien/saucer */
 extern uint32_t alien_move_ctr;
 extern uint32_t saucer_ctr;
+
+/* Positions */
 extern uint32_t current_pos_alien;
 extern uint32_t current_pos_player;
 extern uint32_t current_pos_bullet;
-extern bool debounced;
+
+/* Game over */
 extern bool blink;
 extern bool game_over;
 extern bool name_entered;
@@ -24,34 +33,34 @@ extern char char_0;
 extern char char_1;
 extern char char_2;
 extern uint8_t selected_char;
+
+/* Bools to see what is moving */
 extern bool saucer_moving;
 extern bool bullet_moving;
+extern bool moving_right_alien;
+
+/* Colors */
 extern char black[];
 extern char green[];
 extern char cyan[];
 extern char magenta[];
-extern bool moving_right_alien;
+
+/* Once an alien is hit, start this counter to show the explosion and then erase */
 extern uint32_t die_ctr;
 extern bool start_die_ctr;
 
+// This function gets the y coord of whatever we put in (alien, player, bunker)
 uint16_t draw_alien_get_y_coord(uint32_t coord) 
 {
     return coord / NEW_LINE;
 }
 
+// This function gets the x coord of whatever, depejnds on Y coord
 uint16_t draw_alien_get_x_coord(uint32_t coord, uint16_t y_coord) 
 {
     return (coord - y_coord * NEW_LINE) / PIXEL_SIZE_GLOBAL;
 }
 
-void move_player()
-{
-
-    if (buttons_val == BTN_0)
-        move_player_right();
-    else if (buttons_val == BTN_1)
-        move_player_left();
-}
 
 // BTN0: Increase letter
 // BTN1: Decrease letter
@@ -122,11 +131,11 @@ void isr_fit()
             // Move player
             move_player();
 
-            // Fire bullet if statement
+            // Init fire bullet if statement
             if ((buttons_val == BTN_3) && !(bullet_moving)) 
             {
-                bullet_moving = true;
-                current_pos_bullet = (current_pos_player + 42) - NEW_LINE * 10; 
+                bullet_moving = true; // ste the flag
+                current_pos_bullet = (current_pos_player + 42) - NEW_LINE * 10; // get position
                 fire_bullet(); // inital fire
             }
 
@@ -137,7 +146,7 @@ void isr_fit()
     if ((++alien_move_ctr >= ALIEN_MOVE_MAX_VAL) && !game_over)
     {
         alien_move_ctr = 0;
-        move_alien_army();
+        move_alien_army(); // have a counter that moves the alien army
     }
 
     if ((++saucer_ctr >= SAUCER_MAX_VAL) && !game_over)
@@ -145,21 +154,22 @@ void isr_fit()
         saucer_moving = true;
         saucer_ctr = 0;
     }
-    saucer_moving = move_saucer(saucer_moving);
+    saucer_moving = move_saucer(saucer_moving); // move the saucer if the flag is set
 
     if ((!game_over) && (bullet_moving) && !start_die_ctr) // bullet firing
     {
-         fire_bullet();
-         start_die_ctr = draw_alien_detect_hit();
+         fire_bullet(); // this is our bullet firing
+         start_die_ctr = draw_alien_detect_hit(); // if we get a hit (return true), start the die ctr
     }
 
+    /* This is the die ctr, it wil lshow an explosion then erase the alien */
     if (start_die_ctr) // once an alien gets hit, start the counter
     {
         if ((++die_ctr >= 30) && !game_over) // so we can show an explosion and then erase
         {
-            erase_dead_aliens();
-            die_ctr = 0;
-            start_die_ctr = false;
+            erase_dead_aliens(); // erase
+            die_ctr = 0; // reset ctr
+            start_die_ctr = false; // reset flag
         }
     }
 }
