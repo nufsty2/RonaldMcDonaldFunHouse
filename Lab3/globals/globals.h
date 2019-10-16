@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 /* Scalar to multiply size of pixel */
 #define PIXEL_SIZE_GLOBAL 3
@@ -34,7 +35,7 @@
 
 /* Max Values */
 #define DEBOUNCE_MAX_VAL   5
-#define SAUCER_MAX_VAL     3000
+#define SAUCER_MAX_VAL     1000
 #define ALIEN_MOVE_MAX_VAL 10
 #define INCREMENT_MAX_VAL  2
 
@@ -97,5 +98,16 @@
 #define SCORE_DIGET_2 2
 #define SCORE_DIGET_3 3
 #define SCORE_DIGET_4 4
+
+/* Alien army */
+#define TOP_ALIEN 0
+#define MID_ALIEN_0 1
+#define MID_ALIEN_1 2
+#define BOT_ALIEN_0 3
+#define BOT_ALIEN_1 4
+#define TOP_ALIEN_SCORE 40
+#define MID_ALIEN_SCORE 20
+#define BOT_ALIEN_SCORE 10 
+
 
 #endif

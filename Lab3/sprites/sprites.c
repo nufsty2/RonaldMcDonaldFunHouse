@@ -206,6 +206,15 @@
     // These are the blocks that comprise the bunker and each time a bullet
     // strikes one of these blocks, you erode the block as you sequence through
     // these patterns.
+	static const uint32_t bunkerGone_6x6[] = {
+    	packWord6(0,0,0,0,0,0),
+    	packWord6(0,0,0,0,0,0),
+    	packWord6(0,0,0,0,0,0),
+    	packWord6(0,0,0,0,0,0),
+    	packWord6(0,0,0,0,0,0),
+    	packWord6(0,0,0,0,0,0)
+    };
+
     static const uint32_t bunkerDamage0_6x6[] = {
     	packWord6(0,1,1,0,0,0),
     	packWord6(0,0,0,0,0,1),
@@ -241,6 +250,15 @@
     	packWord6(1,1,1,1,1,1),
     	packWord6(1,1,1,1,1,1)
     };
+
+	static const uint32_t bunkerBlock_6x6[] = {
+    	packWord6(1,1,1,1,1,1),
+    	packWord6(1,1,1,1,1,1),
+    	packWord6(1,1,1,1,1,1),
+    	packWord6(1,1,1,1,1,1),
+    	packWord6(1,1,1,1,1,1),
+    	packWord6(1,1,1,1,1,1)
+    };
      
     static const uint32_t bunker_upper_left_gone_6x6[] = {
     	packWord6(0,0,0,1,1,1),
@@ -260,7 +278,7 @@
     	packWord6(1,1,1,1,1,1)
     };
      
-    static const uint32_t bunker_lower_left_gone_6x6[] = {
+    static const uint32_t bunker_lower_right_gone_6x6[] = {
     	packWord6(1,1,1,1,1,1),
     	packWord6(1,1,1,1,1,1),
     	packWord6(0,0,1,1,1,1),
@@ -269,7 +287,7 @@
     	packWord6(0,0,0,0,0,1)
     };
      
-    static const uint32_t bunker_lower_right_gone_6x6[] = {
+    static const uint32_t bunker_lower_left_gone_6x6[] = {
     	packWord6(1,1,1,1,1,1),
     	packWord6(1,1,1,1,1,1),
     	packWord6(1,1,1,1,0,0),

@@ -1,6 +1,8 @@
 #include "../draw/draw_alien.h"
 #include "../globals/globals.h"
 #include "../scores/scores.h"
+#include "../draw/draw_ui.h"
+#include "../init/init.h"
 
 /* Buttons and Switches */
 extern uint32_t debounce_ctr;
@@ -159,7 +161,10 @@ void isr_fit()
     if ((!game_over) && (bullet_moving) && !start_die_ctr) // bullet firing
     {
          fire_bullet(); // this is our bullet firing
-         start_die_ctr = draw_alien_detect_hit(); // if we get a hit (return true), start the die ctr
+         start_die_ctr = draw_alien_detect_hit_army(); // if we get a hit (return true), start the die ctr
+         if (saucer_moving) {
+             draw_alien_detect_hit_saucer();
+         }
     }
 
     /* This is the die ctr, it wil lshow an explosion then erase the alien */
@@ -207,8 +212,9 @@ void isr_switches()
      
 int main() 
 {
-    // Init Everything
+    // FIXME
     init();
+    draw_ui_init();
         
     // Enable all interrupts
     intc_enable_uio_interrupts();

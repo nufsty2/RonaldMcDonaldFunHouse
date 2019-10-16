@@ -65,7 +65,7 @@ uint8_t lives = NO_LIVES;
 uint32_t current_pos_player = PLAYER_START_POS;
 
 /* Saucer attributes */
-uint32_t saucer_pos = SAUCER_STARTING_POS;
+uint32_t current_pos_saucer = SAUCER_STARTING_POS;
 bool saucer_moving = false;
 
 /* Player bullet attributes */
@@ -75,4 +75,7 @@ uint32_t current_pos_bullet = BULLET_STARTING_POS;
 /* Alien bullet attributes */
 bool alien_bullets_moving[4] = { false, false, false, false };
 uint32_t current_alien_pos_bullets[4] = { 0, 0, 0, 0 }; // the starting pos is a random number
+
+/* Eroding Bunker Attributes */
+uint32_t bunker_pos[4] = { 0, 0, 0, 0 };
 

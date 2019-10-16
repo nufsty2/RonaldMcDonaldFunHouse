@@ -3,7 +3,8 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "~/ECEN427/Lab3/**"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

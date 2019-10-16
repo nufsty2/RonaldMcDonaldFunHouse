@@ -1,4 +1,5 @@
 #include "init.h"
+#include "../draw/bunker.h"
 
 extern bool game_over;
 extern char char_0;
@@ -11,6 +12,8 @@ extern char magenta[];
 extern char black[];
 extern char white[];
 extern char black_pixels[];
+
+/* Bunker attributes */
 
 void init_hdmi()
 {
@@ -73,18 +76,7 @@ void init_lives()
     draw_alien(letterE_5x5, RIGHT_EDGE-LETTER_WIDTH*12, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
     draw_alien(letterS_5x5, RIGHT_EDGE-LETTER_WIDTH*11, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
 
-    update_lives(false);
-}
-
-void init_bunkers()
-{
-    uint32_t pos = PIXEL_SIZE_GLOBAL*(640*400 + 75);
-    // Print bunkers
-    for (uint8_t i = 0; i < 4; i++) 
-    {
-        draw_alien(bunker_24x18, pos, 24, 18, PIXEL_SIZE_GLOBAL*2, tan);
-        pos += (PIXEL_SIZE_GLOBAL * 24) * 6;
-    }
+    draw_ui_update_lives(false);
 }
 
 void init_player()
@@ -144,6 +136,6 @@ void init()
     init_alien_army();
     init_score();
     init_lives();
-    init_bunkers();
+    bunkers_init();
     init_player();
 }

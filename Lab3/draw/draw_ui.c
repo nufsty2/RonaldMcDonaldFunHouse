@@ -1,4 +1,8 @@
 #include "draw_ui.h"
+#include "../sprites/sprites.c"
+#include <time.h>
+
+#define MAX_LIVES 5
 
 extern uint32_t score;
 extern uint8_t lives;
@@ -18,6 +22,9 @@ char score_digit_2 = 0;
 char score_digit_3 = 0;
 char score_digit_4 = 0;
 
+void draw_ui_init() {
+    srand(time(0));
+}
 
 char* get_score_digit(uint8_t digit) 
 {
@@ -52,6 +59,27 @@ char* get_selected_char()
     }
 }
 
+void draw_ui_increase_score(uint16_t row) {
+    switch (row) {
+        case TOP_ALIEN:
+            score += TOP_ALIEN_SCORE;
+            break;
+        case MID_ALIEN_0:
+        case MID_ALIEN_1:
+            score += MID_ALIEN_SCORE;
+            break;
+        case BOT_ALIEN_0:
+        case BOT_ALIEN_1:
+            score += BOT_ALIEN_SCORE;
+            break;
+    }
+}
+
+void draw_ui_increase_score_saucer() {
+    // Get a random multiple of 10 between 50 and 250;
+    score += (rand() % 25 + 5) * 10;
+}
+
 void update_score(bool firstRun) 
 {
     uint32_t score_copy = score;
@@ -82,9 +110,27 @@ void update_score(bool firstRun)
     }
 }
 
-void update_lives(bool firstRun) 
+void draw_ui_increment_lives() {
+    if (lives + 1 <= MAX_LIVES) {
+        lives++;
+        draw_ui_update_lives(false);
+    }
+}
+
+void draw_ui_decrement_lives() {
+    lives--;
+    draw_ui_update_lives(false);
+}
+
+void draw_ui_update_lives(bool firstRun) 
 {
-    uint32_t pos = RIGHT_EDGE - LETTER_WIDTH * 9 + 640 * 3 * 2;
+    uint32_t pos = RIGHT_EDGE - LETTER_WIDTH * 9 + NEW_LINE * SIZE_SCALAR;
+
+    for (uint8_t l = 0; l < MAX_LIVES; l++) {
+        draw_alien(tank_15x8, pos, 15, 8, PIXEL_SIZE_GLOBAL, black);
+        pos += 15 * PIXEL_SIZE_GLOBAL + 15;
+    }
+
     for (uint8_t l = 0; l < lives; l++) {
         draw_alien(tank_15x8, pos, 15, 8, PIXEL_SIZE_GLOBAL, cyan);
         pos += 15 * PIXEL_SIZE_GLOBAL + 15;
