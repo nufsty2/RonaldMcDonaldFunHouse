@@ -3,7 +3,7 @@
 
 #include "../globals/globals.h"
 
-void init_bunkers();
+void init_bunker();
 
 void bunker_detect_hit();
 

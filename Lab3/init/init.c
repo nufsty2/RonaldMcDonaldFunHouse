@@ -136,6 +136,6 @@ void init()
     init_alien_army();
     init_score();
     init_lives();
-    bunkers_init();
+    bunker_init();
     init_player();
 }

@@ -125,12 +125,14 @@ void draw_ui_decrement_lives() {
 void draw_ui_update_lives(bool firstRun) 
 {
     uint32_t pos = RIGHT_EDGE - LETTER_WIDTH * 9 + NEW_LINE * SIZE_SCALAR;
+    uint32_t initial_pos = pos;
 
     for (uint8_t l = 0; l < MAX_LIVES; l++) {
         draw_alien(tank_15x8, pos, 15, 8, PIXEL_SIZE_GLOBAL, black);
         pos += 15 * PIXEL_SIZE_GLOBAL + 15;
     }
 
+    pos = initial_pos;
     for (uint8_t l = 0; l < lives; l++) {
         draw_alien(tank_15x8, pos, 15, 8, PIXEL_SIZE_GLOBAL, cyan);
         pos += 15 * PIXEL_SIZE_GLOBAL + 15;

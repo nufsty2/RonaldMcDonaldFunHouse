@@ -75,7 +75,3 @@ uint32_t current_pos_bullet = BULLET_STARTING_POS;
 /* Alien bullet attributes */
 bool alien_bullets_moving[4] = { false, false, false, false };
 uint32_t current_alien_pos_bullets[4] = { 0, 0, 0, 0 }; // the starting pos is a random number
-
-/* Eroding Bunker Attributes */
-uint32_t bunker_pos[4] = { 0, 0, 0, 0 };
-

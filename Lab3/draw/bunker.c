@@ -45,7 +45,7 @@ const uint32_t* bunker_take_damage(const uint32_t* damage_sprite) {
     }
 }
 
-void bunkers_init()
+void bunker_init()
 {
     uint32_t pos = PIXEL_SIZE_GLOBAL*(640*400 + 75);
     // Print bunkers
