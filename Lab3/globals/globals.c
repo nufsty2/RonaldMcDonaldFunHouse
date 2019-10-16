@@ -41,32 +41,14 @@ uint32_t increment_ctr =  0;
 // alien move counters
 uint32_t alien_move_ctr = 0;
 uint32_t saucer_ctr = 0;
+uint32_t die_ctr = 0;
+bool start_die_ctr = false; 
 
 /* Flags */
 bool debounced = false; // Flag used to determine if debounce timer is done
 bool blink = true;
 bool game_over = false;
 bool name_entered = false;
-
-/* Our whole alien army array */
-const uint32_t* alien_army_sprites[5][11] = 
-{
-    {alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8,    alien_top_in_13x8   },
-    {alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8},
-    {alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8, alien_middle_in_13x8},
-    {alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8},
-    {alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8, alien_bottom_in_13x8}
-};
-
-/* bool array to see which one is still alive */
-bool alien_army_is_alive[5][11] = 
-{
-    {true, true, true, true, true, true, true, true, true, true, true},
-    {true, true, true, true, true, true, true, true, true, true, true},
-    {true, true, true, true, true, true, true, true, true, true, true},
-    {true, true, true, true, true, true, true, true, true, true, true},
-    {true, true, true, true, true, true, true, true, true, true, true}
-};
 
 /* Chars on the game over screen */
 char char_0 = DEFAULT_GAME_OVER_CHAR_0;

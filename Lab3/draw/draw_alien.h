@@ -12,4 +12,10 @@ void move_alien_army();
 
 bool move_saucer(bool saucer_moving_local);
 
+void move_alien_army();
+
+bool draw_alien_detect_hit();
+
+void erase_dead_aliens();
+
 #endif

@@ -61,7 +61,7 @@ void blink_cursor(bool force)
                 force ? black : 
                     blink ? cyan : black
     );
-    draw_sprite(get_sprite_from_digit(*get_selected_char()),     
+    draw_sprite(get_sprite_from_digit(get_selected_char()),     
                 LETTER_WIDTH*24 +     (selected_char * LETTER_WIDTH) + 640*80*PIXEL_SIZE_GLOBAL, 
                 5, 
                 5, 
