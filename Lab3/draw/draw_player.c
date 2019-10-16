@@ -1,1 +1,1 @@
-#include "../globals/globals.c"
+#include "draw_player.h"

@@ -1,4 +1,16 @@
-#include "../globals/globals.c"
+#include "draw_generic.h"
+
+extern uint32_t debounce_ctr;
+extern uint32_t increment_ctr;
+extern char score_digit_0;
+extern char score_digit_1;
+extern char score_digit_2;
+extern char score_digit_3;
+extern char score_digit_4;
+extern char char_0;
+extern char char_1;
+extern char char_2;
+extern uint8_t selected_char;
 
 void draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t height, uint16_t pixel_size, char color[]) 
 {
@@ -126,39 +138,6 @@ const uint32_t* get_sprite_from_digit(char digit)
             return letterY_5x5;
         case 'Z':
             return letterZ_5x5;
-        default:
-            return NULL;
-    }
-}
-
-char* get_score_digit(uint8_t digit) 
-{
-    switch (digit) {
-        case 0:
-            return &score_digit_0;
-        case 1:
-            return &score_digit_1;
-        case 2:
-            return &score_digit_2;
-        case 3:
-            return &score_digit_3;
-        case 4:
-            return &score_digit_4;
-        default:
-            return NULL;
-    }
-}
-
-char* get_selected_char() 
-{
-    switch(selected_char) 
-    {
-        case 0:
-            return &char_0;
-        case 1:
-            return &char_1;
-        case 2:
-            return &char_2;
         default:
             return NULL;
     }

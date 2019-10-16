@@ -1,4 +1,56 @@
-#include "../globals/globals.c"
+#include "draw_ui.h"
+
+extern uint32_t score;
+extern uint8_t lives;
+extern char black[];
+extern char green[];
+extern char cyan[];
+extern char selected_char;
+extern char char_0;
+extern char char_1;
+extern char char_2;
+
+/* Score digit variables */
+uint32_t score = 0;
+char score_digit_0 = 0;
+char score_digit_1 = 0;
+char score_digit_2 = 0;
+char score_digit_3 = 0;
+char score_digit_4 = 0;
+
+
+char* get_score_digit(uint8_t digit) 
+{
+    switch (digit) {
+        case 0:
+            return &score_digit_0;
+        case 1:
+            return &score_digit_1;
+        case 2:
+            return &score_digit_2;
+        case 3:
+            return &score_digit_3;
+        case 4:
+            return &score_digit_4;
+        default:
+            return NULL;
+    }
+}
+
+char* get_selected_char() 
+{
+    switch(selected_char) 
+    {
+        case 0:
+            return &char_0;
+        case 1:
+            return &char_1;
+        case 2:
+            return &char_2;
+        default:
+            return NULL;
+    }
+}
 
 void update_score(bool firstRun) 
 {

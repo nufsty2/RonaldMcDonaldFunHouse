@@ -1,4 +1,17 @@
-#include "../globals/globals.c"
+#include "draw_game_over.h"
+#include "../scores/scores.h"
+
+extern bool blink;
+extern uint32_t score;
+extern char char_0;
+extern char char_1;
+extern char char_2;
+extern uint8_t selected_char;
+extern char black[];
+extern char green[];
+extern char cyan[];
+extern char white[];
+
 
 void main_print_score(score_t score, uint32_t pos)
 {

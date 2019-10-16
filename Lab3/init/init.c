@@ -1,5 +1,16 @@
-#include "../globals/globals.c"
 #include "init.h"
+
+extern bool game_over;
+extern char char_0;
+extern char char_1;
+extern char char_2;
+extern char white[];
+extern char cyan[];
+extern char tan[];
+extern char magenta[];
+extern char black[];
+extern char white[];
+extern char black_pixels[];
 
 void init_hdmi()
 {

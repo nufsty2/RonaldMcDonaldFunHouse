@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
+#include "hdmi.h"
 
 /* Error Code */
 #define OPEN_HDMI_ERROR -1

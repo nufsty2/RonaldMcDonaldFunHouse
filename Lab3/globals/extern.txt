@@ -1,0 +1,62 @@
+/* All counters */
+// button/switch debounce counter
+extern uint32_t debounce_ctr; // debounce counter
+extern uint32_t buttons_val; // buttons value
+extern uint32_t new_buttons_val; // new buttons value
+// switch counter
+extern uint32_t switches_val; // switches value
+extern uint32_t new_switches_val; // new switches value
+// fit counters
+extern uint32_t fit_ctr;
+extern uint32_t half_sec_ctr;
+extern uint32_t increment_ctr;
+// alien move counters
+extern uint32_t alien_move_ct;
+extern uint32_t saucer_ct;
+
+/* Flags */
+extern bool debounced; // Flag used to determine if debounce timer is done
+extern bool blink;
+extern bool game_over;
+extern bool name_entered;
+
+/* Our whole alien army array */
+extern const uint32_t* alien_army_sprites[5][11];
+
+/* bool array to see which one is still alive */
+extern bool alien_army_is_alive[5][11];
+
+/* Score digit variables */
+extern uint32_t score;
+extern char score_digit_0;
+extern char score_digit_1;
+extern char score_digit_2;
+extern char score_digit_3;
+extern char score_digit_4;
+
+/* Chars on the game over screen */
+extern char char_0;
+extern char char_1;
+extern char char_2;
+extern uint8_t selected_char;
+
+/* Moving Alien attribtes */
+extern uint32_t current_pos_alien;
+extern bool moving_right_alien;
+
+/* Player attribtes */
+extern uint8_t lives;
+extern uint32_t current_pos_player;
+extern bool moving_right_player;
+
+/* Saucer attributes */
+extern uint32_t saucer_pos;
+extern bool saucer_moving;
+
+/* Player bullet attributes */
+extern bool bullet_moving;
+extern uint32_t current_pos_bullet;
+
+/* Alien bullet attributes */
+extern bool alien_bullets_moving[4];
+extern uint32_t current_alien_pos_bullets[4]; // the starting pos is a random number
