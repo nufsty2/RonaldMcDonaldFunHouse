@@ -49,10 +49,6 @@ bool alien_army_is_alive[NO_ALIEN_Y][NO_ALIEN_X] =
 };
 
 // Alien bullet crap
-int8_t alien_army_col_bottoms[NO_ALIEN_X] =
-{
-    BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW
-};
 const uint32_t* alien_bullet_sprites[MAX_BULLETS] =
 {
     alienbullet2_up_3x5, alienbullet2_up_3x5, alienbullet2_up_3x5, alienbullet2_up_3x5
@@ -63,17 +59,6 @@ uint8_t alien_fire_col = 0;
 
 void draw_alien_init() {
     srand(time(0));
-}
-
-void draw_alien_track_col_bottom(int8_t col) {
-    uint8_t old_col_bottom = col;
-    int8_t row;
-    for (row = old_col_bottom; row > -1; row--) {
-        if (alien_army_is_alive[row][col]) {
-            break;
-        }
-    }
-    alien_army_col_bottoms[col] = row;
 }
 
 void draw_alien_track_right_edge() {
@@ -358,7 +343,6 @@ bool draw_alien_detect_hit_army()
                 // Re-track edges
                 draw_alien_track_right_edge();
                 draw_alien_track_left_edge();
-                draw_alien_track_col_bottom(col);
 
                 // Update score
                 draw_ui_increase_score(row);
@@ -422,7 +406,10 @@ void draw_alien_check_alien_reset()
 
     // If we got here, they're all dead
     // Reset aliens
+    erase_dead_aliens();
+    // Wait until explosion is over
     move_alien_army();
+
     current_pos_alien = ALIEN_START_POS;
     moving_right_alien = true;
     rightmost_col = NO_ALIEN_X - 1;
