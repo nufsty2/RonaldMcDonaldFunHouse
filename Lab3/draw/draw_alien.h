@@ -23,7 +23,7 @@ void draw_alien_check_alien_reset();
 
 void erase_dead_aliens();
 
-void draw_alien_bullets();
+void draw_alien_trigger_bullets();
 
 void draw_alien_debug_print();
 

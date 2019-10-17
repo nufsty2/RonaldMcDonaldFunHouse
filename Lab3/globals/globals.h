@@ -39,8 +39,8 @@
 #define SAUCER_MAX_VAL          1000
 #define ALIEN_MOVE_MAX_VAL      10
 #define INCREMENT_MAX_VAL       2
-#define ALIEN_BULLET_MAX_VAL    600
-#define ALIEN_BULLET_MIN_VAL    100
+#define ALIEN_BULLET_MAX_VAL    30
+#define ALIEN_BULLET_MIN_VAL    1
 #define PLAYER_DEATH_STAGE_1    25
 #define PLAYER_DEATH_STAGE_2    50
 #define PLAYER_DEATH_STAGE_3    75
@@ -101,11 +101,11 @@
 #define LETTER_0_SCORE 0
 #define LETTER_1_SCORE 1
 #define LETTER_2_SCORE 2
-#define SCORE_DIGET_0 0
-#define SCORE_DIGET_1 1
-#define SCORE_DIGET_2 2
-#define SCORE_DIGET_3 3
-#define SCORE_DIGET_4 4
+#define SCORE_DIGIT_0 0
+#define SCORE_DIGIT_1 1
+#define SCORE_DIGIT_2 2
+#define SCORE_DIGIT_3 3
+#define SCORE_DIGIT_4 4
 
 /* Alien army */
 #define TOP_ALIEN 0

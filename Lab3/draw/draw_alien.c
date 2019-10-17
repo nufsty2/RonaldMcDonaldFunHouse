@@ -59,6 +59,7 @@ const uint32_t* alien_bullet_sprites[MAX_BULLETS] =
 };
 extern uint32_t alien_bullet_pos[];
 extern bool alien_bullet_moving[];
+uint8_t alien_fire_col = 0;
 
 void draw_alien_init() {
     srand(time(0));
@@ -478,7 +479,7 @@ void draw_alien_fire_alien_bullet(uint8_t bullet_num)
 
     // Move bullet up
     //old_pos_bullet = alien_bullet_pos[bullet_num];
-    alien_bullet_pos[bullet_num] += (NEW_LINE*4); // make bullet go down
+    alien_bullet_pos[bullet_num] += (NEW_LINE*2); // make bullet go down
 
     draw_alien(alien_bullet_sprites[bullet_num], old_pos_bullet, 3, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
     draw_alien_toggle_bullet_sprite(bullet_num);
@@ -502,29 +503,58 @@ void draw_alien_fire_alien_bullets() {
 }
 
 // This function will draw the alien bullets, should be a max of 4 at a time
-void draw_alien_bullets()
+void draw_alien_trigger_bullets()
 {
-    for (int16_t row = NO_ALIEN_Y - 1; row >= 0; row--) // loop through the 5 Y aliens
-    {     
-        for (int16_t col = NO_ALIEN_X - 1; col >= 0; col--) // loop through the 11 X aliens
-        {  
-            if (!alien_army_is_alive[row][col] || alien_army_col_bottoms[col] < row) {
-                continue;
-            }
-            else {
-                for (int i = 0; i < MAX_BULLETS; i++) 
-                {
-                    if (!alien_bullet_moving[i] && ((rand() % 2) == 0) && (alien_army_col_bottoms[col] >= 0)) {
-                        alien_bullet_pos[i] = current_pos_alien + 
-                                              // Vertical
-                                              NEW_LINE * ((row + 1) * ALIEN_SPRITE_HEIGHT * SIZE_SCALAR + row * MOVE_ROWS_DOWN_FOR_ALIENS) +
-                                              // Horizontal
-                                              PIXEL_SIZE_GLOBAL * (col * SIZE_SCALAR * (ALIEN_SPRITE_WIDTH + SPACE_BW_ALIENS) + ALIEN_SPRITE_WIDTH);
-                        alien_bullet_moving[i] = true;
-                        draw_alien_fire_alien_bullet(i);
-                    }
-                }
-            }
+    uint8_t random = rand() % 3 + 1;
+    bool increment = rand() % 2;
+    
+    if (increment) 
+    {
+        if (alien_fire_col + random > 10) 
+        {
+            alien_fire_col = 0;
         }
+        else 
+        {
+            alien_fire_col += random;
+        }
+    }
+    else 
+    {
+        if (alien_fire_col - random < 0) 
+        {
+            alien_fire_col = 10;
+        }
+        else 
+        {
+            alien_fire_col -= random;
+        }
+    }
+
+    int8_t alien_fire_row = BOTTOM_ROW;
+
+    while(!alien_army_is_alive[alien_fire_row][alien_fire_col]) {
+        alien_fire_row--;
+    }
+    if (alien_fire_row < 0) {
+        return;
+    }
+    
+    uint8_t bullet_available;
+    for (bullet_available = 0; bullet_available < MAX_BULLETS; bullet_available++) 
+    {
+        if (!alien_bullet_moving[bullet_available]) {
+            break;
+        }
+    }
+
+    if (bullet_available < MAX_BULLETS) {
+        alien_bullet_pos[bullet_available] = current_pos_alien + 
+                                            // Vertical
+                                            NEW_LINE * ((alien_fire_row + 1) * ALIEN_SPRITE_HEIGHT * SIZE_SCALAR + alien_fire_row * MOVE_ROWS_DOWN_FOR_ALIENS) +
+                                            // Horizontal
+                                            PIXEL_SIZE_GLOBAL * (alien_fire_col * SIZE_SCALAR * (ALIEN_SPRITE_WIDTH + SPACE_BW_ALIENS) + ALIEN_SPRITE_WIDTH);
+        alien_bullet_moving[bullet_available] = true;
+        draw_alien_fire_alien_bullet(bullet_available);
     }
 }

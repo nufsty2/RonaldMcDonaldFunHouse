@@ -41,11 +41,13 @@ void scores_get_top_10_scores(score_t top_ten[])
             .value_char = {buf[4], buf[5], buf[6], buf[7], buf[8]}
         };
 
-        printf("%s\n\r", buf);
-
-        sscanf(newScore.value_char, "%d", &newScore.value);
-        high_scores[num_scores] = newScore;
-        num_scores++;
+        if (newScore.name[0] != NULL && newScore.name[1] != NULL && newScore.name[2] != NULL)
+        {
+            printf("%s\n\r", buf);
+            sscanf(newScore.value_char, "%d", &newScore.value);
+            high_scores[num_scores] = newScore;
+            num_scores++;
+        }
     }
 
     fclose(ptr_file);

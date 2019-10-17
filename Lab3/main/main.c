@@ -88,7 +88,7 @@ void respond_to_press()
 
     else if (buttons_val == BTN_1)
     {
-        char val = get_selected_char();
+        char val = *get_selected_char();
 
         if (--val < 'A')
             *get_selected_char() = 'Z';
@@ -145,7 +145,6 @@ void isr_fit()
             {
                 bullet_moving = true; // ste the flag
                 current_pos_bullet = (current_pos_player + 42) - NEW_LINE * 10; // get position
-                fire_bullet(); // inital fire
             }
 
             increment_ctr = 0;
@@ -176,9 +175,9 @@ void isr_fit()
  
     }
 
-    if ((++alien_bullet_ctr >= (rand() % ALIEN_BULLET_MAX_VAL + ALIEN_BULLET_MIN_VAL)) && !game_over) {
+    if ((++alien_bullet_ctr >= (rand() % ALIEN_BULLET_MAX_VAL + ALIEN_BULLET_MIN_VAL) * 10) && !game_over) {
         alien_bullet_ctr = 0;
-        draw_alien_bullets();
+        draw_alien_trigger_bullets();
     }
 
     if (!game_over) 
@@ -194,12 +193,15 @@ void isr_fit()
         move_alien_army(); // have a counter that moves the alien army
     }
 
-    if ((++saucer_ctr >= SAUCER_MAX_VAL) && !game_over)
-    {
-        saucer_moving = true;
-        saucer_ctr = 0;
+    if (!game_over) {
+        if ((++saucer_ctr >= SAUCER_MAX_VAL) && !game_over)
+        {
+            saucer_moving = true;
+            saucer_ctr = 0;
+        }
+        saucer_moving = move_saucer(saucer_moving); // move the saucer if the flag is set
     }
-    saucer_moving = move_saucer(saucer_moving); // move the saucer if the flag is set
+    
 
     if ((!game_over) && (bullet_moving) && !start_die_ctr) // bullet firing
     {

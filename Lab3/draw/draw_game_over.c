@@ -22,14 +22,21 @@ extern char white[];
 // This is our main function to print main scores
 void main_print_score(score_t score, uint32_t pos)
 {
+    // Check for errors first
+    for (uint8_t i = 0; i < 3; i++) {
+        if (score.name[i] == NULL) {
+            return;
+        }
+    }
+
     draw_alien(get_sprite_from_digit(score.name[LETTER_0_SCORE]),       pos + LETTER_WIDTH*0, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, cyan);
     draw_alien(get_sprite_from_digit(score.name[LETTER_1_SCORE]),       pos + LETTER_WIDTH*1, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, cyan);
     draw_alien(get_sprite_from_digit(score.name[LETTER_2_SCORE]),       pos + LETTER_WIDTH*2, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, cyan);
-    draw_alien(get_sprite_from_digit(score.value_char[SCORE_DIGET_0]),  pos + LETTER_WIDTH*4, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
-    draw_alien(get_sprite_from_digit(score.value_char[SCORE_DIGET_1]),  pos + LETTER_WIDTH*5, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
-    draw_alien(get_sprite_from_digit(score.value_char[SCORE_DIGET_2]),  pos + LETTER_WIDTH*6, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
-    draw_alien(get_sprite_from_digit(score.value_char[SCORE_DIGET_3]),  pos + LETTER_WIDTH*7, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
-    draw_alien(get_sprite_from_digit(score.value_char[SCORE_DIGET_4]),  pos + LETTER_WIDTH*8, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    draw_alien(get_sprite_from_digit(score.value_char[SCORE_DIGIT_0]),  pos + LETTER_WIDTH*4, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    draw_alien(get_sprite_from_digit(score.value_char[SCORE_DIGIT_1]),  pos + LETTER_WIDTH*5, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    draw_alien(get_sprite_from_digit(score.value_char[SCORE_DIGIT_2]),  pos + LETTER_WIDTH*6, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    draw_alien(get_sprite_from_digit(score.value_char[SCORE_DIGIT_3]),  pos + LETTER_WIDTH*7, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    draw_alien(get_sprite_from_digit(score.value_char[SCORE_DIGIT_4]),  pos + LETTER_WIDTH*8, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
 }
 
 // This is our main function print all the scores

@@ -7,7 +7,7 @@
 
 typedef struct score_t {
     uint32_t value;
-    char name[4];
+    char name[3];
     char value_char[5];
 } score_t;
 

@@ -19,10 +19,7 @@ void fire_bullet()
 
     uint16_t y_coord = draw_alien_get_y_coord(current_pos_bullet);
     //printf("Bullet coord = (%d, %d)\n\r", draw_alien_get_x_coord(current_pos_bullet, y_coord), y_coord);
-
-    // Draw the bullet
-    draw_alien(tankbullet_1x5, current_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, cyan); // draw the bullet
-
+    
     // Move bullet up
     old_pos_bullet = current_pos_bullet;
     current_pos_bullet -= (NEW_LINE*8); // make bullet go up

@@ -1,6 +1,7 @@
 #include "init.h"
 #include "../draw/bunker.h"
 #include "../draw/draw_generic.h"
+#include "../draw/draw_alien.h"
 
 extern bool game_over;
 extern char char_0;
@@ -23,10 +24,16 @@ void init_hdmi()
 
 void init_screen()
 {
-    for (uint32_t i = 0; i < WHOLE_SCREEN_IN_BYTES; i+=3)
+    for (uint8_t row = 0; row < 80; row++)
     {
-        seek_hdmi(i);
-        write_hdmi(black, PIXEL_SIZE_GLOBAL);
+        for (uint8_t col = 0; col < 80; col++) {
+            draw_alien(blackBox_8x6, 
+            (row * NEW_LINE * 6 + col * PIXEL_SIZE_GLOBAL * 8), 
+            8, 
+            6, 
+            SIZE_SCALAR * PIXEL_SIZE_GLOBAL, 
+            black);
+        }
     }
 }
 

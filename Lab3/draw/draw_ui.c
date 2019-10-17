@@ -81,7 +81,7 @@ void draw_ui_increase_score(uint16_t row) {
 
 void draw_ui_increase_score_saucer() {
     // Get a random multiple of 10 between 50 and 250;
-    score += (rand() % 25 + 5) * 10;
+    score += (rand() % 30 + 5) * 10;
 }
 
 void update_score(bool firstRun) 
