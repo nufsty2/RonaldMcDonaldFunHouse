@@ -1,6 +1,8 @@
 #include "draw_ui.h"
 #include "../sprites/sprites.c"
 #include <time.h>
+#include "draw_generic.h"
+
 
 #define MAX_LIVES 5
 
@@ -40,7 +42,8 @@ char* get_score_digit(uint8_t digit)
         case 4:
             return &score_digit_4;
         default:
-            return NULL;
+            printf("Hit default in get_score_digit()!\n\r");
+            break;
     }
 }
 
@@ -55,7 +58,8 @@ char* get_selected_char()
         case 2:
             return &char_2;
         default:
-            return NULL;
+            printf("Hit default in get_selected_char()!\n\r");
+            break;
     }
 }
 
@@ -110,14 +114,17 @@ void update_score(bool firstRun)
     }
 }
 
-void draw_ui_increment_lives() {
-    if (lives + 1 <= MAX_LIVES) {
+void draw_ui_increment_lives()
+ {
+    if (lives + 1 <= MAX_LIVES) 
+    {
         lives++;
         draw_ui_update_lives(false);
     }
 }
 
-void draw_ui_decrement_lives() {
+void draw_ui_decrement_lives()
+ {
     lives--;
     draw_ui_update_lives(false);
 }
@@ -127,13 +134,15 @@ void draw_ui_update_lives(bool firstRun)
     uint32_t pos = RIGHT_EDGE - LETTER_WIDTH * 9 + NEW_LINE * SIZE_SCALAR;
     uint32_t initial_pos = pos;
 
-    for (uint8_t l = 0; l < MAX_LIVES; l++) {
+    for (uint8_t l = 0; l < MAX_LIVES; l++)
+     {
         draw_alien(tank_15x8, pos, 15, 8, PIXEL_SIZE_GLOBAL, black);
         pos += 15 * PIXEL_SIZE_GLOBAL + 15;
     }
 
     pos = initial_pos;
-    for (uint8_t l = 0; l < lives; l++) {
+    for (uint8_t l = 0; l < lives; l++)
+     {
         draw_alien(tank_15x8, pos, 15, 8, PIXEL_SIZE_GLOBAL, cyan);
         pos += 15 * PIXEL_SIZE_GLOBAL + 15;
     }

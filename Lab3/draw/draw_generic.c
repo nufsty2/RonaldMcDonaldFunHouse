@@ -1,4 +1,6 @@
 #include "draw_generic.h"
+#include "../hdmi/hdmi.h"
+#include "../sprites/sprites.c"
 
 extern uint32_t debounce_ctr;
 extern uint32_t increment_ctr;
@@ -10,7 +12,7 @@ extern char score_digit_4;
 extern char char_0;
 extern char char_1;
 extern char char_2;
-extern uint8_t selected_char;
+extern char selected_char;
 
 void draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t height, uint16_t pixel_size, char color[]) 
 {
@@ -139,7 +141,9 @@ const uint32_t* get_sprite_from_digit(char digit)
         case 'Z':
             return letterZ_5x5;
         default:
-            return NULL;
+            printf("Hit default in get_sprite_from_digit()!\n\r");
+            return letterA_5x5;
+            break;
     }
 }
 

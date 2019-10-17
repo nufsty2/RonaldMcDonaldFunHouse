@@ -4,6 +4,7 @@
 #include "../draw/draw_ui.h"
 #include "../init/init.h"
 #include "../draw/bunker.h"
+#include "../draw/draw_generic.h"
 
 /* Buttons and Switches */
 extern uint32_t debounce_ctr;
@@ -36,7 +37,7 @@ extern uint32_t score;
 extern char char_0;
 extern char char_1;
 extern char char_2;
-extern uint8_t selected_char;
+extern char selected_char;
 
 /* Bools to see what is moving */
 extern bool saucer_moving;
@@ -49,6 +50,8 @@ extern char black[];
 extern char green[];
 extern char cyan[];
 extern char magenta[];
+
+extern uint8_t lives;
 
 /* Once an alien is hit, start this counter to show the explosion and then erase */
 extern uint32_t die_ctr;
@@ -71,61 +74,58 @@ uint16_t draw_alien_get_x_coord(uint32_t coord, uint16_t y_coord)
 // BTN0: Increase letter
 // BTN1: Decrease letter
 // BTN3: Submit letter
-// void respond_to_press()
-// {
-//     if (buttons_val == BTN_0) 
-//     {
-//         char val = get_selected_char(selected_char);
+void respond_to_press()
+{
+    if (buttons_val == BTN_0) 
+    {
+        char val = *get_selected_char();
 
-//         if (++val > 'Z')
-//             get_selected_char(selected_char) = 'A';
-//         else
-//             get_selected_char(selected_char) += 1;
-//     }
+        if (++val > 'Z')
+            *get_selected_char() = 'A';
+        else
+            *get_selected_char() += 1;
+    }
 
-//     else if (buttons_val == BTN_1)
-//     {
-//         char val = get_selected_char(selected_char);
+    else if (buttons_val == BTN_1)
+    {
+        char val = get_selected_char();
 
-//         if (--val < 'A')
-//             get_selected_char(selected_char) = 'Z';
-//         else
-//             get_selected_char(selected_char) -= 1;
-//     }
+        if (--val < 'A')
+            *get_selected_char() = 'Z';
+        else
+            *get_selected_char() -= 1;
+    }
 
-//     else if (buttons_val == BTN_3)
-//     {
-//         if (++selected_char > 2) {
-//            name_entered = true;
-//            score_t new_score = {.name = {char_0, char_1, char_2}, .value = score};
-//            scores_write_new_score(new_score);
-//            main_print_scores();
-//         }
-//     }
+    else if (buttons_val == BTN_3)
+    {
+        if (++selected_char > 2) {
+           name_entered = true;
+           score_t new_score = {.name = {char_0, char_1, char_2}, .value = score};
+           scores_write_new_score(new_score);
+           main_print_scores();
+        }
+    }
 
-//     if (selected_char <= 2) 
-//     {
-//         blink_cursor(true);
-//         half_sec_ctr = 0;
-//         blink = true;
-//     }   
-// }
+    if (selected_char <= 2) 
+    {
+        blink_cursor(true);
+        half_sec_ctr = 0;
+        blink = true;
+    }   
+}
 
 void isr_fit()
 {
+    if (lives == 0 && !game_over) {
+        init_end_game();
+    }
+
     if (++debounce_ctr >= DEBOUNCE_MAX_VAL)
     {
         debounce_ctr = 0; // reset debounce counter when max value hit
         buttons_val = new_buttons_val; // assign the buttons val
         switches_val = new_switches_val; // assign the switches vals
         debounced = true;
-    }
-
-    // The time will auto-increment if pressed for 1/2 second
-    if ((++half_sec_ctr >= HALF_SECOND) && game_over && !name_entered)
-    {
-        blink_cursor(false);
-        half_sec_ctr = 0;
     }
 
     // If the buttons val hasn't changed, still presssing
@@ -135,13 +135,13 @@ void isr_fit()
         if (++increment_ctr >= INCREMENT_MAX_VAL) 
         {
             // Move player
-            if (!player_dead) 
+            if (!player_dead && !game_over) 
             {
                 move_player();
             }
 
             // Init fire bullet if statement
-            if ((buttons_val == BTN_3) && !(bullet_moving)) 
+            if ((buttons_val == BTN_3) && !(bullet_moving) && !game_over) 
             {
                 bullet_moving = true; // ste the flag
                 current_pos_bullet = (current_pos_player + 42) - NEW_LINE * 10; // get position
@@ -152,22 +152,28 @@ void isr_fit()
         }
     }
 
-    if (player_dead) {
-        if (++player_death_ctr >= PLAYER_DEATH_STAGE_1) {
-            draw_alien(tank_explosion1_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
-        }
-        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_2) {
-            draw_alien(tank_explosion2_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
-        }
-        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_3) {
-            draw_alien(tank_gone_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
-        }
-        else if (++player_death_ctr >= PLAYER_DEATH_MAX_VAL) {
+    if (player_dead && !game_over) 
+    {
+        if (++player_death_ctr >= PLAYER_DEATH_MAX_VAL)
+        {
             current_pos_player = PLAYER_START_POS;
             draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
             player_dead = false;
             player_death_ctr = 0;
         }
+        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_3) 
+        {
+            draw_alien(tank_gone_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
+        }
+        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_2) 
+        {
+            draw_alien(tank_explosion2_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
+        }
+        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_1) 
+        {
+            draw_alien(tank_explosion1_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
+        }
+ 
     }
 
     if ((++alien_bullet_ctr >= (rand() % ALIEN_BULLET_MAX_VAL + ALIEN_BULLET_MIN_VAL)) && !game_over) {
@@ -175,10 +181,11 @@ void isr_fit()
         draw_alien_bullets();
     }
 
-    if (!game_over) {
+    if (!game_over) 
+    {
         draw_alien_fire_alien_bullets();
         bunker_detect_hits();
-        player_detect_alien_hit();
+        if (!player_dead) player_detect_alien_hit();
     }
 
     if ((++alien_move_ctr >= ALIEN_MOVE_MAX_VAL) && !game_over)
@@ -213,6 +220,13 @@ void isr_fit()
             start_die_ctr = false; // reset flag
         }
     }
+
+    // The time will auto-increment if pressed for 1/2 second
+    if ((++half_sec_ctr >= HALF_SECOND) && game_over && !name_entered)
+    {
+        blink_cursor(false);
+        half_sec_ctr = 0;
+    }
 }
 
 
@@ -225,14 +239,8 @@ void isr_buttons()
     
     if (debounced) 
     {
-        if (!game_over) {}
-            //move_player(); 
-
-        else if (game_over && !name_entered) {}
-            //respond_to_press();
-
-        else
-            init_end_game();
+        if (game_over && !name_entered) 
+            respond_to_press();
 
         debounced = false;
     }

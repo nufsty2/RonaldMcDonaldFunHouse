@@ -1,5 +1,7 @@
 #include "draw_game_over.h"
 #include "../scores/scores.h"
+#include "draw_generic.h"
+
 
 /* Flags */
 extern bool blink;
@@ -9,7 +11,7 @@ extern uint32_t score;
 extern char char_0;
 extern char char_1;
 extern char char_2;
-extern uint8_t selected_char;
+extern char selected_char;
 
 /* Colors */
 extern char black[];
@@ -71,7 +73,8 @@ void blink_cursor(bool force)
                 force ? black : 
                     blink ? cyan : black
     );
-    draw_sprite(get_sprite_from_digit(get_selected_char()),     
+    char* current = get_selected_char();
+    draw_sprite(get_sprite_from_digit(*current),     
                 LETTER_WIDTH*24 +     (selected_char * LETTER_WIDTH) + 640*80*PIXEL_SIZE_GLOBAL, 
                 5, 
                 5, 

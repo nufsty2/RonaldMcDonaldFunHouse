@@ -65,7 +65,6 @@ void move_player_left()
 
 void move_player()
 {
-
     if (buttons_val == BTN_0)
         move_player_right();
     else if (buttons_val == BTN_1)

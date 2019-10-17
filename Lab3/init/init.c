@@ -1,5 +1,6 @@
 #include "init.h"
 #include "../draw/bunker.h"
+#include "../draw/draw_generic.h"
 
 extern bool game_over;
 extern char char_0;

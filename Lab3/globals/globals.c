@@ -55,7 +55,7 @@ bool player_dead = false;
 char char_0 = DEFAULT_GAME_OVER_CHAR_0;
 char char_1 = DEFAULT_GAME_OVER_CHAR_1;
 char char_2 = DEFAULT_GAME_OVER_CHAR_2;
-uint8_t selected_char = 0;
+char selected_char = 0;
 
 /* Moving Alien attribtes */
 uint32_t current_pos_alien = ALIEN_START_POS;
