@@ -5,6 +5,8 @@
 
 void init_bunker();
 
-void bunker_detect_hit();
+void bunker_detect_hits();
+
+void bunker_redraw_all();
 
 #endif

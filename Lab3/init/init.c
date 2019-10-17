@@ -137,5 +137,7 @@ void init()
     init_score();
     init_lives();
     bunker_init();
+    draw_alien_init();
+    draw_ui_init();
     init_player();
 }

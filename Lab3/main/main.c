@@ -3,6 +3,7 @@
 #include "../scores/scores.h"
 #include "../draw/draw_ui.h"
 #include "../init/init.h"
+#include "../draw/bunker.h"
 
 /* Buttons and Switches */
 extern uint32_t debounce_ctr;
@@ -20,6 +21,7 @@ extern uint32_t increment_ctr;
 /* Ctrs for the alien/saucer */
 extern uint32_t alien_move_ctr;
 extern uint32_t saucer_ctr;
+uint32_t alien_bullet_ctr = 0;
 
 /* Positions */
 extern uint32_t current_pos_alien;
@@ -40,6 +42,7 @@ extern uint8_t selected_char;
 extern bool saucer_moving;
 extern bool bullet_moving;
 extern bool moving_right_alien;
+extern bool player_dead;
 
 /* Colors */
 extern char black[];
@@ -50,6 +53,7 @@ extern char magenta[];
 /* Once an alien is hit, start this counter to show the explosion and then erase */
 extern uint32_t die_ctr;
 extern bool start_die_ctr;
+uint32_t player_death_ctr = 0;
 
 // This function gets the y coord of whatever we put in (alien, player, bunker)
 uint16_t draw_alien_get_y_coord(uint32_t coord) 
@@ -131,7 +135,10 @@ void isr_fit()
         if (++increment_ctr >= INCREMENT_MAX_VAL) 
         {
             // Move player
-            move_player();
+            if (!player_dead) 
+            {
+                move_player();
+            }
 
             // Init fire bullet if statement
             if ((buttons_val == BTN_3) && !(bullet_moving)) 
@@ -143,6 +150,35 @@ void isr_fit()
 
             increment_ctr = 0;
         }
+    }
+
+    if (player_dead) {
+        if (++player_death_ctr >= PLAYER_DEATH_STAGE_1) {
+            draw_alien(tank_explosion1_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
+        }
+        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_2) {
+            draw_alien(tank_explosion2_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
+        }
+        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_3) {
+            draw_alien(tank_gone_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
+        }
+        else if (++player_death_ctr >= PLAYER_DEATH_MAX_VAL) {
+            current_pos_player = PLAYER_START_POS;
+            draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
+            player_dead = false;
+            player_death_ctr = 0;
+        }
+    }
+
+    if ((++alien_bullet_ctr >= (rand() % ALIEN_BULLET_MAX_VAL + ALIEN_BULLET_MIN_VAL)) && !game_over) {
+        alien_bullet_ctr = 0;
+        draw_alien_bullets();
+    }
+
+    if (!game_over) {
+        draw_alien_fire_alien_bullets();
+        bunker_detect_hits();
+        player_detect_alien_hit();
     }
 
     if ((++alien_move_ctr >= ALIEN_MOVE_MAX_VAL) && !game_over)
@@ -214,7 +250,7 @@ int main()
 {
     // FIXME
     init();
-    draw_ui_init();
+    srand(time(0));
         
     // Enable all interrupts
     intc_enable_uio_interrupts();

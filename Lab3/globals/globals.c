@@ -49,6 +49,7 @@ bool debounced = false; // Flag used to determine if debounce timer is done
 bool blink = true;
 bool game_over = false;
 bool name_entered = false;
+bool player_dead = false;
 
 /* Chars on the game over screen */
 char char_0 = DEFAULT_GAME_OVER_CHAR_0;
@@ -73,5 +74,5 @@ bool bullet_moving = false;
 uint32_t current_pos_bullet = BULLET_STARTING_POS;
 
 /* Alien bullet attributes */
-bool alien_bullets_moving[4] = { false, false, false, false };
-uint32_t current_alien_pos_bullets[4] = { 0, 0, 0, 0 }; // the starting pos is a random number
+uint32_t alien_bullet_pos[MAX_BULLETS] = {0, 0, 0, 0};
+bool alien_bullet_moving[MAX_BULLETS] = {false, false, false, false};

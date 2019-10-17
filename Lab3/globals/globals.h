@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <time.h>
 
 /* Scalar to multiply size of pixel */
 #define PIXEL_SIZE_GLOBAL 3
@@ -34,10 +35,17 @@
 #define SW_0  0x1
 
 /* Max Values */
-#define DEBOUNCE_MAX_VAL   5
-#define SAUCER_MAX_VAL     1000
-#define ALIEN_MOVE_MAX_VAL 10
-#define INCREMENT_MAX_VAL  2
+#define DEBOUNCE_MAX_VAL        5
+#define SAUCER_MAX_VAL          1000
+#define ALIEN_MOVE_MAX_VAL      10
+#define INCREMENT_MAX_VAL       2
+#define ALIEN_BULLET_MAX_VAL    600
+#define ALIEN_BULLET_MIN_VAL    100
+#define PLAYER_DEATH_STAGE_1    25
+#define PLAYER_DEATH_STAGE_2    50
+#define PLAYER_DEATH_STAGE_3    75
+#define PLAYER_DEATH_MAX_VAL    100
+#define MAX_BULLETS 4
 
 /* Defines for the FIT */
 #define HALF_SECOND        50

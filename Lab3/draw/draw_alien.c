@@ -1,9 +1,12 @@
 #include "draw_alien.h"
 #include "../sprites/sprites.c"
 #include "../draw/draw_ui.h"
+#include "../draw/bunker.h"
 
 #define SAUCER_HEIGHT 7
 #define SACCER_WIDTH  16
+
+#define BOTTOM_ROW 4
 
 /* Positions */
 extern uint32_t current_pos_saucer;
@@ -45,6 +48,33 @@ bool alien_army_is_alive[NO_ALIEN_Y][NO_ALIEN_X] =
     {true, true, true, true, true, true, true, true, true, true, true}
 };
 
+// Alien bullet crap
+int8_t alien_army_col_bottoms[NO_ALIEN_X] =
+{
+    BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW, BOTTOM_ROW
+};
+const uint32_t* alien_bullet_sprites[MAX_BULLETS] =
+{
+    alienbullet2_up_3x5, alienbullet2_up_3x5, alienbullet2_up_3x5, alienbullet2_up_3x5
+};
+extern uint32_t alien_bullet_pos[];
+extern bool alien_bullet_moving[];
+
+void draw_alien_init() {
+    srand(time(0));
+}
+
+void draw_alien_track_col_bottom(int8_t col) {
+    uint8_t old_col_bottom = col;
+    int8_t row;
+    for (row = old_col_bottom; row > -1; row--) {
+        if (alien_army_is_alive[row][col]) {
+            break;
+        }
+    }
+    alien_army_col_bottoms[col] = row;
+}
+
 void draw_alien_track_right_edge() {
     uint16_t old_right_edge = rightmost_col;
     for (int16_t col = old_right_edge; col >= 0; col--) {
@@ -66,6 +96,17 @@ void draw_alien_track_left_edge() {
                 return;
             }
         }
+    }
+}
+
+void draw_alien_toggle_bullet_sprite(uint8_t bullet_num) {
+    if (alien_bullet_sprites[bullet_num] == alienbullet2_up_3x5) 
+    {
+        alien_bullet_sprites[bullet_num] = alienbullet2_down_3x5;
+    }
+    else if (alien_bullet_sprites[bullet_num] == alienbullet2_down_3x5) 
+    {
+        alien_bullet_sprites[bullet_num] = alienbullet2_up_3x5;
     }
 }
 
@@ -316,6 +357,7 @@ bool draw_alien_detect_hit_army()
                 // Re-track edges
                 draw_alien_track_right_edge();
                 draw_alien_track_left_edge();
+                draw_alien_track_col_bottom(col);
 
                 // Update score
                 draw_ui_increase_score(row);
@@ -424,14 +466,65 @@ void erase_dead_aliens()
     } 
 }
 
+void draw_alien_fire_alien_bullet(uint8_t bullet_num)
+{
+    // Declare variables
+    uint32_t old_pos_bullet = alien_bullet_pos[bullet_num];
+
+    uint16_t y_coord = draw_alien_get_y_coord(old_pos_bullet);
+
+    // Draw the bullet
+    //draw_alien(alien_bullet_sprites[bullet_num], alien_bullet_pos[bullet_num], 1, 5, PIXEL_SIZE_GLOBAL*2, cyan); // draw the bullet
+
+    // Move bullet up
+    //old_pos_bullet = alien_bullet_pos[bullet_num];
+    alien_bullet_pos[bullet_num] += (NEW_LINE*4); // make bullet go down
+
+    draw_alien(alien_bullet_sprites[bullet_num], old_pos_bullet, 3, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
+    draw_alien_toggle_bullet_sprite(bullet_num);
+
+    draw_alien(alien_bullet_sprites[bullet_num], alien_bullet_pos[bullet_num], 3, 5, PIXEL_SIZE_GLOBAL*2, magenta); // draw new bullet
+
+    // At this point, bullet gone
+    if (alien_bullet_pos[bullet_num] > (NEW_LINE * 470)) 
+    {
+        alien_bullet_moving[bullet_num] = false;
+        draw_alien(alien_bullet_sprites[bullet_num], alien_bullet_pos[bullet_num], 3, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
+    }
+}
+
+void draw_alien_fire_alien_bullets() {
+    for (uint8_t i = 0; i < MAX_BULLETS; i++) {
+        if (alien_bullet_moving[i]) {
+            draw_alien_fire_alien_bullet(i);
+        }
+    }
+}
+
 // This function will draw the alien bullets, should be a max of 4 at a time
 void draw_alien_bullets()
 {
-     for (uint16_t y = 0; y < NO_ALIEN_Y; y++) 
-    {
-        for (uint16_t x = 0; x < NO_ALIEN_X; x++) 
-        {
-
+    for (int16_t row = NO_ALIEN_Y - 1; row >= 0; row--) // loop through the 5 Y aliens
+    {     
+        for (int16_t col = NO_ALIEN_X - 1; col >= 0; col--) // loop through the 11 X aliens
+        {  
+            if (!alien_army_is_alive[row][col] || alien_army_col_bottoms[col] < row) {
+                continue;
+            }
+            else {
+                for (int i = 0; i < MAX_BULLETS; i++) 
+                {
+                    if (!alien_bullet_moving[i] && ((rand() % 2) == 0) && (alien_army_col_bottoms[col] >= 0)) {
+                        alien_bullet_pos[i] = current_pos_alien + 
+                                              // Vertical
+                                              NEW_LINE * ((row + 1) * ALIEN_SPRITE_HEIGHT * SIZE_SCALAR + row * MOVE_ROWS_DOWN_FOR_ALIENS) +
+                                              // Horizontal
+                                              PIXEL_SIZE_GLOBAL * (col * SIZE_SCALAR * (ALIEN_SPRITE_WIDTH + SPACE_BW_ALIENS) + ALIEN_SPRITE_WIDTH);
+                        alien_bullet_moving[i] = true;
+                        draw_alien_fire_alien_bullet(i);
+                    }
+                }
+            }
         }
     }
 }
