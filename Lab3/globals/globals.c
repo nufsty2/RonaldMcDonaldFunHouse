@@ -1,22 +1,6 @@
 #include "globals.h"
 #include "../sprites/sprites.c"
 
-/* All includes that will be whatever calls this */
-// #include <stdio.h>
-// #include <stdint.h>
-// #include <stdbool.h>
-// #include "../hdmi/hdmi.h"
-// #include "../scores/scores.h"
-// #include "../sprites/sprites.c"
-// #include "../../Lab2/intc/intc.h"
-// #include "../../Lab2/buttons/buttons.h"
-// #include "../../Lab2/switches/switches.h"
-// #include "../draw/draw_generic.h"
-// #include "../draw/draw_alien.h"
-// #include "../draw/draw_ui.h"
-// #include "../draw/draw_game_over.h"
-// #include "../draw/draw_player.h"
-
 /* Pixel colors constants */
 char   white[PIXEL_SIZE_GLOBAL]  = {0xFF, 0xFF, 0xFF};
 char   green[PIXEL_SIZE_GLOBAL]  = {0x00, 0xFF, 0x77};

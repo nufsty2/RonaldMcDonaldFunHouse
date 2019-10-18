@@ -2,50 +2,73 @@
 #include "../hdmi/hdmi.h"
 #include "../sprites/sprites.c"
 
+/* Counters */
 extern uint32_t debounce_ctr;
 extern uint32_t increment_ctr;
+
+/* Score digits */
 extern char score_digit_0;
 extern char score_digit_1;
 extern char score_digit_2;
 extern char score_digit_3;
 extern char score_digit_4;
+
+/* Chars on the final score */
 extern char char_0;
 extern char char_1;
 extern char char_2;
+
+/* Currently selected score */
 extern char selected_char;
 
+// This is our draw sprite function we use everywhere except for drawing the alien
+// @param sprite - the sprite we want to draw
+// @param pos - the position we want to draw on the screen
+// @param width - width of the sprite
+// @param height - height of the sprite
+// @param pixel_size - the scalar we want on the sprite
+// @param color - color of the sprite
 void draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t height, uint16_t pixel_size, char color[]) 
 {
+    // Set the points to seek
     uint32_t init_point = pos; 
     uint32_t current_point = init_point;
+
+    // Get the scalar size
     uint32_t grid_dimension = pixel_size / PIXEL_SIZE_GLOBAL;
 
-    for (uint32_t i = 0; i < height; i++)
+    for (uint32_t i = 0; i < height; i++) // loop through the height of sprite
     {
-        for (uint32_t j = 0; j < width; j++)
+        for (uint32_t j = 0; j < width; j++) // loop through width of sprite
         {
-            if ((sprite[i] & (1<<(width-1-j))))
+            if ((sprite[i] & (1<<(width-1-j)))) // if there is a 1 at that sprite
             {
-                for (uint32_t y = 0; y < grid_dimension; y++) 
+                for (uint32_t y = 0; y < grid_dimension; y++)  // loop through the grid dimesnion
                 {
-                    for (uint32_t x = 0; x < grid_dimension; x++) 
+                    for (uint32_t x = 0; x < grid_dimension; x++) // again
                     {
-                        current_point += (j*pixel_size + PIXEL_SIZE_GLOBAL*x + PIXEL_SIZE_GLOBAL*SCREEN_WIDTH*y);
-                        seek_hdmi(current_point);
-                        write_hdmi(color, PIXEL_SIZE_GLOBAL);
-                        current_point = init_point;
+                        current_point += (j*pixel_size + PIXEL_SIZE_GLOBAL*x + PIXEL_SIZE_GLOBAL*SCREEN_WIDTH*y); // set current point
+                        seek_hdmi(current_point); // seek to that point
+                        write_hdmi(color, PIXEL_SIZE_GLOBAL); // write to that point
+                        current_point = init_point; // init point
                     }
                 }
             }
         }
-        current_point += (pixel_size*SCREEN_WIDTH); // new line
+
+        // New line
+        current_point += (pixel_size*SCREEN_WIDTH);
         init_point = current_point;
         seek_hdmi(current_point);
     }
 }
 
+// This function gets a digit sprite from the digit we pass in
+// @param digit - the digit we want the sprite for
+// return - returns the corresponding sprite for that digit
 const uint32_t* get_sprite_from_digit(char digit)
 {
+    // Determine the digit
     switch (digit) 
     {
         case 0:
@@ -141,9 +164,8 @@ const uint32_t* get_sprite_from_digit(char digit)
         case 'Z':
             return letterZ_5x5;
         default:
-            printf("Hit default in get_sprite_from_digit()!\n\r");
-            return letterA_5x5;
-            break;
+            printf("Hit default in get_sprite_from_digit()!\n\r"); // debug
+            return letterA_5x5; // return a letter a
     }
 }
 

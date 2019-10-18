@@ -12,8 +12,11 @@
 /* Sizes */
 #define PIXEL_SIZE 3
 
+// File descriptor
 static int32_t file;
 
+// This function opens the hdmi file
+// @return - succes(1) or an error code (negative)
 int32_t open_hdmi()
 {
     file = open("/dev/ecen427_hdmi", O_RDWR);
@@ -27,9 +30,11 @@ int32_t open_hdmi()
 
 void seek_hdmi(uint32_t bytes)
 {
-    lseek(file, bytes, SEEK_SET);
+    lseek(file, bytes, SEEK_SET); // seeks
 }
 
+// This function reads from the screen
+// @return - read from the screen
 int32_t read_hdmi(uint32_t bytesToRead)
 {
     char buffer[bytesToRead];

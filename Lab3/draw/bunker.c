@@ -2,17 +2,21 @@
 #include "../sprites/sprites.c"
 #include "../draw/draw_alien.h"
 
+/* Defines specific for this C file */
 #define NUM_BUNKERS 4
 #define NUM_BLOCKS  10
 
-/* Externs */
+/* Player bullet attributes */
 extern uint32_t current_pos_bullet;
 extern bool bullet_moving;
-extern char tan[];
-extern char black[];
 
+/* Alien bullet attributes */
 extern uint32_t alien_bullet_pos[];
 extern bool alien_bullet_moving[];
+
+/* Colors used in this file */
+extern char tan[];
+extern char black[];
 
 
 /* Bunkers */
@@ -33,7 +37,11 @@ const uint32_t* bunker_damage[NUM_BUNKERS][NUM_BLOCKS] =
     {bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6}
 };
 
-const uint32_t* bunker_take_damage(const uint32_t* damage_sprite) {
+// This function will be called when a bunker has taken damage, like a bullet has hit it
+// @param damage_sprite - This is the sprite it currently has to switch the state to a more damaged bunker
+// @return - returns the damaged sprite to display
+const uint32_t* bunker_take_damage(const uint32_t* damage_sprite)
+{
     if (damage_sprite == bunkerDamage3_6x6)
     {
         return bunkerDamage2_6x6;
@@ -52,6 +60,7 @@ const uint32_t* bunker_take_damage(const uint32_t* damage_sprite) {
     }
 }
 
+// This is our init function, it sets up the four starting bunkers on the game load
 void bunker_init()
 {
     uint32_t pos = PIXEL_SIZE_GLOBAL*(640*400 + 75);
@@ -77,23 +86,29 @@ void bunker_init()
                 pos += PIXEL_SIZE_GLOBAL * SIZE_SCALAR * 6 * 3;
             }
         }
-        draw_alien(bunker_24x18, current_bunker_pos, 24, 18, PIXEL_SIZE_GLOBAL*2, tan);
+        draw_alien(bunker_24x18, current_bunker_pos, 24, 18, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, tan);
         pos = current_bunker_pos + (PIXEL_SIZE_GLOBAL * 24) * 6;
     }
 }
 
-void bunker_detect_hits() {
-    bunker_detect_hit_player();
-    for (uint8_t i = 0; i < MAX_BULLETS; i++) {
-        if (alien_bullet_moving[i]) {
-            bunker_detect_hit_alien(i);
+// This is our function to detect alien or player hits on the bunker
+void bunker_detect_hits() 
+{
+    bunker_detect_hit_player(); // sees if it was hit by the player
+    for (uint8_t i = 0; i < MAX_BULLETS; i++) // loops through all bullets to see what has been hit
+    {
+        if (alien_bullet_moving[i]) 
+        {
+            bunker_detect_hit_alien(i); // detect alien hit
         }
     }
 }
 
+// This is our helper function to detect a player bunker hit
 void bunker_detect_hit_player()
 {
-    if (!bullet_moving) {
+    if (!bullet_moving) // if there is not a bullet in motion, just return
+    {
         return;
     }
 
@@ -129,17 +144,13 @@ void bunker_detect_hit_player()
                 (bullet_y <  bot_border_y))
             {
 
-                // printf("Bullet: (%d, %d)\n\r", bullet_x, bullet_y);
-                // printf("%d <= X < %d\n\r", left_border_x, right_border_x);
-                // printf("%d <= Y < %d\n\n\r", top_border_y, bot_border_y);
-
-
                 // Change sprite to the explosion and set boolean flag
                 bunker_damage[i][j] = bunker_take_damage(bunker_damage[i][j]);
 
                 // Grab new sprite val;
                 uint32_t new_sprite[6];
-                for (int k = 0; k < 6; k++) {
+                for (int k = 0; k < 6; k++) 
+                {
                     new_sprite[k] = bunker_damage[i][j][k] & bunker_sprites[i][j][k];
                 }
 
@@ -154,13 +165,16 @@ void bunker_detect_hit_player()
     }
 }
 
-void bunker_redraw_all() {
+// This function is redraw the bunker if it has taken damage
+void bunker_redraw_all()
+{
     for (int16_t i = 0; i < NUM_BUNKERS; i++) // loop through the 5 Y aliens
     {
         for (int16_t j = 0; j < NUM_BLOCKS; j++) // loop through the 11 X aliens
         {  
             uint32_t new_sprite[6];
-            for (int k = 0; k < 6; k++) {
+            for (int k = 0; k < 6; k++) 
+            {
                 new_sprite[k] = bunker_damage[i][j][k] & bunker_sprites[i][j][k];
             }
 
@@ -170,6 +184,8 @@ void bunker_redraw_all() {
     }
 }
 
+// This function is called continously to detect hits on a bunker by alien bullets
+// @param bullet_num - which bullet has hit which bunker
 void bunker_detect_hit_alien(uint8_t bullet_num)
 {
     for (int16_t i = 0; i < NUM_BUNKERS; i++) // loop through the 5 Y aliens
@@ -208,16 +224,13 @@ void bunker_detect_hit_alien(uint8_t bullet_num)
                 (bullet_bottom_y <  bot_border_y))
             {
 
-                // printf("Bullet: (%d, %d)\n\r", bullet_x, bullet_y);
-                // printf("%d <= X < %d\n\r", left_border_x, right_border_x);
-                // printf("%d <= Y < %d\n\n\r", top_border_y, bot_border_y);
-
                 // Change sprite to the explosion and set boolean flag
                 bunker_damage[i][j] = bunker_take_damage(bunker_damage[i][j]);
 
                 // Grab new sprite val;
                 uint32_t new_sprite[6];
-                for (int k = 0; k < 6; k++) {
+                for (int k = 0; k < 6; k++) 
+                {
                     new_sprite[k] = bunker_damage[i][j][k] & bunker_sprites[i][j][k];
                 }
 

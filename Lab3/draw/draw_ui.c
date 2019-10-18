@@ -3,14 +3,18 @@
 #include <time.h>
 #include "draw_generic.h"
 
-
+// Defines only in this C file
 #define MAX_LIVES 5
 
 extern uint32_t score;
 extern uint8_t lives;
+
+/* Colors */
 extern char black[];
 extern char green[];
 extern char cyan[];
+
+/* Chars for the score screen */
 extern char selected_char;
 extern char char_0;
 extern char char_1;
@@ -24,13 +28,19 @@ char score_digit_2 = 0;
 char score_digit_3 = 0;
 char score_digit_4 = 0;
 
-void draw_ui_init() {
+// Randomize initializer
+void draw_ui_init() 
+{
     srand(time(0));
 }
 
+// This function gets the score digit
+// @param - digit - the digit we want to get
+// @return - returns address of the score digit
 char* get_score_digit(uint8_t digit) 
 {
-    switch (digit) {
+    switch (digit) 
+    {
         case 0:
             return &score_digit_0;
         case 1:
@@ -42,11 +52,13 @@ char* get_score_digit(uint8_t digit)
         case 4:
             return &score_digit_4;
         default:
-            printf("Hit default in get_score_digit()!\n\r");
+            printf("Hit default in get_score_digit()!\n\r"); // debug
             break;
     }
 }
 
+// This function gets the char
+// @ return - address of the score char
 char* get_selected_char() 
 {
     switch(selected_char) 
@@ -63,8 +75,12 @@ char* get_selected_char()
     }
 }
 
-void draw_ui_increase_score(uint16_t row) {
-    switch (row) {
+// This function increments the score
+// @param row - whatever row it's on
+void draw_ui_increase_score(uint16_t row) 
+{
+    switch (row) 
+    {
         case TOP_ALIEN:
             score += TOP_ALIEN_SCORE;
             break;
@@ -79,11 +95,15 @@ void draw_ui_increase_score(uint16_t row) {
     }
 }
 
-void draw_ui_increase_score_saucer() {
+// This incs the score randomly for the saucer
+void draw_ui_increase_score_saucer() 
+{
     // Get a random multiple of 10 between 50 and 250;
     score += (rand() % 30 + 5) * 10;
 }
 
+// This function updates the score
+// @param firstRun - If first run, make it zero
 void update_score(bool firstRun) 
 {
     uint32_t score_copy = score;
@@ -114,6 +134,7 @@ void update_score(bool firstRun)
     }
 }
 
+// This function incs the lives
 void draw_ui_increment_lives()
  {
     if (lives + 1 <= MAX_LIVES) 
@@ -123,12 +144,14 @@ void draw_ui_increment_lives()
     }
 }
 
+// This function decremnts the lives
 void draw_ui_decrement_lives()
  {
     lives--;
     draw_ui_update_lives(false);
 }
 
+// This function updates the lives
 void draw_ui_update_lives(bool firstRun) 
 {
     uint32_t pos = RIGHT_EDGE - LETTER_WIDTH * 9 + NEW_LINE * SIZE_SCALAR;

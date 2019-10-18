@@ -20,11 +20,15 @@ extern char cyan[];
 extern char white[];
 
 // This is our main function to print main scores
+// @param score - the score to pass in
+// @param pos - the position of the number
 void main_print_score(score_t score, uint32_t pos)
 {
     // Check for errors first
-    for (uint8_t i = 0; i < 3; i++) {
-        if (score.name[i] == NULL) {
+    for (uint8_t i = 0; i < 3; i++) 
+    {
+        if (score.name[i] == NULL) 
+        {
             return;
         }
     }
@@ -69,6 +73,7 @@ void main_print_scores()
 }
 
 // This is our blink cursor function to blink the selected cursor
+// @param force - forces the color change of the letter
 void blink_cursor(bool force) 
 {
     // Draw the sprite
@@ -76,7 +81,7 @@ void blink_cursor(bool force)
                 LETTER_WIDTH*24 - 3 + (selected_char * LETTER_WIDTH) + 640*79*PIXEL_SIZE_GLOBAL, 
                 6, 
                 6, 
-                PIXEL_SIZE_GLOBAL*2, 
+                PIXEL_SIZE_GLOBAL*SIZE_SCALAR, 
                 force ? black : 
                     blink ? cyan : black
     );
@@ -85,7 +90,7 @@ void blink_cursor(bool force)
                 LETTER_WIDTH*24 +     (selected_char * LETTER_WIDTH) + 640*80*PIXEL_SIZE_GLOBAL, 
                 5, 
                 5, 
-                PIXEL_SIZE_GLOBAL*2, 
+                PIXEL_SIZE_GLOBAL*SIZE_SCALAR, 
                 force ? cyan : 
                     blink ? black : cyan
     );  

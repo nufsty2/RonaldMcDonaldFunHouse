@@ -1,24 +1,30 @@
 #include "draw_player.h"
 #include "draw_ui.h"
 
+/* Player attributes */
 extern uint32_t current_pos_bullet;
 extern uint32_t current_pos_player;
 extern bool bullet_moving;
-extern char black[];
-extern char cyan[];
-extern uint32_t buttons_val;
-extern uint32_t alien_bullet_pos[];
-extern bool alien_bullet_moving[];
 extern bool player_dead;
 
+/* Colors */
+extern char black[];
+extern char cyan[];
 
+/* Button value */
+extern uint32_t buttons_val;
+
+/* Alien attributes */
+extern uint32_t alien_bullet_pos[];
+extern bool alien_bullet_moving[];
+
+// This function fires a bullet
 void fire_bullet()
 {
     // Declare variables
     uint32_t old_pos_bullet = current_pos_bullet;
 
     uint16_t y_coord = draw_alien_get_y_coord(current_pos_bullet);
-    //printf("Bullet coord = (%d, %d)\n\r", draw_alien_get_x_coord(current_pos_bullet, y_coord), y_coord);
     
     // Move bullet up
     old_pos_bullet = current_pos_bullet;
@@ -36,6 +42,7 @@ void fire_bullet()
     }
 }
 
+// This function moves the player right and make sure he doesn't loop over the screen
 void move_player_right()
 {
     if ((current_pos_player+15) % NEW_LINE != 1839)
@@ -48,6 +55,7 @@ void move_player_right()
     }
 }
 
+// This function moves the player left and make sure he doesn't loop over the screen
 void move_player_left()
 {
     if (current_pos_player % NEW_LINE != 0)
@@ -60,6 +68,7 @@ void move_player_left()
     }
 }
 
+// This function combines the two above
 void move_player()
 {
     if (buttons_val == BTN_0)
@@ -68,12 +77,14 @@ void move_player()
         move_player_left();
 }
 
+// This function destroys the player on alien bullet hit
 void destroy_player()
 {
     player_dead = true;
     draw_ui_decrement_lives(); // magic
 }
 
+// This function detects alien bullet hits on the player
 void player_detect_alien_hit() 
 {
     for (uint8_t i = 0; i < MAX_BULLETS; i++)
@@ -108,11 +119,6 @@ void player_detect_alien_hit()
             (bullet_bottom_y >= top_border_y) &&
             (bullet_bottom_y <  bot_border_y))
         {
-
-            // printf("Bullet: (%d, %d)\n\r", bullet_x, bullet_y);
-            // printf("%d <= X < %d\n\r", left_border_x, right_border_x);
-            // printf("%d <= Y < %d\n\n\r", top_border_y, bot_border_y);
-
             // Erase bullet
             alien_bullet_moving[i] = false; // make sure bullet stops travelling
             draw_alien(alienbullet2_down_3x5, alien_bullet_pos[i], 3, 5, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black); // erase bullet

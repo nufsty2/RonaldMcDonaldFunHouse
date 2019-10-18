@@ -48,7 +48,7 @@ bool alien_army_is_alive[NO_ALIEN_Y][NO_ALIEN_X] =
     {true, true, true, true, true, true, true, true, true, true, true}
 };
 
-// Alien bullet crap
+/* Alien bullet oscillations */
 const uint32_t* alien_bullet_sprites[MAX_BULLETS] =
 {
     alienbullet2_up_3x5, alienbullet2_up_3x5, alienbullet2_up_3x5, alienbullet2_up_3x5
@@ -57,15 +57,25 @@ extern uint32_t alien_bullet_pos[];
 extern bool alien_bullet_moving[];
 uint8_t alien_fire_col = 0;
 
-void draw_alien_init() {
+// This is one of our init function for the alien, it just sets the random variables
+void draw_alien_init() 
+{
     srand(time(0));
 }
 
-void draw_alien_track_right_edge() {
+// This function will continously track the aliens on the right side
+void draw_alien_track_right_edge() 
+{
     uint16_t old_right_edge = rightmost_col;
-    for (int16_t col = old_right_edge; col >= 0; col--) {
-        for (uint16_t row = 0; row < NO_ALIEN_Y; row++) {
-            if (alien_army_is_alive[row][col]) {
+
+    // For loop through the column
+    for (int16_t col = old_right_edge; col >= 0; col--) 
+    {
+        for (uint16_t row = 0; row < NO_ALIEN_Y; row++) 
+        {
+            // Set new rightmost column
+            if (alien_army_is_alive[row][col]) 
+            {
                 rightmost_col = col;
                 return;
             }
@@ -73,11 +83,19 @@ void draw_alien_track_right_edge() {
     }
 }
 
-void draw_alien_track_left_edge() {
+// This function is the same above but it tracks aliens on the left side
+void draw_alien_track_left_edge() 
+{
     uint16_t old_left_edge = leftmost_col;
-    for (int16_t col = old_left_edge; col < NO_ALIEN_X; col++) {
-        for (uint16_t row = 0; row < NO_ALIEN_Y; row++) {
-            if (alien_army_is_alive[row][col]) {
+
+    // For loop through the column
+    for (int16_t col = old_left_edge; col < NO_ALIEN_X; col++) 
+    {
+        for (uint16_t row = 0; row < NO_ALIEN_Y; row++) 
+        {
+            // Set left most column
+            if (alien_army_is_alive[row][col]) 
+            {
                 leftmost_col = col;
                 return;
             }
@@ -85,7 +103,10 @@ void draw_alien_track_left_edge() {
     }
 }
 
-void draw_alien_toggle_bullet_sprite(uint8_t bullet_num) {
+// This function toggles the  bulltes
+// @ param bullet_num - bullet to toggle
+void draw_alien_toggle_bullet_sprite(uint8_t bullet_num) 
+{
     if (alien_bullet_sprites[bullet_num] == alienbullet2_up_3x5) 
     {
         alien_bullet_sprites[bullet_num] = alienbullet2_down_3x5;
@@ -163,6 +184,9 @@ void draw_alien(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t 
 }
 
 // This is our helper function to toggle each indivudal sprite, will be looped  through for all of them
+// @ param sprite_val - this is the sprite to change
+// @ param x - x position of the alien in the 2d array
+// @ param y - y position of the alien in the 2d array
 void toggle_alien_sprite(const uint32_t* sprite_val, int16_t x, int16_t y)
 {
 
@@ -218,6 +242,7 @@ void toggle_all_sprites()
 }
 
 // This is our move saucer function, it will move the saucer every 30 seconds
+// @param saucer_moving_local - this is what we pass in to the move saucer function to see if moving
 bool move_saucer(bool saucer_moving_local)
 {
     if (saucer_moving_local) // pass in variable to se if it is moving
@@ -286,7 +311,9 @@ void move_alien_army()
     seek_hdmi(current_pos_alien);
 }
 
-void draw_alien_debug_print() {
+// Debugg print statement
+void draw_alien_debug_print() 
+{
     printf("starting_pos_alien_y: %d\n\r", draw_alien_get_y_coord(current_pos_alien));
     printf("starting_pos_alien_x: %d\n\n\r", draw_alien_get_x_coord(current_pos_alien, draw_alien_get_y_coord(current_pos_alien)));
 }
@@ -329,13 +356,6 @@ bool draw_alien_detect_hit_army()
                 // Check to see if alien already dead, if so, GTFO
                 if (!(alien_army_is_alive[row][col])) { return false; }  
 
-                // Hit! Make an explosion
-                // printf("HIT!!!!!!!!!! ALIEN[%d][%d]\n\r", row, col);
-                // printf("Bullet: (%d, %d)\n\r", bullet_x, bullet_y);
-                // printf("%d <= X < %d\n\r", left_border_x, right_border_x);
-                // printf("%d <= Y < %d\n\n\r", top_border_y, bot_border_y);
-
-
                 // Change sprite to the explosion and set boolean flag
                 alien_army_is_alive[row][col] = false;
                 alien_army_sprites[row][col] = alien_explosion_12x10;
@@ -361,6 +381,7 @@ bool draw_alien_detect_hit_army()
     return false; // hit here if we got nothing at all
 }
 
+// This function detects a hit on the saucer
 void draw_alien_detect_hit_saucer() 
 {
     // Set borderstop_left_border_saucertop_left_border_saucer
@@ -383,22 +404,30 @@ void draw_alien_detect_hit_saucer()
         (bullet_y >= top_border_saucer_y) &&
         (bullet_y <  bot_border_saucer_y))
     {
+        // Kill the saucer
         saucer_moving = false;
         bullet_moving = false;
         draw_alien(saucer_16x7, current_pos_saucer, SAUCER_WIDTH, SAUCER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black); // erase
         draw_alien(tankbullet_1x5, current_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
         current_pos_saucer = SAUCER_STARTING_POS; // reset saucer pos
+
+        // Inc the score
         draw_ui_increase_score_saucer();
         update_score(false);
     }
 }
 
+// This function makes sure all aliens are dead
 void draw_alien_check_alien_reset() 
 {
+    // Loop through all aliens
     for (uint16_t row = 0; row < NO_ALIEN_Y; row++)
     {
-        for (uint16_t col = 0; col < NO_ALIEN_X; col++) {
-            if (alien_army_is_alive[row][col]) {
+        for (uint16_t col = 0; col < NO_ALIEN_X; col++) 
+        {
+            // If alive, get outta there
+            if (alien_army_is_alive[row][col]) 
+            {
                 return;
             }
         }
@@ -454,6 +483,7 @@ void erase_dead_aliens()
     } 
 }
 
+// This function fires the alien bullet
 void draw_alien_fire_alien_bullet(uint8_t bullet_num)
 {
     // Declare variables
@@ -461,11 +491,6 @@ void draw_alien_fire_alien_bullet(uint8_t bullet_num)
 
     uint16_t y_coord = draw_alien_get_y_coord(old_pos_bullet);
 
-    // Draw the bullet
-    //draw_alien(alien_bullet_sprites[bullet_num], alien_bullet_pos[bullet_num], 1, 5, PIXEL_SIZE_GLOBAL*2, cyan); // draw the bullet
-
-    // Move bullet up
-    //old_pos_bullet = alien_bullet_pos[bullet_num];
     alien_bullet_pos[bullet_num] += (NEW_LINE*2); // make bullet go down
 
     draw_alien(alien_bullet_sprites[bullet_num], old_pos_bullet, 3, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
@@ -481,9 +506,13 @@ void draw_alien_fire_alien_bullet(uint8_t bullet_num)
     }
 }
 
-void draw_alien_fire_alien_bullets() {
-    for (uint8_t i = 0; i < MAX_BULLETS; i++) {
-        if (alien_bullet_moving[i]) {
+// This function loops through the aliens and fires the bullets
+void draw_alien_fire_alien_bullets() 
+{
+    for (uint8_t i = 0; i < MAX_BULLETS; i++) 
+    {
+        if (alien_bullet_moving[i]) 
+        {
             draw_alien_fire_alien_bullet(i);
         }
     }
@@ -492,10 +521,11 @@ void draw_alien_fire_alien_bullets() {
 // This function will draw the alien bullets, should be a max of 4 at a time
 void draw_alien_trigger_bullets()
 {
+    // SEt random variables for triggering bullets
     uint8_t random = rand() % 3 + 1;
     bool increment = rand() % 2;
     
-    if (increment) 
+    if (increment) // if inc was a good value
     {
         if (alien_fire_col + random > 10) 
         {
@@ -518,24 +548,28 @@ void draw_alien_trigger_bullets()
         }
     }
 
-    int8_t alien_fire_row = BOTTOM_ROW;
+    int8_t alien_fire_row = BOTTOM_ROW; // make sure it's bottom row
 
-    while(!alien_army_is_alive[alien_fire_row][alien_fire_col]) {
+    while(!alien_army_is_alive[alien_fire_row][alien_fire_col]) // if an alien dead on the bottom row, move to next one
+    {
         alien_fire_row--;
     }
-    if (alien_fire_row < 0) {
+    if (alien_fire_row < 0) 
+    {
         return;
     }
     
     uint8_t bullet_available;
     for (bullet_available = 0; bullet_available < MAX_BULLETS; bullet_available++) 
     {
-        if (!alien_bullet_moving[bullet_available]) {
+        if (!alien_bullet_moving[bullet_available]) // cehck to see if the  bullet is available (not moving)
+        {
             break;
         }
     }
 
-    if (bullet_available < MAX_BULLETS) {
+    if (bullet_available < MAX_BULLETS) 
+    {
         alien_bullet_pos[bullet_available] = current_pos_alien + 
                                             // Vertical
                                             NEW_LINE * ((alien_fire_row + 1) * ALIEN_SPRITE_HEIGHT * SIZE_SCALAR + alien_fire_row * MOVE_ROWS_DOWN_FOR_ALIENS) +
