@@ -51,6 +51,7 @@ extern char green[];
 extern char cyan[];
 extern char magenta[];
 
+/* Player attributes */
 extern uint8_t lives;
 
 /* Once an alien is hit, start this counter to show the explosion and then erase */
@@ -71,6 +72,7 @@ uint16_t draw_alien_get_x_coord(uint32_t coord, uint16_t y_coord)
 }
 
 
+// This function responds to button presses for the gameover
 // BTN0: Increase letter
 // BTN1: Decrease letter
 // BTN3: Submit letter
@@ -114,12 +116,17 @@ void respond_to_press()
     }   
 }
 
+// This is our ISR FIT function that gets called every 10 ms
+// This is our main controller for drawing and where our state machine is located
 void isr_fit()
 {
-    if (lives == 0 && !game_over) {
+    // Check first if the player lives are zero
+    if (lives == 0 && !game_over) 
+    {
         init_end_game();
     }
 
+    // This is our debouncer for buttons and switches
     if (++debounce_ctr >= DEBOUNCE_MAX_VAL)
     {
         debounce_ctr = 0; // reset debounce counter when max value hit
@@ -134,7 +141,7 @@ void isr_fit()
         // Counter used to auto-increment
         if (++increment_ctr >= INCREMENT_MAX_VAL) 
         {
-            // Move player
+            // Move player, should respond to button press
             if (!player_dead && !game_over) 
             {
                 move_player();
@@ -151,35 +158,38 @@ void isr_fit()
         }
     }
 
+    // If the player is dead, this is our player death animation
     if (player_dead && !game_over) 
     {
-        if (++player_death_ctr >= PLAYER_DEATH_MAX_VAL)
+        if (++player_death_ctr >= PLAYER_DEATH_MAX_VAL) // reset
         {
             current_pos_player = PLAYER_START_POS;
             draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
             player_dead = false;
             player_death_ctr = 0;
         }
-        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_3) 
+        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_3) // animate
         {
             draw_alien(tank_gone_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
         }
-        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_2) 
+        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_2) // animate
         {
             draw_alien(tank_explosion2_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
         }
-        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_1) 
+        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_1) // animate
         {
             draw_alien(tank_explosion1_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
         }
  
     }
 
-    if ((++alien_bullet_ctr >= (rand() % ALIEN_BULLET_MAX_VAL + ALIEN_BULLET_MIN_VAL) * 10) && !game_over) {
+    if ((++alien_bullet_ctr >= (rand() % ALIEN_BULLET_MAX_VAL + ALIEN_BULLET_MIN_VAL) * 10) && !game_over) 
+    {
         alien_bullet_ctr = 0;
         draw_alien_trigger_bullets();
     }
 
+    // If we don't game over, always check if anything (bunkers and player) is hit
     if (!game_over) 
     {
         draw_alien_fire_alien_bullets();
@@ -187,13 +197,16 @@ void isr_fit()
         if (!player_dead) player_detect_alien_hit();
     }
 
+    // This moves the aliens at a fixed rate
     if ((++alien_move_ctr >= ALIEN_MOVE_MAX_VAL) && !game_over)
     {
         alien_move_ctr = 0;
         move_alien_army(); // have a counter that moves the alien army
     }
 
-    if (!game_over) {
+    // This is our saucer move
+    if (!game_over) 
+    {
         if ((++saucer_ctr >= SAUCER_MAX_VAL) && !game_over)
         {
             saucer_moving = true;
@@ -203,11 +216,13 @@ void isr_fit()
     }
     
 
+    // This is the player firing a bullet
     if ((!game_over) && (bullet_moving) && !start_die_ctr) // bullet firing
     {
          fire_bullet(); // this is our bullet firing
          start_die_ctr = draw_alien_detect_hit_army(); // if we get a hit (return true), start the die ctr
-         if (saucer_moving) {
+         if (saucer_moving) // if the saucer is moving, continously check for a hit on the saucer
+         {
              draw_alien_detect_hit_saucer();
          }
     }
@@ -226,8 +241,8 @@ void isr_fit()
     // The time will auto-increment if pressed for 1/2 second
     if ((++half_sec_ctr >= HALF_SECOND) && game_over && !name_entered)
     {
-        blink_cursor(false);
-        half_sec_ctr = 0;
+        blink_cursor(false); // this is our blink cursor, blinks after half second
+        half_sec_ctr = 0; // reset counter
     }
 }
 

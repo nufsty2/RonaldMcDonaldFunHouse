@@ -17,7 +17,8 @@ int32_t read_hdmi();
 void seek_hdmi(uint32_t bytes);
 
 // This function writes to the screen
-// @param 
+// @param pixel - this is the color we want to write to
+// @param size - how big we want the write to be (a single pixel, a whole line, etc.)
 void write_hdmi(char pixel[], uint16_t size);
 
 #endif

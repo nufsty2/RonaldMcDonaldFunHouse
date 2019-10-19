@@ -5,6 +5,9 @@
 /* Defines specific for this C file */
 #define NUM_BUNKERS 4
 #define NUM_BLOCKS  10
+#define BUNKER_WIDTH 24
+#define BUNKER_HEIGHT 18
+#define BUNKER_STARTING_POS (640*400 + 75)
 
 /* Player bullet attributes */
 extern uint32_t current_pos_bullet;
@@ -20,8 +23,8 @@ extern char black[];
 
 
 /* Bunkers */
-uint32_t bunker_pos[NUM_BUNKERS][NUM_BLOCKS];
-const uint32_t* bunker_sprites[NUM_BUNKERS][NUM_BLOCKS] = 
+uint32_t bunker_pos[NUM_BUNKERS][NUM_BLOCKS]; // bunker positions, gets initalized when creating the bunkers
+const uint32_t* bunker_sprites[NUM_BUNKERS][NUM_BLOCKS] =  // init sprites for the bunkers
 {
     {bunker_upper_left_gone_6x6, bunkerBlock_6x6, bunkerBlock_6x6, bunker_upper_right_gone_6x6, bunkerBlock_6x6, bunker_lower_left_gone_6x6, bunker_lower_right_gone_6x6, bunkerBlock_6x6, bunkerBlock_6x6, bunkerBlock_6x6},
     {bunker_upper_left_gone_6x6, bunkerBlock_6x6, bunkerBlock_6x6, bunker_upper_right_gone_6x6, bunkerBlock_6x6, bunker_lower_left_gone_6x6, bunker_lower_right_gone_6x6, bunkerBlock_6x6, bunkerBlock_6x6, bunkerBlock_6x6},
@@ -29,7 +32,7 @@ const uint32_t* bunker_sprites[NUM_BUNKERS][NUM_BLOCKS] =
     {bunker_upper_left_gone_6x6, bunkerBlock_6x6, bunkerBlock_6x6, bunker_upper_right_gone_6x6, bunkerBlock_6x6, bunker_lower_left_gone_6x6, bunker_lower_right_gone_6x6, bunkerBlock_6x6, bunkerBlock_6x6, bunkerBlock_6x6}
 };
 
-const uint32_t* bunker_damage[NUM_BUNKERS][NUM_BLOCKS] =
+const uint32_t* bunker_damage[NUM_BUNKERS][NUM_BLOCKS] = // bunker damage
 {
     {bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6},
     {bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6, bunkerDamage3_6x6},
@@ -63,7 +66,7 @@ const uint32_t* bunker_take_damage(const uint32_t* damage_sprite)
 // This is our init function, it sets up the four starting bunkers on the game load
 void bunker_init()
 {
-    uint32_t pos = PIXEL_SIZE_GLOBAL*(640*400 + 75);
+    uint32_t pos = PIXEL_SIZE_GLOBAL*BUNKER_STARTING_POS;
     // Print bunkers
     for (uint8_t i = 0; i < NUM_BUNKERS; i++) 
     {
@@ -71,7 +74,7 @@ void bunker_init()
         for (uint8_t j = 0; j < NUM_BLOCKS; j++)
         {
             bunker_pos[i][j] = pos; // assign bunkers
-            if (j < 4)
+            if (j < NUM_BUNKERS)
             {
                 pos = (j == 3) ? (current_bunker_pos + NEW_LINE * SIZE_SCALAR * 6) : (pos + PIXEL_SIZE_GLOBAL * SIZE_SCALAR * 6);
             }
@@ -86,8 +89,8 @@ void bunker_init()
                 pos += PIXEL_SIZE_GLOBAL * SIZE_SCALAR * 6 * 3;
             }
         }
-        draw_alien(bunker_24x18, current_bunker_pos, 24, 18, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, tan);
-        pos = current_bunker_pos + (PIXEL_SIZE_GLOBAL * 24) * 6;
+        draw_alien(bunker_24x18, current_bunker_pos, BUNKER_WIDTH, BUNKER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, tan);
+        pos = current_bunker_pos + (PIXEL_SIZE_GLOBAL * BUNKER_WIDTH) * 6;
     }
 }
 

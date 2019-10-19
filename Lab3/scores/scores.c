@@ -5,7 +5,11 @@
 
 uint32_t num_scores = 0;
 
-score_t* scores_insertion_sort(score_t scores[]) {
+// Insertion sort function to sort all the scores
+// @param scores - array of scores from the file to sort
+// @return - returns a new array of scores (sorted)
+score_t* scores_insertion_sort(score_t scores[]) 
+{
     uint32_t j;
 
     for (uint32_t i = 1; i < num_scores; i++) 
@@ -23,6 +27,8 @@ score_t* scores_insertion_sort(score_t scores[]) {
     return scores;
 }
 
+// This function gets only the top ten scores to display on the screen
+// @param top_ten - array of the top ten scores after the sort
 void scores_get_top_10_scores(score_t top_ten[]) 
 {
     score_t high_scores[TONS_OF_HIGH_SCORES];
@@ -58,6 +64,8 @@ void scores_get_top_10_scores(score_t top_ten[])
     }
 }
 
+// This function writes the scores to the text file
+// @param new_score - the new score to append to the text file
 void scores_write_new_score(score_t new_score) 
 {   
     FILE *out = fopen("../scores/high_scores.txt", "a");

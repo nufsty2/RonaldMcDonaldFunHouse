@@ -4,7 +4,7 @@
 #include "../globals/globals.h"
 
 // This is our init function, it sets up the four starting bunkers on the game load
-void init_bunker();
+void bunker_init();
 
 // This is our function to detect alien or player hits on the bunker
 void bunker_detect_hits();
