@@ -1,13 +1,21 @@
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/cdev.h>
-#include "audio.h"
+#include <linux/fs.h>
  
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Ronald McDonald");
 MODULE_DESCRIPTION("ECEn 427 Audio Driver");
  
-#define MODULE_NAME "audio"   
+#define MODULE_NAME "audio" 
+
+static int audio_init(void);
+
+static void audio_exit(void);
+
+// Init and exit declarations 
+module_init(audio_init);
+module_exit(audio_exit);
  
  
 struct audio_device 
@@ -28,15 +36,19 @@ struct audio_device
 static int audio_init(void) 
 {
   pr_info("%s: Initializing Audio Driver!\n", MODULE_NAME);
- 
+
+
   // Get a major number for the driver -- alloc_chrdev_region; // pg. 45, LDD3.
   dev_t* first_num;
+
+  // DON'T MAKE YET!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   // 1st param - output - will hold first number of allocated range
   // 2nd param - requested first minor number to use, usually 0
   // 3rd param - count - total number of contagious device numbers requested
   // 4th param - name - name of device associated with number range (appear in /proc/devices and sysfs)
-  int major_num = alloc_chrdev_region(first_num, 0, 1, );
+  int major_num = alloc_chrdev_region(first_num, 0, 1, "/proc/devices");
+  printk("Major Number: %d\n\r", major_num);
  
   // Create a device class. -- class_create()
  
