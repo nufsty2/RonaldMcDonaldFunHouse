@@ -49,7 +49,7 @@ void hdmi_write(char pixel[], uint16_t size)
     write(file, pixel, size); // 3 = pixel
 }
 
-void close_hdmi()
+void hdmi_close()
 {
     close(file);
 }

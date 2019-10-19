@@ -59,19 +59,6 @@ extern uint32_t die_ctr;
 extern bool start_die_ctr;
 uint32_t player_death_ctr = 0;
 
-// This function gets the y coord of whatever we put in (alien, player, bunker)
-uint16_t draw_alien_get_y_coord(uint32_t coord) 
-{
-    return coord / NEW_LINE;
-}
-
-// This function gets the x coord of whatever, depejnds on Y coord
-uint16_t draw_alien_get_x_coord(uint32_t coord, uint16_t y_coord) 
-{
-    return (coord - y_coord * NEW_LINE) / PIXEL_SIZE_GLOBAL;
-}
-
-
 // This function responds to button presses for the gameover
 // BTN0: Increase letter
 // BTN1: Decrease letter
@@ -313,4 +300,5 @@ int main()
     buttons_exit(); // exit the buttons
     switches_exit(); // exit the switches
     intc_exit(); // exits the int controller
+    hdmi_close();
 }

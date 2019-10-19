@@ -63,6 +63,18 @@ void alien_init()
     srand(time(0));
 }
 
+// This function gets the y coord of whatever we put in (alien, player, bunker)
+uint16_t draw_alien_get_y_coord(uint32_t coord)
+{
+    return coord / NEW_LINE;
+}
+
+// This function gets the x coord of whatever, depejnds on Y coord
+uint16_t draw_alien_get_x_coord(uint32_t coord, uint16_t y_coord)
+{
+    return (coord - y_coord * NEW_LINE) / PIXEL_SIZE_GLOBAL;
+}
+
 // This function will continously track the aliens on the right side
 void alien_track_right_edge() 
 {
@@ -146,8 +158,8 @@ void alien_draw_lots_o_aliens(uint32_t pos, uint32_t width, uint32_t sprite_row,
     // Draw the aliens based on grid dimension - size scalar
     for (uint32_t y = 0; y < grid_dimension; y++) 
     {        
-        seek_hdmi(currentPoint+(NEW_LINE)*y); // get to right point
-        write_hdmi((erase_aliens) ? black_pixels : pixels_for_entire_line, (width + SPACE_BW_ALIENS) * grid_dimension * PIXEL_SIZE_GLOBAL * NO_ALIEN_X); // draw
+        hdmi_seek(currentPoint+(NEW_LINE)*y); // get to right point
+        hdmi_write((erase_aliens) ? black_pixels : pixels_for_entire_line, (width + SPACE_BW_ALIENS) * grid_dimension * PIXEL_SIZE_GLOBAL * NO_ALIEN_X); // draw
     }
 }
 
@@ -175,11 +187,11 @@ void alien_draw(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t 
         }
         for (uint32_t y = 0; y < grid_dimension; y++) // This for loop does the drawing based on the grid dimension, which is a size scalar
         {
-            seek_hdmi(currentPoint+(NEW_LINE)*y); // seek to the right area
-            write_hdmi(pixels_for_sprite_line, width * grid_dimension * PIXEL_SIZE_GLOBAL); // draw
+            hdmi_seek(currentPoint+(NEW_LINE)*y); // seek to the right area
+            hdmi_write(pixels_for_sprite_line, width * grid_dimension * PIXEL_SIZE_GLOBAL); // draw
         }
         currentPoint += NEW_LINE * grid_dimension; // new line
-        seek_hdmi(currentPoint); // go to new line
+        hdmi_seek(currentPoint); // go to new line
     }
 }
 
@@ -302,13 +314,13 @@ void alien_move_army()
             }
             alien_draw_lots_o_aliens(current_pos_alien, ALIEN_SPRITE_WIDTH, height, alien_y, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, magenta, false);
             current_pos_alien += NEW_LINE * SIZE_SCALAR;
-            seek_hdmi(current_pos_alien);
+            hdmi_seek(current_pos_alien);
         }
         current_pos_alien += NEW_LINE * MOVE_ROWS_DOWN_FOR_ALIENS;
-        seek_hdmi(current_pos_alien);
+        hdmi_seek(current_pos_alien);
     }
     current_pos_alien = old_pos + move_distance;
-    seek_hdmi(current_pos_alien);
+    hdmi_seek(current_pos_alien);
 }
 
 // This function will be called when a bullet is fired and consistently check if an alien has been hit

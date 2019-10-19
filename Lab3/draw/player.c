@@ -44,7 +44,7 @@ void player_fire_bullet()
 }
 
 // This function moves the player right and make sure he doesn't loop over the screen
-void move_player_right()
+void player_move_right()
 {
     if ((current_pos_player+15) % NEW_LINE != 1839)
     {
@@ -57,7 +57,7 @@ void move_player_right()
 }
 
 // This function moves the player left and make sure he doesn't loop over the screen
-void move_player_left()
+void player_move_left()
 {
     if (current_pos_player % NEW_LINE != 0)
     {
@@ -73,13 +73,13 @@ void move_player_left()
 void player_move()
 {
     if (buttons_val == BTN_0)
-        move_player_right();
+        player_move_right();
     else if (buttons_val == BTN_1)
-        move_player_left();
+        player_move_left();
 }
 
 // This function destroys the player on alien bullet hit
-void destroy_player()
+void player_destroy()
 {
     player_dead = true;
     ui_decrement_lives(); // magic
@@ -123,7 +123,7 @@ void player_detect_alien_hit()
             // Erase bullet
             alien_bullet_moving[i] = false; // make sure bullet stops travelling
             alien_draw(alienbullet2_down_3x5, alien_bullet_pos[i], 3, 5, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black); // erase bullet
-            destroy_player();
+            player_destroy();
             return;
         }
     }

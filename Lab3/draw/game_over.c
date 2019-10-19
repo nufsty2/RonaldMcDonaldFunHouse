@@ -1,7 +1,5 @@
 #include "game_over.h"
-#include "../scores/scores.h"
 #include "../sprites/sprites.c"
-#include "../scores/scores.h"
 #include "generic.h"
 
 /* Defines in this C file */
@@ -17,15 +15,15 @@
 #define PRINT_SCORE_8 8
 
 /* Defines for ENTER NAME */
-#define OFFSET_E 20
-#define OFFEST_N 21
-#define OFFEST_T 22
-#define OFFEST_E 23
-#define OFFEST_R 24
-#define OFFEST_N 26
-#define OFFEST_A 27
-#define OFFEST_M 28
-#define OFFEST_E 29
+#define OFFSET_E_0 20
+#define OFFEST_N_0 21
+#define OFFEST_T_0 22
+#define OFFEST_E_1 23
+#define OFFEST_R_0 24
+#define OFFEST_N_1 26
+#define OFFEST_A_0 27
+#define OFFEST_M_0 28
+#define OFFEST_E_2 29
 
 /* Defines for entering the name (AAA) */
 #define OFFSET_CHAR_0 24
@@ -64,34 +62,34 @@ void game_over_print_score(score_t score, uint32_t pos)
         }
     }
 
-    alien_draw(generic_get_sprite_from_digit(score.name[LETTER_0_SCORE]),       pos + LETTER_WIDTH*PRINT_SCORE_0, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, cyan);
-    alien_draw(generic_get_sprite_from_digit(score.name[LETTER_1_SCORE]),       pos + LETTER_WIDTH*PRINT_SCORE_1, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, cyan);
-    alien_draw(generic_get_sprite_from_digit(score.name[LETTER_2_SCORE]),       pos + LETTER_WIDTH*PRINT_SCORE_2, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, cyan);
-    alien_draw(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_0]),  pos + LETTER_WIDTH*PRINT_SCORE_4, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
-    alien_draw(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_1]),  pos + LETTER_WIDTH*PRINT_SCORE_5, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
-    alien_draw(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_2]),  pos + LETTER_WIDTH*PRINT_SCORE_6, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
-    alien_draw(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_3]),  pos + LETTER_WIDTH*PRINT_SCORE_7, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
-    alien_draw(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_4]),  pos + LETTER_WIDTH*PRINT_SCORE_8, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.name[LETTER_0_SCORE]),       pos + LETTER_WIDTH*PRINT_SCORE_0, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, cyan);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.name[LETTER_1_SCORE]),       pos + LETTER_WIDTH*PRINT_SCORE_1, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, cyan);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.name[LETTER_2_SCORE]),       pos + LETTER_WIDTH*PRINT_SCORE_2, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, cyan);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_0]),  pos + LETTER_WIDTH*PRINT_SCORE_4, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_1]),  pos + LETTER_WIDTH*PRINT_SCORE_5, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_2]),  pos + LETTER_WIDTH*PRINT_SCORE_6, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_3]),  pos + LETTER_WIDTH*PRINT_SCORE_7, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_4]),  pos + LETTER_WIDTH*PRINT_SCORE_8, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
 }
 
 // This is our main function print all the scores
 void game_over_print_scores()
 {
-    // ENTER
-    alien_draw(letterE_5x5, LETTER_WIDTH*OFFEST_E + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    alien_draw(letterN_5x5, LETTER_WIDTH*OFFEST_N + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    alien_draw(letterT_5x5, LETTER_WIDTH*OFFEST_T + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    alien_draw(letterE_5x5, LETTER_WIDTH*OFFEST_E + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    alien_draw(letterR_5x5, LETTER_WIDTH*OFFEST_R + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    // NAME
-    alien_draw(letterN_5x5, LETTER_WIDTH*OFFEST_N + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    alien_draw(letterA_5x5, LETTER_WIDTH*OFFEST_A + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    alien_draw(letterM_5x5, LETTER_WIDTH*OFFEST_M + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    alien_draw(letterE_5x5, LETTER_WIDTH*OFFEST_E + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    // AAA
-    alien_draw(generic_get_sprite_from_digit(char_0), LETTER_WIDTH*OFFSET_CHAR_0 + OFFSET_ROW_FOR_CHARS*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    alien_draw(generic_get_sprite_from_digit(char_1), LETTER_WIDTH*OFFSET_CHAR_1 + OFFSET_ROW_FOR_CHARS*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    alien_draw(generic_get_sprite_from_digit(char_2), LETTER_WIDTH*OFFSET_CHAR_2 + OFFSET_ROW_FOR_CHARS*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    // Erase ENTER
+    generic_draw_sprite(letterE_5x5, LETTER_WIDTH*OFFSET_E_0 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    generic_draw_sprite(letterN_5x5, LETTER_WIDTH*OFFEST_N_0 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    generic_draw_sprite(letterT_5x5, LETTER_WIDTH*OFFEST_T_0 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    generic_draw_sprite(letterE_5x5, LETTER_WIDTH*OFFEST_E_1 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    generic_draw_sprite(letterR_5x5, LETTER_WIDTH*OFFEST_R_0 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    // Erase NAME
+    generic_draw_sprite(letterN_5x5, LETTER_WIDTH*OFFEST_N_1 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    generic_draw_sprite(letterA_5x5, LETTER_WIDTH*OFFEST_A_0 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    generic_draw_sprite(letterM_5x5, LETTER_WIDTH*OFFEST_M_0 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    generic_draw_sprite(letterE_5x5, LETTER_WIDTH*OFFEST_E_2 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    // Draw initials
+    generic_draw_sprite(generic_get_sprite_from_digit(char_0), LETTER_WIDTH*OFFSET_CHAR_0 + OFFSET_ROW_FOR_CHARS*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    generic_draw_sprite(generic_get_sprite_from_digit(char_1), LETTER_WIDTH*OFFSET_CHAR_1 + OFFSET_ROW_FOR_CHARS*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    generic_draw_sprite(generic_get_sprite_from_digit(char_2), LETTER_WIDTH*OFFSET_CHAR_2 + OFFSET_ROW_FOR_CHARS*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
 
     // get the top ten
     score_t top_ten[NO_SCORES_TO_DISPLAY];
