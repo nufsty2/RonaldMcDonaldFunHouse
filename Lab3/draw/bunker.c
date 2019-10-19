@@ -1,6 +1,6 @@
 #include "bunker.h"
 #include "../sprites/sprites.c"
-#include "../draw/draw_alien.h"
+#include "../draw/alien.h"
 
 /* Defines specific for this C file */
 #define NUM_BUNKERS 4
@@ -94,7 +94,7 @@ void bunker_init()
                 pos += PIXEL_SIZE_GLOBAL * SIZE_SCALAR * BUNKER_DAMAGE_DIM * ALIEN_BULLET_WIDTH;
             }
         }
-        draw_alien(bunker_24x18, current_bunker_pos, BUNKER_WIDTH, BUNKER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, tan);
+        alien_draw(bunker_24x18, current_bunker_pos, BUNKER_WIDTH, BUNKER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, tan);
         pos = current_bunker_pos + (PIXEL_SIZE_GLOBAL * BUNKER_WIDTH) * BUNKER_DAMAGE_DIM;
     }
 }
@@ -163,11 +163,11 @@ void bunker_detect_hit_player()
                 }
 
                 // Draw new damage
-                draw_alien(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, tan);
+                alien_draw(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, tan);
 
                 // Erase bullet
                 bullet_moving = false; // make sure bullet stops travelling
-                draw_alien(tankbullet_1x5, current_pos_bullet, PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black); // erase bullet
+                alien_draw(tankbullet_1x5, current_pos_bullet, PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black); // erase bullet
             }
         }
     }
@@ -187,7 +187,7 @@ void bunker_redraw_all()
             }
 
             // Draw new damage
-            draw_alien(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, tan);
+            alien_draw(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, tan);
         }
     }
 }
@@ -243,11 +243,11 @@ void bunker_detect_hit_alien(uint8_t bullet_num)
                 }
 
                 // Draw new damage
-                draw_alien(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, tan);
+                alien_draw(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, tan);
 
                 // Erase bullet
                 alien_bullet_moving[bullet_num] = false; // make sure bullet stops travelling
-                draw_alien(alienbullet2_down_3x5, alien_bullet_pos[bullet_num], ALIEN_BULLET_WIDTH, ALIEN_BULLET_HEIGHT, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black); // erase bullet
+                alien_draw(alienbullet2_down_3x5, alien_bullet_pos[bullet_num], ALIEN_BULLET_WIDTH, ALIEN_BULLET_HEIGHT, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black); // erase bullet
             }
         }
     }

@@ -56,7 +56,7 @@ static uint32_t new_switches_val = 0; // new switches value
 static bool debounced = false; // Flag used to determine if debounce timer is done
 
 // Reset all counters
-void reset_counters() {
+void generic_reset_counters() {
     debounce_ctr  = 0;
     increment_ctr = 0;
     half_sec_ctr  = 0;
@@ -96,7 +96,7 @@ void isr_fit()
 // This is invoked each time there is a change in the button state (result of a push or a bounce).
 void isr_buttons()
 {
-    reset_counters();
+    generic_reset_counters();
     new_buttons_val = read_buttons(); // get the button value
     clear_button_interrupts(); // clear button interrupts
     if (debounced) {
@@ -108,7 +108,7 @@ void isr_buttons()
 // This is invoked each time there is a change in switch state
 void isr_switches()
 {
-    reset_counters();
+    generic_reset_counters();
     new_switches_val = read_switches(); // read the switches
     clear_switches_interrupts(); // clear the interrupts
 }
