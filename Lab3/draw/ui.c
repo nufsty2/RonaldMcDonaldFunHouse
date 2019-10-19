@@ -1,7 +1,7 @@
-#include "draw_ui.h"
+#include "ui.h"
 #include "../sprites/sprites.c"
-#include <time.h>
-#include "draw_generic.h"
+#include "generic.h"
+#include "alien.h"
 
 // Defines only in this C file
 #define MAX_LIVES 5
@@ -29,7 +29,7 @@ char score_digit_3 = 0;
 char score_digit_4 = 0;
 
 // Randomize initializer
-void draw_ui_init() 
+void ui_init() 
 {
     srand(time(0));
 }
@@ -37,7 +37,7 @@ void draw_ui_init()
 // This function gets the score digit
 // @param - digit - the digit we want to get
 // @return - returns address of the score digit
-char* get_score_digit(uint8_t digit) 
+char* ui_get_score_digit(uint8_t digit) 
 {
     switch (digit) 
     {
@@ -52,14 +52,14 @@ char* get_score_digit(uint8_t digit)
         case 4:
             return &score_digit_4;
         default:
-            printf("Hit default in get_score_digit()!\n\r"); // debug
+            printf("Hit default in ui_get_score_digit()!\n\r"); // debug
             break;
     }
 }
 
 // This function gets the char
 // @ return - address of the score char
-char* get_selected_char() 
+char* ui_get_selected_char() 
 {
     switch(selected_char) 
     {
@@ -70,14 +70,14 @@ char* get_selected_char()
         case 2:
             return &char_2;
         default:
-            printf("Hit default in get_selected_char()!\n\r");
+            printf("Hit default in ui_get_selected_char()!\n\r");
             break;
     }
 }
 
 // This function increments the score
 // @param row - whatever row it's on
-void draw_ui_increase_score(uint16_t row) 
+void ui_increase_score(uint16_t row) 
 {
     switch (row) 
     {
@@ -96,7 +96,7 @@ void draw_ui_increase_score(uint16_t row)
 }
 
 // This incs the score randomly for the saucer
-void draw_ui_increase_score_saucer() 
+void ui_increase_score_saucer() 
 {
     // Get a random multiple of 10 between 50 and 250;
     score += (rand() % 30 + 5) * 10;
@@ -104,7 +104,7 @@ void draw_ui_increase_score_saucer()
 
 // This function updates the score
 // @param firstRun - If first run, make it zero
-void update_score(bool firstRun) 
+void ui_update_score(bool firstRun) 
 {
     uint32_t score_copy = score;
     uint32_t digit_location = LETTER_WIDTH * 10;
@@ -114,19 +114,19 @@ void update_score(bool firstRun)
     {
         uint8_t digit_val = score_copy % 10;
 
-        if ((*get_score_digit(i) != digit_val) && !firstRun)
+        if ((*ui_get_score_digit(i) != digit_val) && !firstRun)
         {
             // Erase
-            draw_sprite(get_sprite_from_digit(*get_score_digit(i)), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, black);
+            generic_draw_sprite(generic_get_sprite_from_digit(*ui_get_score_digit(i)), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, black);
             // Draw
-            draw_sprite(get_sprite_from_digit(digit_val), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, green);
+            generic_draw_sprite(generic_get_sprite_from_digit(digit_val), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, green);
             // Replace value
-            *get_score_digit(i) = digit_val;
+            *ui_get_score_digit(i) = digit_val;
         }
         else if (firstRun)
         {
             // Draw
-            draw_alien(get_sprite_from_digit(digit_val), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, green);
+            alien_draw(generic_get_sprite_from_digit(digit_val), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, green);
         }
 
         score_copy /= 10;
@@ -135,38 +135,38 @@ void update_score(bool firstRun)
 }
 
 // This function incs the lives
-void draw_ui_increment_lives()
+void ui_increment_lives()
  {
     if (lives + 1 <= MAX_LIVES) 
     {
         lives++;
-        draw_ui_update_lives(false);
+        ui_update_lives(false);
     }
 }
 
 // This function decremnts the lives
-void draw_ui_decrement_lives()
+void ui_decrement_lives()
  {
     lives--;
-    draw_ui_update_lives(false);
+    ui_update_lives(false);
 }
 
 // This function updates the lives
-void draw_ui_update_lives(bool firstRun) 
+void ui_update_lives(bool firstRun) 
 {
     uint32_t pos = RIGHT_EDGE - LETTER_WIDTH * 9 + NEW_LINE * SIZE_SCALAR;
     uint32_t initial_pos = pos;
 
     for (uint8_t l = 0; l < MAX_LIVES; l++)
      {
-        draw_alien(tank_15x8, pos, 15, 8, PIXEL_SIZE_GLOBAL, black);
+        alien_draw(tank_15x8, pos, 15, 8, PIXEL_SIZE_GLOBAL, black);
         pos += 15 * PIXEL_SIZE_GLOBAL + 15;
     }
 
     pos = initial_pos;
     for (uint8_t l = 0; l < lives; l++)
      {
-        draw_alien(tank_15x8, pos, 15, 8, PIXEL_SIZE_GLOBAL, cyan);
+        alien_draw(tank_15x8, pos, 15, 8, PIXEL_SIZE_GLOBAL, cyan);
         pos += 15 * PIXEL_SIZE_GLOBAL + 15;
     }
 }

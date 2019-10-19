@@ -1,4 +1,4 @@
-#include "draw_generic.h"
+#include "generic.h"
 #include "../hdmi/hdmi.h"
 #include "../sprites/sprites.c"
 
@@ -28,7 +28,7 @@ extern char selected_char;
 // @param height - height of the sprite
 // @param pixel_size - the scalar we want on the sprite
 // @param color - color of the sprite
-void draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t height, uint16_t pixel_size, char color[]) 
+void generic_draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t height, uint16_t pixel_size, char color[]) 
 {
     // Set the points to seek
     uint32_t init_point = pos; 
@@ -48,8 +48,8 @@ void draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t
                     for (uint32_t x = 0; x < grid_dimension; x++) // again
                     {
                         current_point += (j*pixel_size + PIXEL_SIZE_GLOBAL*x + PIXEL_SIZE_GLOBAL*SCREEN_WIDTH*y); // set current point
-                        seek_hdmi(current_point); // seek to that point
-                        write_hdmi(color, PIXEL_SIZE_GLOBAL); // write to that point
+                        hdmi_seek(current_point); // seek to that point
+                        hdmi_write(color, PIXEL_SIZE_GLOBAL); // write to that point
                         current_point = init_point; // init point
                     }
                 }
@@ -59,14 +59,14 @@ void draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t
         // New line
         current_point += (pixel_size*SCREEN_WIDTH);
         init_point = current_point;
-        seek_hdmi(current_point);
+        hdmi_seek(current_point);
     }
 }
 
 // This function gets a digit sprite from the digit we pass in
 // @param digit - the digit we want the sprite for
 // return - returns the corresponding sprite for that digit
-const uint32_t* get_sprite_from_digit(char digit)
+const uint32_t* generic_get_sprite_from_digit(char digit)
 {
     // Determine the digit
     switch (digit) 
@@ -164,13 +164,13 @@ const uint32_t* get_sprite_from_digit(char digit)
         case 'Z':
             return letterZ_5x5;
         default:
-            printf("Hit default in get_sprite_from_digit()!\n\r"); // debug
+            printf("Hit default in generic_get_sprite_from_digit()!\n\r"); // debug
             return letterA_5x5; // return a letter a
     }
 }
 
 // Reset all counters
-void reset_counters() 
+void generic_reset_counters() 
 {
     debounce_ctr  = 0;
     increment_ctr = 0;

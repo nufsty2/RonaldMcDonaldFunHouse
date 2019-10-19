@@ -1,8 +1,6 @@
 #ifndef SCORES_H
 #define SCORES_H
 
-#include <stdio.h>
-#include <stdint.h>
 #include "../globals/globals.h"
 
 #define NAME_LENGTH 3

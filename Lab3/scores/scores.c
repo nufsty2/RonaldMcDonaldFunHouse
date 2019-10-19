@@ -47,7 +47,7 @@ void scores_get_top_10_scores(score_t top_ten[])
             .value_char = {buf[4], buf[5], buf[6], buf[7], buf[8]}
         };
 
-        if (newScore.name[0] != NULL && newScore.name[1] != NULL && newScore.name[2] != NULL)
+        if (!(newScore.name[0] < 'A' || newScore.name[1] < 'A' || newScore.name[2] < 'A'))
         {
             printf("%s\n\r", buf);
             sscanf(newScore.value_char, "%d", &newScore.value);

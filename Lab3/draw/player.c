@@ -1,5 +1,7 @@
-#include "draw_player.h"
-#include "draw_ui.h"
+#include "player.h"
+#include "ui.h"
+#include "../sprites/sprites.c"
+#include "alien.h"
 
 /* Player attributes */
 extern uint32_t current_pos_bullet;
@@ -19,69 +21,69 @@ extern uint32_t alien_bullet_pos[];
 extern bool alien_bullet_moving[];
 
 // This function fires a bullet
-void fire_bullet()
+void player_fire_bullet()
 {
     // Declare variables
     uint32_t old_pos_bullet = current_pos_bullet;
 
-    uint16_t y_coord = draw_alien_get_y_coord(current_pos_bullet);
+    uint16_t y_coord = alien_get_y_coord(current_pos_bullet);
     
     // Move bullet up
     old_pos_bullet = current_pos_bullet;
     current_pos_bullet -= (NEW_LINE*8); // make bullet go up
 
-    draw_alien(tankbullet_gone_1x5, old_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
+    alien_draw(tankbullet_gone_1x5, old_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
 
-    draw_alien(tankbullet_1x5, current_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, cyan); // draw new bullet
+    alien_draw(tankbullet_1x5, current_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, cyan); // draw new bullet
 
     // At this point, bullet gone
     if (current_pos_bullet < (NEW_LINE * 15)) 
     {
         bullet_moving = false;
-        draw_alien(tankbullet_1x5, current_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
+        alien_draw(tankbullet_1x5, current_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
     }
 }
 
 // This function moves the player right and make sure he doesn't loop over the screen
-void move_player_right()
+void player_move_right()
 {
     if ((current_pos_player+15) % NEW_LINE != 1839)
     {
-        draw_alien(block_2x8, current_pos_player, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
+        alien_draw(block_2x8, current_pos_player, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
 
         current_pos_player += PIXEL_SIZE_GLOBAL * 4;
 
-        draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, cyan);
+        alien_draw(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, cyan);
     }
 }
 
 // This function moves the player left and make sure he doesn't loop over the screen
-void move_player_left()
+void player_move_left()
 {
     if (current_pos_player % NEW_LINE != 0)
     {
-        draw_alien(block_2x8, current_pos_player+13*6, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
+        alien_draw(block_2x8, current_pos_player+13*6, 2, 8, PIXEL_SIZE_GLOBAL*2, black);
 
         current_pos_player -= PIXEL_SIZE_GLOBAL * 4;
 
-        draw_alien(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, cyan);
+        alien_draw(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL*2, cyan);
     }
 }
 
 // This function combines the two above
-void move_player()
+void player_move()
 {
     if (buttons_val == BTN_0)
-        move_player_right();
+        player_move_right();
     else if (buttons_val == BTN_1)
-        move_player_left();
+        player_move_left();
 }
 
 // This function destroys the player on alien bullet hit
-void destroy_player()
+void player_destroy()
 {
     player_dead = true;
-    draw_ui_decrement_lives(); // magic
+    ui_decrement_lives(); // magic
 }
 
 // This function detects alien bullet hits on the player
@@ -101,17 +103,17 @@ void player_detect_alien_hit()
         uint32_t bot_border = current_pos_player + 8 * NEW_LINE * SIZE_SCALAR;
 
         // Get coord values for the Y borders
-        uint16_t top_border_y = draw_alien_get_y_coord(top_border);
-        uint16_t bot_border_y = draw_alien_get_y_coord(bot_border);
+        uint16_t top_border_y = alien_get_y_coord(top_border);
+        uint16_t bot_border_y = alien_get_y_coord(bot_border);
 
         // Get the coord values based of all of those
-        uint16_t bullet_bottom_y = draw_alien_get_y_coord(bullet_bottom_left);
-        uint16_t bullet_bottom_left_x = draw_alien_get_x_coord(bullet_bottom_left, bullet_bottom_y);
-        uint16_t bullet_bottom_right_x = draw_alien_get_x_coord(bullet_bottom_right, bullet_bottom_y);
-        uint16_t left_border_y = draw_alien_get_y_coord(left_border);
-        uint16_t right_border_y = draw_alien_get_y_coord(right_border);
-        uint16_t left_border_x = draw_alien_get_x_coord(left_border, left_border_y);
-        uint16_t right_border_x = draw_alien_get_x_coord(right_border, right_border_y);       
+        uint16_t bullet_bottom_y = alien_get_y_coord(bullet_bottom_left);
+        uint16_t bullet_bottom_left_x = alien_get_x_coord(bullet_bottom_left, bullet_bottom_y);
+        uint16_t bullet_bottom_right_x = alien_get_x_coord(bullet_bottom_right, bullet_bottom_y);
+        uint16_t left_border_y = alien_get_y_coord(left_border);
+        uint16_t right_border_y = alien_get_y_coord(right_border);
+        uint16_t left_border_x = alien_get_x_coord(left_border, left_border_y);
+        uint16_t right_border_x = alien_get_x_coord(right_border, right_border_y);       
 
         // Check if a bullet is within one of the bunker blocks
         if ((bullet_bottom_left_x >= left_border_x  || bullet_bottom_right_x >= left_border_x)  &&
@@ -121,8 +123,8 @@ void player_detect_alien_hit()
         {
             // Erase bullet
             alien_bullet_moving[i] = false; // make sure bullet stops travelling
-            draw_alien(alienbullet2_down_3x5, alien_bullet_pos[i], 3, 5, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black); // erase bullet
-            destroy_player();
+            alien_draw(alienbullet2_down_3x5, alien_bullet_pos[i], 3, 5, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black); // erase bullet
+            player_destroy();
             return;
         }
     }

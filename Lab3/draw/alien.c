@@ -1,7 +1,8 @@
-#include "draw_alien.h"
+#include "alien.h"
 #include "../sprites/sprites.c"
-#include "../draw/draw_ui.h"
+#include "../draw/ui.h"
 #include "../draw/bunker.h"
+#include "../hdmi/hdmi.h"
 
 #define SAUCER_HEIGHT 7
 #define SACCER_WIDTH  16
@@ -58,13 +59,25 @@ extern bool alien_bullet_moving[];
 uint8_t alien_fire_col = 0;
 
 // This is one of our init function for the alien, it just sets the random variables
-void draw_alien_init() 
+void alien_init() 
 {
     srand(time(0));
 }
 
+// This function gets the y coord of whatever we put in (alien, player, bunker)
+uint16_t alien_get_y_coord(uint32_t coord)
+{
+    return coord / NEW_LINE;
+}
+
+// This function gets the x coord of whatever, depejnds on Y coord
+uint16_t alien_get_x_coord(uint32_t coord, uint16_t y_coord)
+{
+    return (coord - y_coord * NEW_LINE) / PIXEL_SIZE_GLOBAL;
+}
+
 // This function will continously track the aliens on the right side
-void draw_alien_track_right_edge() 
+void alien_track_right_edge() 
 {
     uint16_t old_right_edge = rightmost_col;
 
@@ -84,7 +97,7 @@ void draw_alien_track_right_edge()
 }
 
 // This function is the same above but it tracks aliens on the left side
-void draw_alien_track_left_edge() 
+void alien_track_left_edge() 
 {
     uint16_t old_left_edge = leftmost_col;
 
@@ -105,7 +118,7 @@ void draw_alien_track_left_edge()
 
 // This function toggles the  bulltes
 // @ param bullet_num - bullet to toggle
-void draw_alien_toggle_bullet_sprite(uint8_t bullet_num) 
+void alien_toggle_bullet_sprite(uint8_t bullet_num) 
 {
     if (alien_bullet_sprites[bullet_num] == alienbullet2_up_3x5) 
     {
@@ -118,7 +131,7 @@ void draw_alien_toggle_bullet_sprite(uint8_t bullet_num)
 }
 
 // This is our main function for drawing the whole alien army
-void draw_lots_o_aliens(uint32_t pos, uint32_t width, uint32_t sprite_row, uint32_t alien_y, uint16_t pixel_size, char color[], bool erase_aliens)
+void alien_draw_lots_o_aliens(uint32_t pos, uint32_t width, uint32_t sprite_row, uint32_t alien_y, uint16_t pixel_size, char color[], bool erase_aliens)
 {
     uint32_t currentPoint = pos; // get the pos and store it locally cuz we gonna be modifying the crap out of its
     uint32_t grid_dimension = pixel_size / PIXEL_SIZE_GLOBAL; // get the size scalar
@@ -146,13 +159,13 @@ void draw_lots_o_aliens(uint32_t pos, uint32_t width, uint32_t sprite_row, uint3
     // Draw the aliens based on grid dimension - size scalar
     for (uint32_t y = 0; y < grid_dimension; y++) 
     {        
-        seek_hdmi(currentPoint+(NEW_LINE)*y); // get to right point
-        write_hdmi((erase_aliens) ? black_pixels : pixels_for_entire_line, (width + SPACE_BW_ALIENS) * grid_dimension * PIXEL_SIZE_GLOBAL * NO_ALIEN_X); // draw
+        hdmi_seek(currentPoint+(NEW_LINE)*y); // get to right point
+        hdmi_write((erase_aliens) ? black_pixels : pixels_for_entire_line, (width + SPACE_BW_ALIENS) * grid_dimension * PIXEL_SIZE_GLOBAL * NO_ALIEN_X); // draw
     }
 }
 
 // This is our main draw function, we use this to draw a lot of different things
-void draw_alien(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t height, uint16_t pixel_size, char color[])
+void alien_draw(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t height, uint16_t pixel_size, char color[])
 {
     // Get all points
     uint32_t initPoint = pos; 
@@ -175,11 +188,11 @@ void draw_alien(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t 
         }
         for (uint32_t y = 0; y < grid_dimension; y++) // This for loop does the drawing based on the grid dimension, which is a size scalar
         {
-            seek_hdmi(currentPoint+(NEW_LINE)*y); // seek to the right area
-            write_hdmi(pixels_for_sprite_line, width * grid_dimension * PIXEL_SIZE_GLOBAL); // draw
+            hdmi_seek(currentPoint+(NEW_LINE)*y); // seek to the right area
+            hdmi_write(pixels_for_sprite_line, width * grid_dimension * PIXEL_SIZE_GLOBAL); // draw
         }
         currentPoint += NEW_LINE * grid_dimension; // new line
-        seek_hdmi(currentPoint); // go to new line
+        hdmi_seek(currentPoint); // go to new line
     }
 }
 
@@ -187,7 +200,7 @@ void draw_alien(const uint32_t sprite[], uint32_t pos, uint32_t width, uint32_t 
 // @ param sprite_val - this is the sprite to change
 // @ param x - x position of the alien in the 2d array
 // @ param y - y position of the alien in the 2d array
-void toggle_alien_sprite(const uint32_t* sprite_val, int16_t x, int16_t y)
+void alien_toggle_sprite(const uint32_t* sprite_val, int16_t x, int16_t y)
 {
 
     if (sprite_val == alien_gone_13x8) // if gone, don't toggle at all
@@ -228,7 +241,7 @@ void toggle_alien_sprite(const uint32_t* sprite_val, int16_t x, int16_t y)
 }
 
 // This is a helper function to toggle the sprites in our move aliens function
-void toggle_all_sprites()
+void alien_toggle_all_sprites()
 {
     /* Loop through all the aliens */
     for (uint16_t y = 0; y < NO_ALIEN_Y; y++) 
@@ -236,28 +249,28 @@ void toggle_all_sprites()
         for (uint16_t x = 0; x < NO_ALIEN_X; x++) 
         {
             // Change sprite
-            toggle_alien_sprite(alien_army_sprites[y][x], x, y); // change the sprite each time
+            alien_toggle_sprite(alien_army_sprites[y][x], x, y); // change the sprite each time
         }
     }
 }
 
 // This is our move saucer function, it will move the saucer every 30 seconds
 // @param saucer_moving_local - this is what we pass in to the move saucer function to see if moving
-bool move_saucer(bool saucer_moving_local)
+bool alien_move_saucer(bool saucer_moving_local)
 {
     if (saucer_moving_local) // pass in variable to se if it is moving
     {
         if (current_pos_saucer % NEW_LINE != FAR_RIGHT_BOUNDRY_FOR_SAUCER) // if it didn't hit the far right boundry
         {
-            draw_alien(block_2x8, current_pos_saucer, BLOCK_WIDTH, BLOCK_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black); // draw
+            alien_draw(block_2x8, current_pos_saucer, BLOCK_WIDTH, BLOCK_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black); // draw
             current_pos_saucer += PIXEL_SIZE_GLOBAL * SIZE_SCALAR; // inc the pos
-            draw_alien(saucer_16x7, current_pos_saucer, SAUCER_WIDTH, SAUCER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, green); // draw
+            alien_draw(saucer_16x7, current_pos_saucer, SAUCER_WIDTH, SAUCER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, green); // draw
 
             return true; // return true, still moving
         }
         else // if it hit edge of screen
         {
-            draw_alien(saucer_16x7, current_pos_saucer, SAUCER_WIDTH, SAUCER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black); // erase
+            alien_draw(saucer_16x7, current_pos_saucer, SAUCER_WIDTH, SAUCER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black); // erase
             current_pos_saucer = SAUCER_STARTING_POS; // reset saucer pos
             
             return false; // return false, not moving anymore
@@ -266,13 +279,13 @@ bool move_saucer(bool saucer_moving_local)
 }
 
 // This is our move alien army function, this gets called repeatly because aliens are moving all the time
-void move_alien_army() 
+void alien_move_army() 
 {
     int8_t move_distance; // move disstance
     uint32_t old_pos = current_pos_alien; // calculate old pos to erase
     bool move_down; // bool to determine if we should move down
 
-    toggle_all_sprites();
+    alien_toggle_all_sprites();
 
     /* If an alien has hit the right edge */
     if ((current_pos_alien + (SPACE_MOVING_ALIENS + SPACE_BW_ALIENS) * SIZE_SCALAR * PIXEL_SIZE_GLOBAL * (rightmost_col + 1)) % NEW_LINE == 0)
@@ -298,28 +311,21 @@ void move_alien_army()
             if (move_down) // if we are moving down, draw down
             {   
                 int16_t correction = (moving_right_alien) ? (NEW_LINE * MOVE_ROWS_DOWN_FOR_ALIENS) : (NEW_LINE * MOVE_ROWS_DOWN_FOR_ALIENS) - move_distance;
-                draw_lots_o_aliens(current_pos_alien - correction, ALIEN_SPRITE_WIDTH, height, alien_y, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black, true);
+                alien_draw_lots_o_aliens(current_pos_alien - correction, ALIEN_SPRITE_WIDTH, height, alien_y, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black, true);
             }
-            draw_lots_o_aliens(current_pos_alien, ALIEN_SPRITE_WIDTH, height, alien_y, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, magenta, false);
+            alien_draw_lots_o_aliens(current_pos_alien, ALIEN_SPRITE_WIDTH, height, alien_y, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, magenta, false);
             current_pos_alien += NEW_LINE * SIZE_SCALAR;
-            seek_hdmi(current_pos_alien);
+            hdmi_seek(current_pos_alien);
         }
         current_pos_alien += NEW_LINE * MOVE_ROWS_DOWN_FOR_ALIENS;
-        seek_hdmi(current_pos_alien);
+        hdmi_seek(current_pos_alien);
     }
     current_pos_alien = old_pos + move_distance;
-    seek_hdmi(current_pos_alien);
-}
-
-// Debugg print statement
-void draw_alien_debug_print() 
-{
-    printf("starting_pos_alien_y: %d\n\r", draw_alien_get_y_coord(current_pos_alien));
-    printf("starting_pos_alien_x: %d\n\n\r", draw_alien_get_x_coord(current_pos_alien, draw_alien_get_y_coord(current_pos_alien)));
+    hdmi_seek(current_pos_alien);
 }
 
 // This function will be called when a bullet is fired and consistently check if an alien has been hit
-bool draw_alien_detect_hit_army()
+bool alien_detect_hit_army()
 {
     for (int16_t row = NO_ALIEN_Y - 1; row >= 0; row--) // loop through the 5 Y aliens
     {
@@ -328,8 +334,8 @@ bool draw_alien_detect_hit_army()
         uint32_t bot_border = current_pos_alien + NEW_LINE * ((row + 1) * ALIEN_SPRITE_HEIGHT * SIZE_SCALAR + row * MOVE_ROWS_DOWN_FOR_ALIENS);
 
         // Get coord values for the Y borders
-        uint16_t top_border_y = draw_alien_get_y_coord(top_border);
-        uint16_t bot_border_y = draw_alien_get_y_coord(bot_border);
+        uint16_t top_border_y = alien_get_y_coord(top_border);
+        uint16_t bot_border_y = alien_get_y_coord(bot_border);
 
         
         for (int16_t col = NO_ALIEN_X - 1; col >= 0; col--) // loop through the 11 X aliens
@@ -339,12 +345,12 @@ bool draw_alien_detect_hit_army()
             uint32_t right_border = current_pos_alien + PIXEL_SIZE_GLOBAL * SIZE_SCALAR * ((col + 1) * ALIEN_SPRITE_WIDTH + col * SPACE_BW_ALIENS);
 
             // Get the coord values based of all of those
-            uint16_t bullet_y = draw_alien_get_y_coord(current_pos_bullet);
-            uint16_t bullet_x = draw_alien_get_x_coord(current_pos_bullet, bullet_y);
-            uint16_t left_border_y = draw_alien_get_y_coord(left_border);
-            uint16_t right_border_y = draw_alien_get_y_coord(right_border);
-            uint16_t left_border_x = draw_alien_get_x_coord(left_border, left_border_y);
-            uint16_t right_border_x = draw_alien_get_x_coord(right_border, right_border_y);       
+            uint16_t bullet_y = alien_get_y_coord(current_pos_bullet);
+            uint16_t bullet_x = alien_get_x_coord(current_pos_bullet, bullet_y);
+            uint16_t left_border_y = alien_get_y_coord(left_border);
+            uint16_t right_border_y = alien_get_y_coord(right_border);
+            uint16_t left_border_x = alien_get_x_coord(left_border, left_border_y);
+            uint16_t right_border_x = alien_get_x_coord(right_border, right_border_y);       
 
             // Check if a bullet is within one of the alien boxes
             if ((bullet_x >= left_border_x) &&
@@ -361,17 +367,17 @@ bool draw_alien_detect_hit_army()
                 alien_army_sprites[row][col] = alien_explosion_12x10;
 
                 // Re-track edges
-                draw_alien_track_right_edge();
-                draw_alien_track_left_edge();
+                alien_track_right_edge();
+                alien_track_left_edge();
 
                 // Update score
-                draw_ui_increase_score(row);
-                update_score(false);
+                ui_increase_score(row);
+                ui_update_score(false);
 
                 bullet_moving = false; // make sure bullet stops travelling
-                draw_alien(tankbullet_1x5, current_pos_bullet, PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black); // erase bullet
+                alien_draw(tankbullet_1x5, current_pos_bullet, PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black); // erase bullet
 
-                draw_alien_check_alien_reset();
+                alien_check_alien_reset();
 
                 return true; // true = alien hit
             }
@@ -382,21 +388,21 @@ bool draw_alien_detect_hit_army()
 }
 
 // This function detects a hit on the saucer
-void draw_alien_detect_hit_saucer() 
+void alien_detect_hit_saucer() 
 {
     // Set borderstop_left_border_saucertop_left_border_saucer
     uint32_t top_left_border_saucer = current_pos_saucer;
     uint32_t bot_right_border_saucer = current_pos_saucer + SIZE_SCALAR * (NEW_LINE * SAUCER_HEIGHT + PIXEL_SIZE_GLOBAL * SAUCER_WIDTH);
 
     // Get coord values for the Y borders
-    uint16_t top_border_saucer_y = draw_alien_get_y_coord(top_left_border_saucer);
-    uint16_t bot_border_saucer_y = draw_alien_get_y_coord(bot_right_border_saucer);
-    uint16_t left_border_saucer_x = draw_alien_get_x_coord(top_left_border_saucer, top_border_saucer_y);
-    uint16_t right_border_saucer_x = draw_alien_get_x_coord(bot_right_border_saucer, bot_border_saucer_y);       
+    uint16_t top_border_saucer_y = alien_get_y_coord(top_left_border_saucer);
+    uint16_t bot_border_saucer_y = alien_get_y_coord(bot_right_border_saucer);
+    uint16_t left_border_saucer_x = alien_get_x_coord(top_left_border_saucer, top_border_saucer_y);
+    uint16_t right_border_saucer_x = alien_get_x_coord(bot_right_border_saucer, bot_border_saucer_y);       
 
     // Get the coord values for bullet
-    uint16_t bullet_y = draw_alien_get_y_coord(current_pos_bullet);
-    uint16_t bullet_x = draw_alien_get_x_coord(current_pos_bullet, bullet_y);
+    uint16_t bullet_y = alien_get_y_coord(current_pos_bullet);
+    uint16_t bullet_x = alien_get_x_coord(current_pos_bullet, bullet_y);
 
     // Check if a bullet is within one of the saucer boxes
     if ((bullet_x >= left_border_saucer_x) &&
@@ -407,18 +413,18 @@ void draw_alien_detect_hit_saucer()
         // Kill the saucer
         saucer_moving = false;
         bullet_moving = false;
-        draw_alien(saucer_16x7, current_pos_saucer, SAUCER_WIDTH, SAUCER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black); // erase
-        draw_alien(tankbullet_1x5, current_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
+        alien_draw(saucer_16x7, current_pos_saucer, SAUCER_WIDTH, SAUCER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black); // erase
+        alien_draw(tankbullet_1x5, current_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
         current_pos_saucer = SAUCER_STARTING_POS; // reset saucer pos
 
         // Inc the score
-        draw_ui_increase_score_saucer();
-        update_score(false);
+        ui_increase_score_saucer();
+        ui_update_score(false);
     }
 }
 
 // This function makes sure all aliens are dead
-void draw_alien_check_alien_reset() 
+void alien_check_alien_reset() 
 {
     // Loop through all aliens
     for (uint16_t row = 0; row < NO_ALIEN_Y; row++)
@@ -435,9 +441,9 @@ void draw_alien_check_alien_reset()
 
     // If we got here, they're all dead
     // Reset aliens
-    erase_dead_aliens();
+    alien_erase_dead();
     // Wait until explosion is over
-    move_alien_army();
+    alien_move_army();
 
     current_pos_alien = ALIEN_START_POS;
     moving_right_alien = true;
@@ -464,11 +470,11 @@ void draw_alien_check_alien_reset()
             }
         }
     }
-    draw_ui_increment_lives();
+    ui_increment_lives();
 }
 
 // This function checks to see if an alien is dead by checking the bool array, if it is, erase
-void erase_dead_aliens()
+void alien_erase_dead()
 {
     for (uint16_t y = 0; y < NO_ALIEN_Y; y++) // loop through the 5 Y aliens
     {
@@ -484,42 +490,42 @@ void erase_dead_aliens()
 }
 
 // This function fires the alien bullet
-void draw_alien_fire_alien_bullet(uint8_t bullet_num)
+void alien_fire_bullet(uint8_t bullet_num)
 {
     // Declare variables
     uint32_t old_pos_bullet = alien_bullet_pos[bullet_num];
 
-    uint16_t y_coord = draw_alien_get_y_coord(old_pos_bullet);
+    uint16_t y_coord = alien_get_y_coord(old_pos_bullet);
 
     alien_bullet_pos[bullet_num] += (NEW_LINE*2); // make bullet go down
 
-    draw_alien(alien_bullet_sprites[bullet_num], old_pos_bullet, 3, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
-    draw_alien_toggle_bullet_sprite(bullet_num);
+    alien_draw(alien_bullet_sprites[bullet_num], old_pos_bullet, 3, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
+    alien_toggle_bullet_sprite(bullet_num);
 
-    draw_alien(alien_bullet_sprites[bullet_num], alien_bullet_pos[bullet_num], 3, 5, PIXEL_SIZE_GLOBAL*2, magenta); // draw new bullet
+    alien_draw(alien_bullet_sprites[bullet_num], alien_bullet_pos[bullet_num], 3, 5, PIXEL_SIZE_GLOBAL*2, magenta); // draw new bullet
 
     // At this point, bullet gone
     if (alien_bullet_pos[bullet_num] > (NEW_LINE * 470)) 
     {
         alien_bullet_moving[bullet_num] = false;
-        draw_alien(alien_bullet_sprites[bullet_num], alien_bullet_pos[bullet_num], 3, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
+        alien_draw(alien_bullet_sprites[bullet_num], alien_bullet_pos[bullet_num], 3, 5, PIXEL_SIZE_GLOBAL*2, black); // erase old bullet
     }
 }
 
 // This function loops through the aliens and fires the bullets
-void draw_alien_fire_alien_bullets() 
+void alien_fire_bullets() 
 {
     for (uint8_t i = 0; i < MAX_BULLETS; i++) 
     {
         if (alien_bullet_moving[i]) 
         {
-            draw_alien_fire_alien_bullet(i);
+            alien_fire_bullet(i);
         }
     }
 }
 
 // This function will draw the alien bullets, should be a max of 4 at a time
-void draw_alien_trigger_bullets()
+void alien_trigger_bullets()
 {
     // SEt random variables for triggering bullets
     uint8_t random = rand() % 3 + 1;
@@ -576,6 +582,6 @@ void draw_alien_trigger_bullets()
                                             // Horizontal
                                             PIXEL_SIZE_GLOBAL * (alien_fire_col * SIZE_SCALAR * (ALIEN_SPRITE_WIDTH + SPACE_BW_ALIENS) + ALIEN_SPRITE_WIDTH);
         alien_bullet_moving[bullet_available] = true;
-        draw_alien_fire_alien_bullet(bullet_available);
+        alien_fire_bullet(bullet_available);
     }
 }

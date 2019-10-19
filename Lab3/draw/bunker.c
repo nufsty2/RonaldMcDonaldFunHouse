@@ -1,6 +1,6 @@
 #include "bunker.h"
 #include "../sprites/sprites.c"
-#include "../draw/draw_alien.h"
+#include "../draw/alien.h"
 
 /* Defines specific for this C file */
 #define NUM_BUNKERS 4
@@ -23,7 +23,7 @@ extern uint32_t alien_bullet_pos[];
 extern bool alien_bullet_moving[];
 
 /* Colors used in this file */
-extern char tan[];
+extern char red[];
 extern char black[];
 
 
@@ -94,7 +94,7 @@ void bunker_init()
                 pos += PIXEL_SIZE_GLOBAL * SIZE_SCALAR * BUNKER_DAMAGE_DIM * ALIEN_BULLET_WIDTH;
             }
         }
-        draw_alien(bunker_24x18, current_bunker_pos, BUNKER_WIDTH, BUNKER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, tan);
+        alien_draw(bunker_24x18, current_bunker_pos, BUNKER_WIDTH, BUNKER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, red);
         pos = current_bunker_pos + (PIXEL_SIZE_GLOBAL * BUNKER_WIDTH) * BUNKER_DAMAGE_DIM;
     }
 }
@@ -133,16 +133,16 @@ void bunker_detect_hit_player()
             uint32_t bot_border = bunker_pos[i][j] + BUNKER_DAMAGE_DIM * NEW_LINE * SIZE_SCALAR;
 
             // Get coord values for the Y borders
-            uint16_t top_border_y = draw_alien_get_y_coord(top_border);
-            uint16_t bot_border_y = draw_alien_get_y_coord(bot_border);
+            uint16_t top_border_y = alien_get_y_coord(top_border);
+            uint16_t bot_border_y = alien_get_y_coord(bot_border);
 
             // Get the coord values based of all of those
-            uint16_t bullet_y = draw_alien_get_y_coord(current_pos_bullet);
-            uint16_t bullet_x = draw_alien_get_x_coord(current_pos_bullet, bullet_y);
-            uint16_t left_border_y = draw_alien_get_y_coord(left_border);
-            uint16_t right_border_y = draw_alien_get_y_coord(right_border);
-            uint16_t left_border_x = draw_alien_get_x_coord(left_border, left_border_y);
-            uint16_t right_border_x = draw_alien_get_x_coord(right_border, right_border_y);       
+            uint16_t bullet_y = alien_get_y_coord(current_pos_bullet);
+            uint16_t bullet_x = alien_get_x_coord(current_pos_bullet, bullet_y);
+            uint16_t left_border_y = alien_get_y_coord(left_border);
+            uint16_t right_border_y = alien_get_y_coord(right_border);
+            uint16_t left_border_x = alien_get_x_coord(left_border, left_border_y);
+            uint16_t right_border_x = alien_get_x_coord(right_border, right_border_y);       
 
             // Check if a bullet is within one of the bunker blocks
             if ((bunker_damage[i][j] != bunkerGone_6x6) &&
@@ -163,11 +163,11 @@ void bunker_detect_hit_player()
                 }
 
                 // Draw new damage
-                draw_alien(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, tan);
+                alien_draw(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, red);
 
                 // Erase bullet
                 bullet_moving = false; // make sure bullet stops travelling
-                draw_alien(tankbullet_1x5, current_pos_bullet, PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black); // erase bullet
+                alien_draw(tankbullet_1x5, current_pos_bullet, PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black); // erase bullet
             }
         }
     }
@@ -187,7 +187,7 @@ void bunker_redraw_all()
             }
 
             // Draw new damage
-            draw_alien(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, tan);
+            alien_draw(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, red);
         }
     }
 }
@@ -212,17 +212,17 @@ void bunker_detect_hit_alien(uint8_t bullet_num)
             uint32_t bot_border = bunker_pos[i][j] + BUNKER_DAMAGE_DIM * NEW_LINE * SIZE_SCALAR;
 
             // Get coord values for the Y borders
-            uint16_t top_border_y = draw_alien_get_y_coord(top_border);
-            uint16_t bot_border_y = draw_alien_get_y_coord(bot_border);
+            uint16_t top_border_y = alien_get_y_coord(top_border);
+            uint16_t bot_border_y = alien_get_y_coord(bot_border);
 
             // Get the coord values based of all of those
-            uint16_t bullet_bottom_y = draw_alien_get_y_coord(bullet_bottom_left);
-            uint16_t bullet_bottom_left_x = draw_alien_get_x_coord(bullet_bottom_left, bullet_bottom_y);
-            uint16_t bullet_bottom_right_x = draw_alien_get_x_coord(bullet_bottom_right, bullet_bottom_y);
-            uint16_t left_border_y = draw_alien_get_y_coord(left_border);
-            uint16_t right_border_y = draw_alien_get_y_coord(right_border);
-            uint16_t left_border_x = draw_alien_get_x_coord(left_border, left_border_y);
-            uint16_t right_border_x = draw_alien_get_x_coord(right_border, right_border_y);       
+            uint16_t bullet_bottom_y = alien_get_y_coord(bullet_bottom_left);
+            uint16_t bullet_bottom_left_x = alien_get_x_coord(bullet_bottom_left, bullet_bottom_y);
+            uint16_t bullet_bottom_right_x = alien_get_x_coord(bullet_bottom_right, bullet_bottom_y);
+            uint16_t left_border_y = alien_get_y_coord(left_border);
+            uint16_t right_border_y = alien_get_y_coord(right_border);
+            uint16_t left_border_x = alien_get_x_coord(left_border, left_border_y);
+            uint16_t right_border_x = alien_get_x_coord(right_border, right_border_y);       
 
             // Check if a bullet is within one of the bunker blocks
             if ((bunker_damage[i][j] != bunkerGone_6x6) &&
@@ -243,11 +243,11 @@ void bunker_detect_hit_alien(uint8_t bullet_num)
                 }
 
                 // Draw new damage
-                draw_alien(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, tan);
+                alien_draw(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, red);
 
                 // Erase bullet
                 alien_bullet_moving[bullet_num] = false; // make sure bullet stops travelling
-                draw_alien(alienbullet2_down_3x5, alien_bullet_pos[bullet_num], ALIEN_BULLET_WIDTH, ALIEN_BULLET_HEIGHT, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black); // erase bullet
+                alien_draw(alienbullet2_down_3x5, alien_bullet_pos[bullet_num], ALIEN_BULLET_WIDTH, ALIEN_BULLET_HEIGHT, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black); // erase bullet
             }
         }
     }
