@@ -6,4 +6,6 @@
 
 void init();
 
+void init_end_game();
+
 #endif

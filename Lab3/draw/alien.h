@@ -25,8 +25,8 @@ void alien_trigger_bullets();
 
 void alien_fire_bullets();
 
-uint16_t draw_alien_get_y_coord(uint32_t coord);
+uint16_t alien_get_y_coord(uint32_t coord);
 
-uint16_t draw_alien_get_x_coord(uint32_t coord, uint16_t y_coord);
+uint16_t alien_get_x_coord(uint32_t coord, uint16_t y_coord);
 
 #endif

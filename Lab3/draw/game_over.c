@@ -1,6 +1,7 @@
 #include "game_over.h"
 #include "../sprites/sprites.c"
 #include "generic.h"
+#include "ui.h"
 
 /* Defines in this C file */
 #define NUM_CHARS_IN_SCORE 3
@@ -56,7 +57,7 @@ void game_over_print_score(score_t score, uint32_t pos)
     // Check for errors first
     for (uint8_t i = 0; i < NUM_CHARS_IN_SCORE; i++) 
     {
-        if (score.name[i] == NULL) 
+        if (score.name[i] < 'A') 
         {
             return;
         }

@@ -6,7 +6,7 @@ char   white[PIXEL_SIZE_GLOBAL]  = {0xFF, 0xFF, 0xFF};
 char   green[PIXEL_SIZE_GLOBAL]  = {0x00, 0xFF, 0x77};
 char   black[PIXEL_SIZE_GLOBAL]  = {0x00, 0x00, 0x00};
 char    cyan[PIXEL_SIZE_GLOBAL]  = {0x11, 0xFF, 0xFF};
-char     tan[PIXEL_SIZE_GLOBAL]  = {0xFF, 0x55, 0x55};
+char     red[PIXEL_SIZE_GLOBAL]  = {0xFF, 0x55, 0x55};
 char magenta[PIXEL_SIZE_GLOBAL]  = {0xFF, 0x66, 0xFF};
 char black_pixels[LINE_OF_BLACK_PIXELS];
 

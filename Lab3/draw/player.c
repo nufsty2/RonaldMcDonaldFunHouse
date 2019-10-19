@@ -1,6 +1,7 @@
 #include "player.h"
 #include "ui.h"
 #include "../sprites/sprites.c"
+#include "alien.h"
 
 /* Player attributes */
 extern uint32_t current_pos_bullet;
@@ -25,7 +26,7 @@ void player_fire_bullet()
     // Declare variables
     uint32_t old_pos_bullet = current_pos_bullet;
 
-    uint16_t y_coord = draw_alien_get_y_coord(current_pos_bullet);
+    uint16_t y_coord = alien_get_y_coord(current_pos_bullet);
     
     // Move bullet up
     old_pos_bullet = current_pos_bullet;
@@ -102,17 +103,17 @@ void player_detect_alien_hit()
         uint32_t bot_border = current_pos_player + 8 * NEW_LINE * SIZE_SCALAR;
 
         // Get coord values for the Y borders
-        uint16_t top_border_y = draw_alien_get_y_coord(top_border);
-        uint16_t bot_border_y = draw_alien_get_y_coord(bot_border);
+        uint16_t top_border_y = alien_get_y_coord(top_border);
+        uint16_t bot_border_y = alien_get_y_coord(bot_border);
 
         // Get the coord values based of all of those
-        uint16_t bullet_bottom_y = draw_alien_get_y_coord(bullet_bottom_left);
-        uint16_t bullet_bottom_left_x = draw_alien_get_x_coord(bullet_bottom_left, bullet_bottom_y);
-        uint16_t bullet_bottom_right_x = draw_alien_get_x_coord(bullet_bottom_right, bullet_bottom_y);
-        uint16_t left_border_y = draw_alien_get_y_coord(left_border);
-        uint16_t right_border_y = draw_alien_get_y_coord(right_border);
-        uint16_t left_border_x = draw_alien_get_x_coord(left_border, left_border_y);
-        uint16_t right_border_x = draw_alien_get_x_coord(right_border, right_border_y);       
+        uint16_t bullet_bottom_y = alien_get_y_coord(bullet_bottom_left);
+        uint16_t bullet_bottom_left_x = alien_get_x_coord(bullet_bottom_left, bullet_bottom_y);
+        uint16_t bullet_bottom_right_x = alien_get_x_coord(bullet_bottom_right, bullet_bottom_y);
+        uint16_t left_border_y = alien_get_y_coord(left_border);
+        uint16_t right_border_y = alien_get_y_coord(right_border);
+        uint16_t left_border_x = alien_get_x_coord(left_border, left_border_y);
+        uint16_t right_border_x = alien_get_x_coord(right_border, right_border_y);       
 
         // Check if a bullet is within one of the bunker blocks
         if ((bullet_bottom_left_x >= left_border_x  || bullet_bottom_right_x >= left_border_x)  &&

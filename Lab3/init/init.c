@@ -2,6 +2,11 @@
 #include "../draw/bunker.h"
 #include "../draw/generic.h"
 #include "../draw/alien.h"
+#include "../hdmi/hdmi.h"
+#include "../draw/ui.h"
+#include "../../Lab2/intc/intc.h"
+#include "../../Lab2/buttons/buttons.h"
+#include "../../Lab2/switches/switches.h"
 
 extern bool game_over;
 extern char char_0;
@@ -9,7 +14,7 @@ extern char char_1;
 extern char char_2;
 extern char white[];
 extern char cyan[];
-extern char tan[];
+extern char red[];
 extern char magenta[];
 extern char black[];
 extern char white[];

@@ -9,4 +9,6 @@ void player_fire_bullet();
 // This function actually moves the player
 void player_move();
 
+void player_detect_alien_hit();
+
 #endif

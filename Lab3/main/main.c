@@ -1,10 +1,15 @@
-#include "../draw/alien.h"
 #include "../globals/globals.h"
 #include "../scores/scores.h"
-#include "../draw/ui.h"
 #include "../init/init.h"
+#include "../hdmi/hdmi.h"
+#include "../draw/alien.h"
+#include "../draw/ui.h"
 #include "../draw/bunker.h"
 #include "../draw/generic.h"
+#include "../draw/game_over.h"
+#include "../draw/player.h"
+#include "../../Lab2/buttons/buttons.h"
+#include "../../Lab2/switches/switches.h"
 
 /* Buttons and Switches */
 extern uint32_t debounce_ctr;

@@ -1,7 +1,7 @@
 #include "ui.h"
 #include "../sprites/sprites.c"
-#include <time.h>
 #include "generic.h"
+#include "alien.h"
 
 // Defines only in this C file
 #define MAX_LIVES 5

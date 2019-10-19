@@ -2,6 +2,7 @@
 #include "../sprites/sprites.c"
 #include "../draw/ui.h"
 #include "../draw/bunker.h"
+#include "../hdmi/hdmi.h"
 
 #define SAUCER_HEIGHT 7
 #define SACCER_WIDTH  16
@@ -64,13 +65,13 @@ void alien_init()
 }
 
 // This function gets the y coord of whatever we put in (alien, player, bunker)
-uint16_t draw_alien_get_y_coord(uint32_t coord)
+uint16_t alien_get_y_coord(uint32_t coord)
 {
     return coord / NEW_LINE;
 }
 
 // This function gets the x coord of whatever, depejnds on Y coord
-uint16_t draw_alien_get_x_coord(uint32_t coord, uint16_t y_coord)
+uint16_t alien_get_x_coord(uint32_t coord, uint16_t y_coord)
 {
     return (coord - y_coord * NEW_LINE) / PIXEL_SIZE_GLOBAL;
 }
@@ -333,8 +334,8 @@ bool alien_detect_hit_army()
         uint32_t bot_border = current_pos_alien + NEW_LINE * ((row + 1) * ALIEN_SPRITE_HEIGHT * SIZE_SCALAR + row * MOVE_ROWS_DOWN_FOR_ALIENS);
 
         // Get coord values for the Y borders
-        uint16_t top_border_y = draw_alien_get_y_coord(top_border);
-        uint16_t bot_border_y = draw_alien_get_y_coord(bot_border);
+        uint16_t top_border_y = alien_get_y_coord(top_border);
+        uint16_t bot_border_y = alien_get_y_coord(bot_border);
 
         
         for (int16_t col = NO_ALIEN_X - 1; col >= 0; col--) // loop through the 11 X aliens
@@ -344,12 +345,12 @@ bool alien_detect_hit_army()
             uint32_t right_border = current_pos_alien + PIXEL_SIZE_GLOBAL * SIZE_SCALAR * ((col + 1) * ALIEN_SPRITE_WIDTH + col * SPACE_BW_ALIENS);
 
             // Get the coord values based of all of those
-            uint16_t bullet_y = draw_alien_get_y_coord(current_pos_bullet);
-            uint16_t bullet_x = draw_alien_get_x_coord(current_pos_bullet, bullet_y);
-            uint16_t left_border_y = draw_alien_get_y_coord(left_border);
-            uint16_t right_border_y = draw_alien_get_y_coord(right_border);
-            uint16_t left_border_x = draw_alien_get_x_coord(left_border, left_border_y);
-            uint16_t right_border_x = draw_alien_get_x_coord(right_border, right_border_y);       
+            uint16_t bullet_y = alien_get_y_coord(current_pos_bullet);
+            uint16_t bullet_x = alien_get_x_coord(current_pos_bullet, bullet_y);
+            uint16_t left_border_y = alien_get_y_coord(left_border);
+            uint16_t right_border_y = alien_get_y_coord(right_border);
+            uint16_t left_border_x = alien_get_x_coord(left_border, left_border_y);
+            uint16_t right_border_x = alien_get_x_coord(right_border, right_border_y);       
 
             // Check if a bullet is within one of the alien boxes
             if ((bullet_x >= left_border_x) &&
@@ -394,14 +395,14 @@ void alien_detect_hit_saucer()
     uint32_t bot_right_border_saucer = current_pos_saucer + SIZE_SCALAR * (NEW_LINE * SAUCER_HEIGHT + PIXEL_SIZE_GLOBAL * SAUCER_WIDTH);
 
     // Get coord values for the Y borders
-    uint16_t top_border_saucer_y = draw_alien_get_y_coord(top_left_border_saucer);
-    uint16_t bot_border_saucer_y = draw_alien_get_y_coord(bot_right_border_saucer);
-    uint16_t left_border_saucer_x = draw_alien_get_x_coord(top_left_border_saucer, top_border_saucer_y);
-    uint16_t right_border_saucer_x = draw_alien_get_x_coord(bot_right_border_saucer, bot_border_saucer_y);       
+    uint16_t top_border_saucer_y = alien_get_y_coord(top_left_border_saucer);
+    uint16_t bot_border_saucer_y = alien_get_y_coord(bot_right_border_saucer);
+    uint16_t left_border_saucer_x = alien_get_x_coord(top_left_border_saucer, top_border_saucer_y);
+    uint16_t right_border_saucer_x = alien_get_x_coord(bot_right_border_saucer, bot_border_saucer_y);       
 
     // Get the coord values for bullet
-    uint16_t bullet_y = draw_alien_get_y_coord(current_pos_bullet);
-    uint16_t bullet_x = draw_alien_get_x_coord(current_pos_bullet, bullet_y);
+    uint16_t bullet_y = alien_get_y_coord(current_pos_bullet);
+    uint16_t bullet_x = alien_get_x_coord(current_pos_bullet, bullet_y);
 
     // Check if a bullet is within one of the saucer boxes
     if ((bullet_x >= left_border_saucer_x) &&
@@ -494,7 +495,7 @@ void alien_fire_bullet(uint8_t bullet_num)
     // Declare variables
     uint32_t old_pos_bullet = alien_bullet_pos[bullet_num];
 
-    uint16_t y_coord = draw_alien_get_y_coord(old_pos_bullet);
+    uint16_t y_coord = alien_get_y_coord(old_pos_bullet);
 
     alien_bullet_pos[bullet_num] += (NEW_LINE*2); // make bullet go down
 
