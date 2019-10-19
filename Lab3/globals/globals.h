@@ -76,6 +76,10 @@
 #define SAUCER_WIDTH 16
 #define SAUCER_HEIGHT 7
 
+/* Alien bullet defines */
+#define ALIEN_BULLET_WIDTH 3
+#define ALIEN_BULLET_HEIGHT 5
+
 /* Black block attributes */
 #define BLOCK_WIDTH 2
 #define BLOCK_HEIGHT 8
@@ -84,6 +88,10 @@
 #define NO_LIVES 3
 #define TANK_WIDTH 15
 #define TANK_HEIGHT 8
+
+/* Player bullet defines */
+#define PLAYER_BULLET_WIDTH 1
+#define PLAYER_BULLET_HEIGHT 5
 
 /* Game over Defines */
 #define DEFAULT_GAME_OVER_CHAR_0 'A'

@@ -369,7 +369,7 @@ bool draw_alien_detect_hit_army()
                 update_score(false);
 
                 bullet_moving = false; // make sure bullet stops travelling
-                draw_alien(tankbullet_1x5, current_pos_bullet, 1, 5, PIXEL_SIZE_GLOBAL*2, black); // erase bullet
+                draw_alien(tankbullet_1x5, current_pos_bullet, PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black); // erase bullet
 
                 draw_alien_check_alien_reset();
 

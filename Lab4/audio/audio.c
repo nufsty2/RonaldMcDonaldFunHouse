@@ -30,7 +30,13 @@ static int audio_init(void)
   pr_info("%s: Initializing Audio Driver!\n", MODULE_NAME);
  
   // Get a major number for the driver -- alloc_chrdev_region; // pg. 45, LDD3.
-  int major_num = alloc_chrdev_region();
+  dev_t* first_num;
+
+  // 1st param - output - will hold first number of allocated range
+  // 2nd param - requested first minor number to use, usually 0
+  // 3rd param - count - total number of contagious device numbers requested
+  // 4th param - name - name of device associated with number range (appear in /proc/devices and sysfs)
+  int major_num = alloc_chrdev_region(first_num, 0, 1, );
  
   // Create a device class. -- class_create()
  
