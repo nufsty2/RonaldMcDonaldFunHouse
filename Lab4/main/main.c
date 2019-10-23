@@ -8,5 +8,5 @@ static uint32_t file;
 
 int main()
 {
-    file = open("", )
+    file = open("/dev/audio", O_RDWR);
 }

@@ -47,13 +47,15 @@ struct audio_device
     // Add any items to this that you need
 }; 
 
+static struct resource* phys_address;
+static struct resource* irq;
 static struct audio_device adev;
 static struct file_operations fops;
 static struct class *the_class; // for our class_create function, gets init'd later
 static dev_t dev_device; // gets init'd in alloc_chrdev_region
 static struct of_device_id audio_of_match[] = 
 {
-  { .compatible = "xlnx,xps-intc-1.00.a", },
+  { .compatible = "byu,ecen427-audio_codec", },
   {}
 };
 
@@ -134,6 +136,7 @@ static void audio_exit(void)
 // Called by kernel when a platform device is detected that matches the 'compatible' name of this driver.
 static int audio_probe(struct platform_device *pdev) 
 {   
+  pr_info("DEBUG: Calling audio_probe!\n");
   // Initialize the character device structure (cdev_init)
   // 1st Param - the cdev to init - Output
   // 2nd Param - file operations for this device
@@ -149,7 +152,7 @@ static int audio_probe(struct platform_device *pdev)
   adev.dev = device_create(the_class, NULL, dev_device, NULL, MODULE_NAME);
  
   // Get the physical device address from the device tree -- platform_get_resource
-  struct resource* plat_resource = platform_get_resource(pdev, 0, 0); // TODO: check 2nd and 3rd params
+  phys_address = platform_get_resource(pdev, IORESOURCE_MEM, 0); // TODO: check 2nd and 3rd params
 
   // Reserve the memory region -- request_mem_region
   // 1st param - starting point
@@ -160,11 +163,12 @@ static int audio_probe(struct platform_device *pdev)
   // Get a (virtual memory) pointer to the device -- ioremap
   // 1st param - physical address
   // 2nd param - size in bytes
-  ioremap(adev.phys_addr, 0x10000); 
+  adev.virt_addr = ioremap(adev.phys_addr, 0x10000); 
  
   // Get the IRQ number from the device tree -- platform_get_resource
   // Register your interrupt service routine -- request_irq
-  // TODO: THIS STUFF
+  irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+  pr_info("DEBUG: The IRQ's name is: %s\n", irq->name);
  
   // If any of the above functions fail, return an appropriate linux error code, and make sure
   // you reverse any function calls that were successful.
@@ -178,12 +182,16 @@ static int audio_remove(struct platform_device * pdev)
 {
   // iounmap
   // 1st Param - virutal address
+  printk("DEBUG: Before unmapping\n");  
   iounmap(adev.virt_addr);
+  printk("DEBUG: After unmapping\n");
 
   // release_mem_region
   // 1st param - start - TODO - find right values for it
   // 2nd param - length
+  printk("DEBUG: Before releasing mem region\n");
   release_mem_region(adev.phys_addr, adev.mem_size);
+  printk("DEBUG: After releasing mem region\n");
 
   // device_destroy
   // 1st Param - pointer to struct class that this device is registered with (class)
