@@ -40,9 +40,9 @@ struct audio_device
   struct platform_device * pdev;      // Platform device pointer
   struct device* dev;                 // device (/dev)
  
-  phys_addr_t phys_addr;              // Physical address
-  u32 mem_size;                       // Allocated mem space size 
-  u32* virt_addr;                     // Virtual address
+  unsigned long phys_addr;              // Physical address
+  unsigned long mem_size;                       // Allocated mem space size 
+  unsigned long* virt_addr;                     // Virtual address
  
     // Add any items to this that you need
 }; 
@@ -59,7 +59,6 @@ static struct of_device_id audio_of_match[] =
   {}
 };
 
-MODULE_DEVICE_TABLE(of, audio_of_match);
 static struct platform_driver pd =
 {
    .probe = audio_probe,
@@ -80,7 +79,7 @@ static int audio_init(void)
   // Get a major number for the driver -- alloc_chrdev_region; // pg. 45, LDD3.
   // 1st param - output - will hold first number of allocated range
   // 2nd param - requested first minor number to use, usually 0
-  // 3rd param - count - total number of contagious device numbers requested
+  // 3rd param - count - total number of contiguous device numbers requested
   // 4th param - name - name of device associated with number range (appear in /proc/devices and sysfs)
   int major_num = alloc_chrdev_region(&dev_device, 0, 1, MODULE_NAME);
   pr_info("DEBUG: Major Number for Audio: %d\n", MAJOR(dev_device));
@@ -96,11 +95,9 @@ static int audio_init(void)
   int reg_platform_driver = platform_driver_register(&pd);
   pr_info("DEBUG: Platform driver return code: %d\n", reg_platform_driver);
 
-
-
   adev.minor_num = MINOR(dev_device);
   adev.cdev = *cdev_alloc();
-  adev.phys_addr = 0x41810000;
+  adev.phys_addr = 0x43C20000;
   adev.mem_size = 0x10000;
 
  
@@ -117,12 +114,14 @@ static int audio_init(void)
 // This is called when Linux unloads your driver
 static void audio_exit(void) 
 {
+  pr_info("DEBUG: Entering audio_exit!\n");
   // platform_driver_unregister
   // Param - platform driver structure (platform_driver* drv)
   platform_driver_unregister(&pd);
 
   // class_unregister and class_destroy
   // Param - class struct
+  class_unregister(the_class);
   class_destroy(the_class);
 
   // unregister_chrdev_region
@@ -158,16 +157,25 @@ static int audio_probe(struct platform_device *pdev)
   // 1st param - starting point
   // 2nd param - length of bytes
   // 3rd param - name of module
-  struct resource* mem_resource = request_mem_region(0, 0x10000, MODULE_NAME); // TODO: check 1st and 2nd params
+
+  FIXME: Why is mem_resource NULL?
+
+  pr_info("DEBUG: phys_address = 0x%X - 0x%X\n", phys_address->start, phys_address->end);
+  struct resource *mem_resource = request_mem_region(phys_address->start, adev.mem_size, MODULE_NAME); // TODO: check 1st and 2nd params
+  if (mem_resource == NULL) 
+    pr_info("DEBUG: mem_resource is NULL!\n");
+  else
+    pr_info("DEBUG: mem_resource = 0x%X - 0x%X, adev.phys_addr = 0x%X\n", mem_resource->start, mem_resource->end, adev.phys_addr);
 
   // Get a (virtual memory) pointer to the device -- ioremap
   // 1st param - physical address
   // 2nd param - size in bytes
-  adev.virt_addr = ioremap(adev.phys_addr, 0x10000); 
- 
+  adev.virt_addr = ioremap(adev.phys_addr, adev.mem_size);
+
   // Get the IRQ number from the device tree -- platform_get_resource
   // Register your interrupt service routine -- request_irq
   irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+  // request_irq(irq);
   pr_info("DEBUG: The IRQ's name is: %s\n", irq->name);
  
   // If any of the above functions fail, return an appropriate linux error code, and make sure
