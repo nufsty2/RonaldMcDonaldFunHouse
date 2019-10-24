@@ -202,11 +202,9 @@ static int audio_probe(struct platform_device *pdev)
   if (cdev_added < 0)
     return AUDIO_PROBE_CDEV_ADD_FAIL;
  
-  u32 status = ioread32((void*)(adev.virt_addr + 0x10));
-  
+  u32 status = ioread32((void*)(adev.virt_addr) + 0x10);
   status |= 0x1;
-
-  iowrite32(status, (void*)(adev.virt_addr + 0x10));
+  iowrite32(status, (void*)(adev.virt_addr) + 0x10);
 
   return AUDIO_PROBE_SUCCESS; //(success)
 }

@@ -4,7 +4,7 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
-static uint32_t file;
+static int file;
 
 int main()
 { 
