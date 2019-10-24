@@ -25,6 +25,8 @@ MODULE_DESCRIPTION("ECEn 427 Audio Driver");
 #define AUDIO_PROBE_SUCCESS 0
 #define AUDIO_PROBE_CDEV_ADD_FAIL -3
 
+#define IRQ_OFFSET 0x10
+
 // Function declarations for the kernal
 static int audio_init(void);
 static void audio_exit(void);
@@ -33,8 +35,6 @@ static int audio_remove(struct platform_device * pdev);
 static ssize_t audio_read(struct file *f, char __user *u, size_t size, loff_t *off);
 static ssize_t audio_write(struct file *f, const char __user *u, size_t size, loff_t *off);
 static irqreturn_t audio_irq(int i, void *v);
-void audio_interrupts_write(uint32_t offset, uint32_t value);
-uint32_t audio_interrupts_read(uint32_t offset);
 
 // Init and exit declarations 
 module_init(audio_init);
@@ -83,9 +83,6 @@ static struct platform_driver pd =
      .of_match_table = audio_of_match,
    },
 };
-
-// TEMP
-static struct cdev temp_cdev;
  
 // This is called when Linux loads your driver
 static int audio_init(void) 
@@ -109,7 +106,7 @@ static int audio_init(void)
   // Register the driver as a platform driver -- platform_driver_register
   // Param - platform driver structure
   int reg_platform_driver = platform_driver_register(&pd);
-  pr_info("DEBUG: Platform driver return code: %d\n", reg_platform_driver);
+  pr_info("DEBUG: Reg platform driver return value = %d\n", reg_platform_driver);
 
   adev.minor_num = MINOR(dev_device);
   adev.phys_addr = 0x43C20000;
@@ -129,24 +126,19 @@ static int audio_init(void)
 // This is called when Linux unloads your driver
 static void audio_exit(void) 
 {
-  pr_info("DEBUG: Entering audio_exit!\n");
   // platform_driver_unregister
   // Param - platform driver structure (platform_driver* drv)
   platform_driver_unregister(&pd);
-  pr_info("DEBUG: Got past driver_unregister!\n");
 
   // class_unregister and class_destroy
   // Param - class struct
   class_unregister(the_class);
-  pr_info("DEBUG: Got past class_unregister\n");
   class_destroy(the_class);
-  pr_info("DEBUG: Got past class_destroy\n");
 
   // unregister_chrdev_region
   // 1st param - first number in the range
   // 2nd param - number of device numbers to unregister
   unregister_chrdev_region(dev_device, 1);
-  pr_info("DEBUG: Got past unregister_chrdev_region\n");
 
   return;
 }
@@ -177,19 +169,14 @@ static int audio_probe(struct platform_device *pdev)
   // 1st param - starting point
   // 2nd param - length of bytes
   // 3rd param - name of module
-  pr_info("DEBUG: phys_address = 0x%X - 0x%X\n", phys_address->start, phys_address->end);
-  pr_info("DEBUG: mem_size = %x\n", adev.mem_size);
   struct resource *mem_resource = request_mem_region(phys_address->start, 0x10000, MODULE_NAME); // TODO: check 1st and 2nd params
-  if (mem_resource == NULL) 
-    pr_info("DEBUG: mem_resource is NULL!\n");
-  else
-    pr_info("DEBUG: mem_resource = 0x%X - 0x%X, adev.phys_addr = 0x%X\n", mem_resource->start, mem_resource->end, adev.phys_addr);
+  if (mem_resource == NULL)
+    pr_info("MEM is null in probe!\n");
 
   // Get a (virtual memory) pointer to the device -- ioremap
   // 1st param - physical address
   // 2nd param - size in bytes
   adev.virt_addr = ioremap(phys_address->start, 0x10000);
-  pr_info("DEBUG: adev.virt_addr in the probe function = 0x%X", adev.virt_addr);
 
   // Get the IRQ number from the device tree -- platform_get_resource
   // Register your interrupt service routine -- request_irq
@@ -202,54 +189,54 @@ static int audio_probe(struct platform_device *pdev)
   if (cdev_added < 0)
     return AUDIO_PROBE_CDEV_ADD_FAIL;
  
-  u32 status = ioread32((void*)(adev.virt_addr) + 0x10);
+  // Enabling interrupts
+  u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / 4);
+  pr_info("DEBUG: Before oring status %x\n", status);
   status |= 0x1;
-  iowrite32(status, (void*)(adev.virt_addr) + 0x10);
+  pr_info("DEBUG: After oring status %x\n", status);
+  iowrite32(status, (adev.virt_addr + IRQ_OFFSET / 4));
+  pr_info("DEBUG: After iowrite32!!\n");
 
   return AUDIO_PROBE_SUCCESS; //(success)
 }
  
 static int audio_remove(struct platform_device * pdev) 
 {
+
+  free_irq(irq->start, NULL);
+
   // iounmap
   // 1st Param - virutal address
-  pr_info("DEBUG: adev.virt_addr in the remove function = 0x%X", adev.virt_addr);
   iounmap(adev.virt_addr);
 
   // release_mem_region
   // 1st param - start - TODO - find right values for it
   // 2nd param - length
-  pr_info("DEBUG: adev.phys_addr amd adev.mem_size in the remove function = 0x%X and 0x%X", adev.phys_addr, adev.mem_size);
   release_mem_region(adev.phys_addr, adev.mem_size);
 
   // device_destroy
   // 1st Param - pointer to struct class that this device is registered with (class)
   // 2nd Param - dev_t of device regstered
-  pr_info("DEBUG: Entering device destroy!!!\n");
   device_destroy(the_class, dev_device);
 
   // cdev_del
   // 1st Param - cdev structure
-  pr_info("DEBUG: Entering cdev del!!!\n");
-  pr_info("DEBUG: adev.cdev major number: %d\n", MAJOR(adev.cdev.dev));
   cdev_del(&adev.cdev);
 
-  pr_info("DEBUG: Returning from audio remove!!\n");
   return 0;
 }
 
 static ssize_t audio_read(struct file *f, char __user *u, size_t size, loff_t *off)
 {
-  pr_info("AUDIO_READ() ran!\n");
   return 0;
 }
 
 static ssize_t audio_write(struct file *f, const char __user *u, size_t size, loff_t *off)
 {
-  pr_info("AUDIO_WRITE() ran!\n");
   return 0;
 }
 
-static irqreturn_t audio_irq(int i, void *v) {
-  return IRQ_NONE;
+static irqreturn_t audio_irq(int i, void *v) 
+{
+  return IRQ_HANDLED;
 }
