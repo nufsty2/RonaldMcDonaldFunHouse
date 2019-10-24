@@ -7,6 +7,9 @@
 #include <linux/platform_device.h>
 #include <linux/device.h>
 #include <linux/types.h>
+#include <linux/interrupt.h>
+#include <linux/slab.h>
+#include <linux/kernel.h>
 
 /* MODULES */ 
 MODULE_LICENSE("GPL");
@@ -27,6 +30,11 @@ static int audio_init(void);
 static void audio_exit(void);
 static int audio_probe(struct platform_device *pdev);
 static int audio_remove(struct platform_device * pdev); 
+static ssize_t audio_read(struct file *f, char __user *u, size_t size, loff_t *off);
+static ssize_t audio_write(struct file *f, const char __user *u, size_t size, loff_t *off);
+static irqreturn_t audio_irq(int i, void *v);
+void audio_interrupts_write(uint32_t offset, uint32_t value);
+uint32_t audio_interrupts_read(uint32_t offset);
 
 // Init and exit declarations 
 module_init(audio_init);
@@ -49,8 +57,13 @@ struct audio_device
 
 static struct resource* phys_address;
 static struct resource* irq;
-static struct audio_device adev;
-static struct file_operations fops;
+struct audio_device adev;
+static struct file_operations fops = 
+{
+  .owner = THIS_MODULE,
+  .read = audio_read,
+  .write = audio_write
+};
 static struct class *the_class; // for our class_create function, gets init'd later
 static dev_t dev_device; // gets init'd in alloc_chrdev_region
 static struct of_device_id audio_of_match[] = 
@@ -70,6 +83,9 @@ static struct platform_driver pd =
      .of_match_table = audio_of_match,
    },
 };
+
+// TEMP
+static struct cdev temp_cdev;
  
 // This is called when Linux loads your driver
 static int audio_init(void) 
@@ -96,7 +112,6 @@ static int audio_init(void)
   pr_info("DEBUG: Platform driver return code: %d\n", reg_platform_driver);
 
   adev.minor_num = MINOR(dev_device);
-  adev.cdev = *cdev_alloc();
   adev.phys_addr = 0x43C20000;
   adev.mem_size = 0x10000;
 
@@ -118,16 +133,20 @@ static void audio_exit(void)
   // platform_driver_unregister
   // Param - platform driver structure (platform_driver* drv)
   platform_driver_unregister(&pd);
+  pr_info("DEBUG: Got past driver_unregister!\n");
 
   // class_unregister and class_destroy
   // Param - class struct
   class_unregister(the_class);
+  pr_info("DEBUG: Got past class_unregister\n");
   class_destroy(the_class);
+  pr_info("DEBUG: Got past class_destroy\n");
 
   // unregister_chrdev_region
   // 1st param - first number in the range
   // 2nd param - number of device numbers to unregister
   unregister_chrdev_region(dev_device, 1);
+  pr_info("DEBUG: Got past unregister_chrdev_region\n");
 
   return;
 }
@@ -144,8 +163,9 @@ static int audio_probe(struct platform_device *pdev)
   // 1st Param - the cdev structrure
   // 2nd Param - first device number
   // 3rd Param - number of consecutive minor numbers corresponding to deviec
-  int cdev_added = cdev_add(&adev.cdev, dev_device, 1); // TODO: 3rd param was just a guess
+  int cdev_added = cdev_add(&adev.cdev, dev_device, 0); // TODO: 3rd param was just a guess
   pr_info("DEBUG: Cdev Added: %d\n", cdev_added);
+  pr_info("DEBUG: adev.cdev major number on init: %d\n", MAJOR(adev.cdev.dev));
  
   // Create a device file in /dev so that the character device can be accessed from user space (device_create).
   adev.dev = device_create(the_class, NULL, dev_device, NULL, MODULE_NAME);
@@ -157,11 +177,9 @@ static int audio_probe(struct platform_device *pdev)
   // 1st param - starting point
   // 2nd param - length of bytes
   // 3rd param - name of module
-
-  FIXME: Why is mem_resource NULL?
-
   pr_info("DEBUG: phys_address = 0x%X - 0x%X\n", phys_address->start, phys_address->end);
-  struct resource *mem_resource = request_mem_region(phys_address->start, adev.mem_size, MODULE_NAME); // TODO: check 1st and 2nd params
+  pr_info("DEBUG: mem_size = %x\n", adev.mem_size);
+  struct resource *mem_resource = request_mem_region(phys_address->start, 0x10000, MODULE_NAME); // TODO: check 1st and 2nd params
   if (mem_resource == NULL) 
     pr_info("DEBUG: mem_resource is NULL!\n");
   else
@@ -170,19 +188,26 @@ static int audio_probe(struct platform_device *pdev)
   // Get a (virtual memory) pointer to the device -- ioremap
   // 1st param - physical address
   // 2nd param - size in bytes
-  adev.virt_addr = ioremap(adev.phys_addr, adev.mem_size);
+  adev.virt_addr = ioremap(phys_address->start, 0x10000);
+  pr_info("DEBUG: adev.virt_addr in the probe function = 0x%X", adev.virt_addr);
 
   // Get the IRQ number from the device tree -- platform_get_resource
   // Register your interrupt service routine -- request_irq
   irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-  // request_irq(irq);
-  pr_info("DEBUG: The IRQ's name is: %s\n", irq->name);
+  int ret = request_irq(irq->start, audio_irq, irq->flags, MODULE_NAME, NULL);
+  pr_info("DEBUG: The request_irq returned: %d\n", ret);
  
   // If any of the above functions fail, return an appropriate linux error code, and make sure
   // you reverse any function calls that were successful.
   if (cdev_added < 0)
     return AUDIO_PROBE_CDEV_ADD_FAIL;
  
+  u32 status = ioread32((void*)(adev.virt_addr + 0x10));
+  
+  status |= 0x1;
+
+  iowrite32(status, (void*)(adev.virt_addr + 0x10));
+
   return AUDIO_PROBE_SUCCESS; //(success)
 }
  
@@ -190,25 +215,43 @@ static int audio_remove(struct platform_device * pdev)
 {
   // iounmap
   // 1st Param - virutal address
-  printk("DEBUG: Before unmapping\n");  
+  pr_info("DEBUG: adev.virt_addr in the remove function = 0x%X", adev.virt_addr);
   iounmap(adev.virt_addr);
-  printk("DEBUG: After unmapping\n");
 
   // release_mem_region
   // 1st param - start - TODO - find right values for it
   // 2nd param - length
-  printk("DEBUG: Before releasing mem region\n");
+  pr_info("DEBUG: adev.phys_addr amd adev.mem_size in the remove function = 0x%X and 0x%X", adev.phys_addr, adev.mem_size);
   release_mem_region(adev.phys_addr, adev.mem_size);
-  printk("DEBUG: After releasing mem region\n");
 
   // device_destroy
   // 1st Param - pointer to struct class that this device is registered with (class)
   // 2nd Param - dev_t of device regstered
+  pr_info("DEBUG: Entering device destroy!!!\n");
   device_destroy(the_class, dev_device);
 
   // cdev_del
   // 1st Param - cdev structure
+  pr_info("DEBUG: Entering cdev del!!!\n");
+  pr_info("DEBUG: adev.cdev major number: %d\n", MAJOR(adev.cdev.dev));
   cdev_del(&adev.cdev);
 
+  pr_info("DEBUG: Returning from audio remove!!\n");
   return 0;
+}
+
+static ssize_t audio_read(struct file *f, char __user *u, size_t size, loff_t *off)
+{
+  pr_info("AUDIO_READ() ran!\n");
+  return 0;
+}
+
+static ssize_t audio_write(struct file *f, const char __user *u, size_t size, loff_t *off)
+{
+  pr_info("AUDIO_WRITE() ran!\n");
+  return 0;
+}
+
+static irqreturn_t audio_irq(int i, void *v) {
+  return IRQ_NONE;
 }
