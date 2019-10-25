@@ -19,15 +19,16 @@ static int32_t file;
 // @return - succes(1) or an error code (negative)
 int32_t hdmi_open()
 {
-    file = open("/dev/ecen427_hdmi", O_RDWR);
-    if (file == OPEN_HDMI_ERROR)
+    file = open("/dev/ecen427_hdmi", O_RDWR); // open the file
+    if (file == OPEN_HDMI_ERROR) // ii it's neg 1, it's bad
     {
         return OPEN_HDMI_ERROR;
     }
 
-    return OPEN_HDMI_SUCCESS;
+    return OPEN_HDMI_SUCCESS; // otherwise, good
 }
 
+// This function moves the cursor
 void hdmi_seek(uint32_t bytes)
 {
     lseek(file, bytes, SEEK_SET); // seeks
@@ -38,7 +39,7 @@ void hdmi_seek(uint32_t bytes)
 int32_t hdmi_read(uint32_t bytesToRead)
 {
     char buffer[bytesToRead];
-    return read(file, buffer, bytesToRead);
+    return read(file, buffer, bytesToRead); // read
 }
 
 // This function writes to the screen
@@ -51,6 +52,6 @@ void hdmi_write(char pixel[], uint16_t size)
 
 void hdmi_close()
 {
-    close(file);
+    close(file); // close the file
 }
 

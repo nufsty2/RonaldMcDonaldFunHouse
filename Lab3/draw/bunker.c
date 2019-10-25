@@ -13,6 +13,7 @@
 #define BUNKER_SECOND_ROW 7
 #define BUNKER_THIRD_ROW 8
 #define BUNKER_ROWS_DOWN 12
+#define BUNKER_BLOCK_SIZE 6
 
 /* Player bullet attributes */
 extern uint32_t current_pos_bullet;
@@ -71,12 +72,14 @@ const uint32_t* bunker_take_damage(const uint32_t* damage_sprite)
 // This is our init function, it sets up the four starting bunkers on the game load
 void bunker_init()
 {
+    // Get the pos of the first bunker
     uint32_t pos = PIXEL_SIZE_GLOBAL*BUNKER_STARTING_POS;
+
     // Print bunkers
-    for (uint8_t i = 0; i < NUM_BUNKERS; i++) 
+    for (uint8_t i = 0; i < NUM_BUNKERS; i++) // loop through the bunkers
     {
         uint32_t current_bunker_pos = pos;
-        for (uint8_t j = 0; j < NUM_BLOCKS; j++)
+        for (uint8_t j = 0; j < NUM_BLOCKS; j++) // loop through the blox on the bunkers
         {
             bunker_pos[i][j] = pos; // assign bunkers
             if (j < NUM_BUNKERS)
@@ -94,8 +97,8 @@ void bunker_init()
                 pos += PIXEL_SIZE_GLOBAL * SIZE_SCALAR * BUNKER_DAMAGE_DIM * ALIEN_BULLET_WIDTH;
             }
         }
-        alien_draw(bunker_24x18, current_bunker_pos, BUNKER_WIDTH, BUNKER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, red);
-        pos = current_bunker_pos + (PIXEL_SIZE_GLOBAL * BUNKER_WIDTH) * BUNKER_DAMAGE_DIM;
+        alien_draw(bunker_24x18, current_bunker_pos, BUNKER_WIDTH, BUNKER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, red); // draw the bunkers
+        pos = current_bunker_pos + (PIXEL_SIZE_GLOBAL * BUNKER_WIDTH) * BUNKER_DAMAGE_DIM; // change the position
     }
 }
 
@@ -236,8 +239,8 @@ void bunker_detect_hit_alien(uint8_t bullet_num)
                 bunker_damage[i][j] = bunker_take_damage(bunker_damage[i][j]);
 
                 // Grab new sprite val;
-                uint32_t new_sprite[6];
-                for (int k = 0; k < 6; k++) 
+                uint32_t new_sprite[BUNKER_BLOCK_SIZE];
+                for (int k = 0; k < BUNKER_BLOCK_SIZE; k++) 
                 {
                     new_sprite[k] = bunker_damage[i][j][k] & bunker_sprites[i][j][k];
                 }

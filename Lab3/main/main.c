@@ -263,9 +263,10 @@ void isr_switches()
     clear_switches_interrupts(); // clear the interrupts
 }
      
+// This is our main function, this is the function that executes the code
 int main() 
 {
-    // FIXME
+    // Init 
     init();
     srand(time(0));
         
@@ -305,5 +306,5 @@ int main()
     buttons_exit(); // exit the buttons
     switches_exit(); // exit the switches
     intc_exit(); // exits the int controller
-    hdmi_close();
+    hdmi_close(); // exit hdmi
 }

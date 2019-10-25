@@ -57,7 +57,7 @@ void game_over_print_score(score_t score, uint32_t pos)
     // Check for errors first
     for (uint8_t i = 0; i < NUM_CHARS_IN_SCORE; i++) 
     {
-        if (score.name[i] < 'A') 
+        if (score.name[i] < 'A') // if error
         {
             return;
         }
@@ -115,7 +115,7 @@ void game_over_blink_cursor(bool force)
                 force ? black : 
                     blink ? cyan : black
     );
-    char* current = ui_get_selected_char();
+    char* current = ui_get_selected_char(); // get the current selected cursors
     generic_draw_sprite(generic_get_sprite_from_digit(*current),     
                 LETTER_WIDTH*24 +     (selected_char * LETTER_WIDTH) + 640*80*PIXEL_SIZE_GLOBAL, 
                 5, 

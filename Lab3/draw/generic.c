@@ -172,6 +172,6 @@ const uint32_t* generic_get_sprite_from_digit(char digit)
 // Reset all counters
 void generic_reset_counters() 
 {
-    debounce_ctr  = 0;
-    increment_ctr = 0;
+    debounce_ctr  = 0; // set 0
+    increment_ctr = 0; // set 0
 }

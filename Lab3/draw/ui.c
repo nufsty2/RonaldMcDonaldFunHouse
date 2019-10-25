@@ -5,6 +5,10 @@
 
 // Defines only in this C file
 #define MAX_LIVES 5
+#define RANDOM_SCORE_SAUCER_START 30 + 5
+#define RANDOM_SCORE_SAUCER_SCALAR 10
+#define DIGIT_OFFSET 10
+#define WIDTH_SCALAR 9
 
 extern uint32_t score;
 extern uint8_t lives;
@@ -99,7 +103,7 @@ void ui_increase_score(uint16_t row)
 void ui_increase_score_saucer() 
 {
     // Get a random multiple of 10 between 50 and 250;
-    score += (rand() % 30 + 5) * 10;
+    score += (rand() % RANDOM_SCORE_SAUCER_START) * RANDOM_SCORE_SAUCER_SCALAR;
 }
 
 // This function updates the score
@@ -107,29 +111,29 @@ void ui_increase_score_saucer()
 void ui_update_score(bool firstRun) 
 {
     uint32_t score_copy = score;
-    uint32_t digit_location = LETTER_WIDTH * 10;
+    uint32_t digit_location = LETTER_WIDTH * DIGIT_OFFSET;
 
     // Print numbers
     for (uint16_t i = 0; i < SCORE_DIGITS; i++)
     {
-        uint8_t digit_val = score_copy % 10;
+        uint8_t digit_val = score_copy % DIGIT_OFFSET;
 
         if ((*ui_get_score_digit(i) != digit_val) && !firstRun)
         {
             // Erase
-            generic_draw_sprite(generic_get_sprite_from_digit(*ui_get_score_digit(i)), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, black);
+            generic_draw_sprite(generic_get_sprite_from_digit(*ui_get_score_digit(i)), digit_location, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black);
             // Draw
-            generic_draw_sprite(generic_get_sprite_from_digit(digit_val), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, green);
+            generic_draw_sprite(generic_get_sprite_from_digit(digit_val), digit_location, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, green);
             // Replace value
             *ui_get_score_digit(i) = digit_val;
         }
         else if (firstRun)
         {
             // Draw
-            alien_draw(generic_get_sprite_from_digit(digit_val), digit_location, 5, 5, PIXEL_SIZE_GLOBAL * 2, green);
+            alien_draw(generic_get_sprite_from_digit(digit_val), digit_location, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, green);
         }
 
-        score_copy /= 10;
+        score_copy /= DIGIT_OFFSET;
         digit_location -= LETTER_WIDTH;
     }
 }
@@ -152,21 +156,22 @@ void ui_decrement_lives()
 }
 
 // This function updates the lives
+// @param firstRun - if it's the first run or not
 void ui_update_lives(bool firstRun) 
 {
-    uint32_t pos = RIGHT_EDGE - LETTER_WIDTH * 9 + NEW_LINE * SIZE_SCALAR;
+    uint32_t pos = RIGHT_EDGE - LETTER_WIDTH * WIDTH_SCALAR + NEW_LINE * SIZE_SCALAR;
     uint32_t initial_pos = pos;
 
     for (uint8_t l = 0; l < MAX_LIVES; l++)
      {
-        alien_draw(tank_15x8, pos, 15, 8, PIXEL_SIZE_GLOBAL, black);
-        pos += 15 * PIXEL_SIZE_GLOBAL + 15;
+        alien_draw(tank_15x8, pos, TANK_WIDTH, TANK_HEIGHT, PIXEL_SIZE_GLOBAL, black);
+        pos += TANK_WIDTH * PIXEL_SIZE_GLOBAL + TANK_WIDTH;
     }
 
     pos = initial_pos;
     for (uint8_t l = 0; l < lives; l++)
      {
-        alien_draw(tank_15x8, pos, 15, 8, PIXEL_SIZE_GLOBAL, cyan);
-        pos += 15 * PIXEL_SIZE_GLOBAL + 15;
+        alien_draw(tank_15x8, pos, TANK_WIDTH, TANK_HEIGHT, PIXEL_SIZE_GLOBAL, cyan);
+        pos += TANK_WIDTH * PIXEL_SIZE_GLOBAL + TANK_WIDTH;
     }
 }

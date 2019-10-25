@@ -20,6 +20,7 @@ void hdmi_seek(uint32_t bytes);
 // @param size - how big we want the write to be (a single pixel, a whole line, etc.)
 void hdmi_write(char pixel[], uint16_t size);
 
+// Closes the HDMI
 void hdmi_close();
 
 #endif
