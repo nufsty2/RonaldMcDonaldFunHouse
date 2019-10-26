@@ -34,7 +34,7 @@ int main()
 { 
     init(); // inits what we want
 
-    // char buffer[BUFFER_SIZE];
-    // write(file, buffer, BUFFER_SIZE);
-    // read(file, buffer, BUFFER_SIZE);
+    char buffer[BUFFER_SIZE];
+    write(file, buffer, BUFFER_SIZE);
+    read(file, buffer, BUFFER_SIZE);
 }

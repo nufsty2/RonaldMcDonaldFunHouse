@@ -32,6 +32,9 @@ MODULE_DESCRIPTION("ECEn 427 Audio Driver");
 
 #define WORD_SIZE 4
 
+// Globals
+static char* old_buffer;
+
 // Function declarations for the kernal
 static int audio_init(void);
 static void audio_exit(void);
@@ -241,9 +244,12 @@ static ssize_t audio_read(struct file *f, char __user *u, size_t size, loff_t *o
   // 2nd param = source address in kernal space
   // 3rd param = number of bytes to copy
   // Return 0 if everything went well
-  //long no_bytes_not_copied = copy_to_user(something, something, size);
+  long no_bytes_not_copied = copy_to_user(u, old_buffer, sizeof(char));
+  pr_info("DEBUG M2: u = %x\n", u);
+  if (no_bytes_not_copied != 0)
+    pr_info("DEBUG M2: BAD - read not reading bytes = %ld\n", no_bytes_not_copied);
 
-  return 0;
+  return no_bytes_not_copied; // 0 = audio playing, anything else = audio not playing
 }
 
 static ssize_t audio_write(struct file *f, const char __user *u, size_t size, loff_t *off)
@@ -256,17 +262,27 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
   iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
 
   // Free the buffer used to store old sound sample
-  // kfree(something);
+  if (old_buffer != NULL)
+    kfree(old_buffer);
+  old_buffer = u; // set the old buffer
 
   // Allocate new buffer
-  // kmalloc(something);
+  char *kern_buf = kmalloc(size, GFP_KERNEL); // GFP_KERNAL = allocate memory based on kernal
+  pr_info("DEBUG M2: kern_buf = %x\n", kern_buf);
 
   // Copy the userspace to newly allocated buffer (LDD3 pg 64)
   // 1st param = destination address in kernal space
   // 2nd param = source address in user space
   // 3rd param = number of bytes to copy
   // Return 0 if everything went well
-  //long no_bytes_not_copied = copy_from_user();
+  long no_bytes_not_copied = copy_from_user(kern_buf, u, size);
+  if (no_bytes_not_copied != 0)
+    pr_info("DEBUG M2: BAD - Bytes not copied = %ld\n", no_bytes_not_copied);
+  else
+  {
+    kfree(kern_buf);
+    return -EFAULT;
+  }
 
   // Make sure interrupts are enabled
   status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);

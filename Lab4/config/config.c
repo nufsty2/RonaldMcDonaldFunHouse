@@ -184,6 +184,38 @@ void select_line_in(int iic_index) {
     }
 }
 
+/******************************************************************************
+ * Function to set the UIO device.
+ * @param   uio_index is the uio index in /dev list.
+ * @param   length is the length of the MMAP in bytes.
+ * @return  A pointer pointing to the MMAP of the UIO.
+ *****************************************************************************/
+void* setUIO(int uio_index, int length){
+    char uio_buf[32];
+    int uio_fd;
+    void *uio_ptr;
+
+    sprintf(uio_buf, "/dev/uio%d", uio_index);    
+    uio_fd = open(uio_buf, O_RDWR);
+    if (uio_fd < 1) {
+        printf("Invalid UIO device file: %s.\n", uio_buf);
+    }
+    // mmap the UIO devices
+    uio_ptr = mmap(NULL, length, 
+                   PROT_READ|PROT_WRITE, MAP_SHARED, uio_fd, 0);
+    return uio_ptr;
+}
+
+/******************************************************************************
+ * Function to set the UIO device.
+ * @param   uio_ptr is the uio pointer to be freed.
+ * @param   length is the length of the MMAP.
+ * @return  0 on success; -1 otherwise.
+ *****************************************************************************/
+int unsetUIO(void* uio_ptr, int length){
+    return munmap(uio_ptr, length);
+}
+
 void play(unsigned int audio_mmap_size,
                      unsigned int* BufAddr, unsigned int nsamples, 
                      int uio_index, int iic_index){
