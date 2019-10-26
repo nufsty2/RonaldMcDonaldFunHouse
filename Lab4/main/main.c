@@ -12,15 +12,29 @@
 
 static uint32_t file;
 
-int main()
-{ 
-    config_audio_pll(I2C_INDEX);
-    config_audio_codec(I2C_INDEX);
-
+void open_audio_driver()
+{
     file = open("/dev/audio", O_RDWR);
     if (file == FILE_NOT_FOUND)
         printf("File not found\n\r");
-    char buffer[BUFFER_SIZE];
-    write(file, buffer, BUFFER_SIZE);
-    read(file, buffer, BUFFER_SIZE);
+}
+
+void init()
+{
+    // Open audio driver
+    open_audio_driver();
+
+    // config the codec
+    config_audio_pll(I2C_INDEX);
+    config_audio_codec(I2C_INDEX);
+    //select_line_in(I2C_INDEX); // play it through headphones
+}
+
+int main()
+{ 
+    init(); // inits what we want
+
+    // char buffer[BUFFER_SIZE];
+    // write(file, buffer, BUFFER_SIZE);
+    // read(file, buffer, BUFFER_SIZE);
 }

@@ -161,3 +161,78 @@ void config_audio_codec(int iic_index) {
         printf("Unable to unset I2C %d.\n", iic_index);
     }
 }
+
+void select_line_in(int iic_index) {
+    int iic_fd;
+    iic_fd = setI2C(iic_index, IIC_SLAVE_ADDR);
+    if (iic_fd < 0) {
+        printf("Unable to set I2C %d.\n", iic_index);
+    }
+
+    // Mixer 1  (left channel)
+    write_audio_reg(R4_RECORD_MIXER_LEFT_CONTROL_0, 0x01, iic_fd);
+    // Enable LAUX (MX1AUXG)
+    write_audio_reg(R5_RECORD_MIXER_LEFT_CONTROL_1, 0x07, iic_fd);
+
+    // Mixer 2
+    write_audio_reg(R6_RECORD_MIXER_RIGHT_CONTROL_0, 0x01, iic_fd);
+    // Enable RAUX (MX2AUXG)
+    write_audio_reg(R7_RECORD_MIXER_RIGHT_CONTROL_1, 0x07, iic_fd);
+
+    if (unsetI2C(iic_fd) < 0) {
+        printf("Unable to unset I2C %d.\n", iic_index);
+    }
+}
+
+void play(unsigned int audio_mmap_size,
+                     unsigned int* BufAddr, unsigned int nsamples, 
+                     int uio_index, int iic_index){
+    unsigned int  i, status;
+    void *uio_ptr;
+    int DataL, DataR;
+    int iic_fd;
+
+    uio_ptr = setUIO(uio_index, audio_mmap_size);
+    iic_fd = setI2C(iic_index, IIC_SLAVE_ADDR);
+    if (iic_fd < 0) {
+        printf("Unable to set I2C %d.\n", iic_index);
+    }
+
+    // Unmute left and right DAC, enable Mixer3 and Mixer4
+    write_audio_reg(R22_PLAYBACK_MIXER_LEFT_CONTROL_0, 0x21, iic_fd);
+    write_audio_reg(R24_PLAYBACK_MIXER_RIGHT_CONTROL_0, 0x41, iic_fd);
+    // Enable Left/Right Headphone out
+    write_audio_reg(R29_PLAYBACK_HEADPHONE_LEFT_VOLUME_CONTROL, 0xE7, iic_fd);
+    write_audio_reg(R30_PLAYBACK_HEADPHONE_RIGHT_VOLUME_CONTROL, 0xE7, iic_fd);
+
+    for(i=0; i<nsamples; i++){
+        do {
+            status = \
+            *((volatile unsigned *)(((uint8_t *)uio_ptr) + I2S_STATUS_REG));
+        } while (status == 0);
+        *((volatile unsigned *)(((uint8_t *)uio_ptr) + I2S_STATUS_REG)) = \
+            0x00000001;
+
+        // Read the sample from memory
+        DataL = *(BufAddr+2*i);
+        DataR = *(BufAddr+2*i+1);
+
+        // Write the sample to output
+        *((volatile int *)(((uint8_t *)uio_ptr) + I2S_DATA_TX_L_REG)) = DataL;
+        *((volatile int *)(((uint8_t *)uio_ptr) + I2S_DATA_TX_R_REG)) = DataR;
+    }
+
+    // Mute left and right DAC
+    write_audio_reg(R22_PLAYBACK_MIXER_LEFT_CONTROL_0, 0x01, iic_fd);
+    write_audio_reg(R24_PLAYBACK_MIXER_RIGHT_CONTROL_0, 0x01, iic_fd);
+    // Mute left input to mixer3 (R23) and right input to mixer4 (R25)
+    write_audio_reg(R23_PLAYBACK_MIXER_LEFT_CONTROL_1, 0x00, iic_fd);
+    write_audio_reg(R25_PLAYBACK_MIXER_RIGHT_CONTROL_1, 0x00, iic_fd);
+
+    if (unsetUIO(uio_ptr, audio_mmap_size) < 0){
+        printf("Unable to free UIO %d.\n", uio_index);
+    }
+    if (unsetI2C(iic_fd) < 0) {
+        printf("Unable to unset I2C %d.\n", iic_index);
+    }
+}

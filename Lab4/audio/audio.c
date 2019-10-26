@@ -10,6 +10,7 @@
 #include <linux/interrupt.h>
 #include <linux/slab.h>
 #include <linux/kernel.h>
+#include <asm/uaccess.h>
 
 /* MODULES */ 
 MODULE_LICENSE("GPL");
@@ -233,13 +234,45 @@ static int audio_remove(struct platform_device * pdev)
 
 static ssize_t audio_read(struct file *f, char __user *u, size_t size, loff_t *off)
 {
-  pr_info("DEBUG: Called audio_read()!\n");
+  pr_info("DEBUG: Called audio_read()!\n"); // make sure we enter
+
+  // Return 1 byte of data with 0 or 1, indicated whether an audio sample is currently being played
+  // 1st param = destination address in user space
+  // 2nd param = source address in kernal space
+  // 3rd param = number of bytes to copy
+  // Return 0 if everything went well
+  //long no_bytes_not_copied = copy_to_user(something, something, size);
+
   return 0;
 }
 
 static ssize_t audio_write(struct file *f, const char __user *u, size_t size, loff_t *off)
 {
-  pr_info("DEBUG: Called audio_write()!\n");
+  pr_info("DEBUG: Called audio_write()!\n"); // make sure we enter
+
+  // Immediatley Disable the interrupts
+  u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
+  status &= DISABLE_IRQ;
+  iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
+
+  // Free the buffer used to store old sound sample
+  // kfree(something);
+
+  // Allocate new buffer
+  // kmalloc(something);
+
+  // Copy the userspace to newly allocated buffer (LDD3 pg 64)
+  // 1st param = destination address in kernal space
+  // 2nd param = source address in user space
+  // 3rd param = number of bytes to copy
+  // Return 0 if everything went well
+  //long no_bytes_not_copied = copy_from_user();
+
+  // Make sure interrupts are enabled
+  status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
+  status |= ENABLE_IRQ;
+  iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
+
   return 0;
 }
 
