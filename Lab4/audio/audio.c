@@ -26,6 +26,8 @@ MODULE_DESCRIPTION("ECEn 427 Audio Driver");
 #define AUDIO_PROBE_CDEV_ADD_FAIL -3
 
 #define IRQ_OFFSET 0x10
+#define DISABLE_IRQ 0xFFFFFFFE
+#define ENABLE_IRQ 0x1
 
 // Function declarations for the kernal
 static int audio_init(void);
@@ -48,9 +50,9 @@ struct audio_device
   struct platform_device * pdev;      // Platform device pointer
   struct device* dev;                 // device (/dev)
  
-  unsigned long phys_addr;              // Physical address
-  unsigned long mem_size;                       // Allocated mem space size 
-  unsigned long* virt_addr;                     // Virtual address
+  phys_addr_t phys_addr;              // Physical address
+  u32 mem_size;                       // Allocated mem space size 
+  u32* virt_addr;                     // Virtual address
  
     // Add any items to this that you need
 }; 
@@ -87,7 +89,7 @@ static struct platform_driver pd =
 // This is called when Linux loads your driver
 static int audio_init(void) 
 {
-  pr_info("DEBUG: %s: Initializing Audio Driver!\n", MODULE_NAME);
+  pr_info("DEBUG: Initializing Audio Driver!\n");
 
   // Get a major number for the driver -- alloc_chrdev_region; // pg. 45, LDD3.
   // 1st param - output - will hold first number of allocated range
@@ -102,16 +104,14 @@ static int audio_init(void)
   // 2nd param - name - this is a pointer to a string to the name
   the_class = class_create(THIS_MODULE, MODULE_NAME); // TODO: first paramter might be wrong
 
- 
-  // Register the driver as a platform driver -- platform_driver_register
-  // Param - platform driver structure
-  int reg_platform_driver = platform_driver_register(&pd);
-  pr_info("DEBUG: Reg platform driver return value = %d\n", reg_platform_driver);
-
   adev.minor_num = MINOR(dev_device);
   adev.phys_addr = 0x43C20000;
   adev.mem_size = 0x10000;
 
+  // Register the driver as a platform driver -- platform_driver_register
+  // Param - platform driver structure
+  int reg_platform_driver = platform_driver_register(&pd);
+  pr_info("DEBUG: Reg platform driver return value = %d\n", reg_platform_driver);
  
   // If any of the above functions fail, return an appropriate linux error code, and make sure
   // you reverse any function calls that were successful.
@@ -126,6 +126,7 @@ static int audio_init(void)
 // This is called when Linux unloads your driver
 static void audio_exit(void) 
 {
+  pr_info("DEBUG: Exiting audio module...\n");
   // platform_driver_unregister
   // Param - platform driver structure (platform_driver* drv)
   platform_driver_unregister(&pd);
@@ -140,6 +141,7 @@ static void audio_exit(void)
   // 2nd param - number of device numbers to unregister
   unregister_chrdev_region(dev_device, 1);
 
+  pr_info("DEBUG: Audio module exited!\n");
   return;
 }
  
@@ -155,7 +157,7 @@ static int audio_probe(struct platform_device *pdev)
   // 1st Param - the cdev structrure
   // 2nd Param - first device number
   // 3rd Param - number of consecutive minor numbers corresponding to deviec
-  int cdev_added = cdev_add(&adev.cdev, dev_device, 0); // TODO: 3rd param was just a guess
+  int cdev_added = cdev_add(&adev.cdev, dev_device, 1); // TODO: 3rd param was just a guess
   pr_info("DEBUG: Cdev Added: %d\n", cdev_added);
   pr_info("DEBUG: adev.cdev major number on init: %d\n", MAJOR(adev.cdev.dev));
  
@@ -163,7 +165,7 @@ static int audio_probe(struct platform_device *pdev)
   adev.dev = device_create(the_class, NULL, dev_device, NULL, MODULE_NAME);
  
   // Get the physical device address from the device tree -- platform_get_resource
-  phys_address = platform_get_resource(pdev, IORESOURCE_MEM, 0); // TODO: check 2nd and 3rd params
+  phys_address = platform_get_resource(pdev, IORESOURCE_MEM, adev.minor_num); // TODO: check 2nd and 3rd params
 
   // Reserve the memory region -- request_mem_region
   // 1st param - starting point
@@ -180,7 +182,7 @@ static int audio_probe(struct platform_device *pdev)
 
   // Get the IRQ number from the device tree -- platform_get_resource
   // Register your interrupt service routine -- request_irq
-  irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+  irq = platform_get_resource(pdev, IORESOURCE_IRQ, adev.minor_num);
   int ret = request_irq(irq->start, audio_irq, irq->flags, MODULE_NAME, NULL);
   pr_info("DEBUG: The request_irq returned: %d\n", ret);
  
@@ -192,7 +194,7 @@ static int audio_probe(struct platform_device *pdev)
   // Enabling interrupts
   u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / 4);
   pr_info("DEBUG: Before oring status %x\n", status);
-  status |= 0x1;
+  status |= ENABLE_IRQ;
   pr_info("DEBUG: After oring status %x\n", status);
   iowrite32(status, (adev.virt_addr + IRQ_OFFSET / 4));
   pr_info("DEBUG: After iowrite32!!\n");
@@ -202,7 +204,7 @@ static int audio_probe(struct platform_device *pdev)
  
 static int audio_remove(struct platform_device * pdev) 
 {
-
+  pr_info("DEBUG: Removing audio module...\n");
   free_irq(irq->start, NULL);
 
   // iounmap
@@ -223,20 +225,27 @@ static int audio_remove(struct platform_device * pdev)
   // 1st Param - cdev structure
   cdev_del(&adev.cdev);
 
+  pr_info("DEBUG: Audio module successfully removed!\n");
   return 0;
 }
 
 static ssize_t audio_read(struct file *f, char __user *u, size_t size, loff_t *off)
 {
+  pr_info("DEBUG: Called audio_read()!\n");
   return 0;
 }
 
 static ssize_t audio_write(struct file *f, const char __user *u, size_t size, loff_t *off)
 {
+  pr_info("DEBUG: Called audio_write()!\n");
   return 0;
 }
 
 static irqreturn_t audio_irq(int i, void *v) 
 {
+  pr_info("DEBUG: Called audio_irq()!\n");
+  u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / 4);
+  status &= DISABLE_IRQ;
+  iowrite32(status, (adev.virt_addr + IRQ_OFFSET / 4));
   return IRQ_HANDLED;
 }
