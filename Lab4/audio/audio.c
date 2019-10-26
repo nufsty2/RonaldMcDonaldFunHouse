@@ -29,6 +29,8 @@ MODULE_DESCRIPTION("ECEn 427 Audio Driver");
 #define DISABLE_IRQ 0xFFFFFFFE
 #define ENABLE_IRQ 0x1
 
+#define WORD_SIZE 4
+
 // Function declarations for the kernal
 static int audio_init(void);
 static void audio_exit(void);
@@ -171,14 +173,14 @@ static int audio_probe(struct platform_device *pdev)
   // 1st param - starting point
   // 2nd param - length of bytes
   // 3rd param - name of module
-  struct resource *mem_resource = request_mem_region(phys_address->start, 0x10000, MODULE_NAME); // TODO: check 1st and 2nd params
+  struct resource *mem_resource = request_mem_region(phys_address->start, adev.mem_size, MODULE_NAME); // TODO: check 1st and 2nd params
   if (mem_resource == NULL)
     pr_info("MEM is null in probe!\n");
 
   // Get a (virtual memory) pointer to the device -- ioremap
   // 1st param - physical address
   // 2nd param - size in bytes
-  adev.virt_addr = ioremap(phys_address->start, 0x10000);
+  adev.virt_addr = ioremap(phys_address->start, adev.mem_size);
 
   // Get the IRQ number from the device tree -- platform_get_resource
   // Register your interrupt service routine -- request_irq
@@ -192,11 +194,11 @@ static int audio_probe(struct platform_device *pdev)
     return AUDIO_PROBE_CDEV_ADD_FAIL;
  
   // Enabling interrupts
-  u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / 4);
+  u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
   pr_info("DEBUG: Before oring status %x\n", status);
   status |= ENABLE_IRQ;
   pr_info("DEBUG: After oring status %x\n", status);
-  iowrite32(status, (adev.virt_addr + IRQ_OFFSET / 4));
+  iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
   pr_info("DEBUG: After iowrite32!!\n");
 
   return AUDIO_PROBE_SUCCESS; //(success)
@@ -244,8 +246,8 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
 static irqreturn_t audio_irq(int i, void *v) 
 {
   pr_info("DEBUG: Called audio_irq()!\n");
-  u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / 4);
+  u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
   status &= DISABLE_IRQ;
-  iowrite32(status, (adev.virt_addr + IRQ_OFFSET / 4));
+  iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
   return IRQ_HANDLED;
 }
