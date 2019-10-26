@@ -35,7 +35,7 @@ void generic_draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, 
     uint32_t current_point = init_point;
 
     // Get the scalar size
-    uint32_t grid_dimension = pixel_size / PIXEL_SIZE_GLOBAL;
+    uint32_t grid_dimension = pixel_size / GLOBALS_PIXEL_SIZE;
 
     for (uint32_t i = 0; i < height; i++) // loop through the height of sprite
     {
@@ -47,9 +47,9 @@ void generic_draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, 
                 {
                     for (uint32_t x = 0; x < grid_dimension; x++) // again
                     {
-                        current_point += (j*pixel_size + PIXEL_SIZE_GLOBAL*x + PIXEL_SIZE_GLOBAL*SCREEN_WIDTH*y); // set current point
+                        current_point += (j*pixel_size + GLOBALS_PIXEL_SIZE*x + GLOBALS_PIXEL_SIZE*GLOBALS_SCREEN_WIDTH*y); // set current point
                         hdmi_seek(current_point); // seek to that point
-                        hdmi_write(color, PIXEL_SIZE_GLOBAL); // write to that point
+                        hdmi_write(color, GLOBALS_PIXEL_SIZE); // write to that point
                         current_point = init_point; // init point
                     }
                 }
@@ -57,7 +57,7 @@ void generic_draw_sprite(const uint32_t sprite[], uint32_t pos, uint32_t width, 
         }
 
         // New line
-        current_point += (pixel_size*SCREEN_WIDTH);
+        current_point += (pixel_size*GLOBALS_SCREEN_WIDTH);
         init_point = current_point;
         hdmi_seek(current_point);
     }

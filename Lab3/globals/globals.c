@@ -2,13 +2,13 @@
 #include "../sprites/sprites.c"
 
 /* Pixel colors constants */
-char   white[PIXEL_SIZE_GLOBAL]  = {0xFF, 0xFF, 0xFF};
-char   green[PIXEL_SIZE_GLOBAL]  = {0x00, 0xFF, 0x77};
-char   black[PIXEL_SIZE_GLOBAL]  = {0x00, 0x00, 0x00};
-char    cyan[PIXEL_SIZE_GLOBAL]  = {0x11, 0xFF, 0xFF};
-char     red[PIXEL_SIZE_GLOBAL]  = {0xFF, 0x55, 0x55};
-char magenta[PIXEL_SIZE_GLOBAL]  = {0xFF, 0x66, 0xFF};
-char black_pixels[LINE_OF_BLACK_PIXELS];
+char   white[GLOBALS_PIXEL_SIZE]  = {0xFF, 0xFF, 0xFF};
+char   green[GLOBALS_PIXEL_SIZE]  = {0x00, 0xFF, 0x77};
+char   black[GLOBALS_PIXEL_SIZE]  = {0x00, 0x00, 0x00};
+char    cyan[GLOBALS_PIXEL_SIZE]  = {0x11, 0xFF, 0xFF};
+char     red[GLOBALS_PIXEL_SIZE]  = {0xFF, 0x55, 0x55};
+char magenta[GLOBALS_PIXEL_SIZE]  = {0xFF, 0x66, 0xFF};
+char black_pixels[GLOBALS_LINE_OF_BLACK_PIXELS];
 
 /* All counters */
 // button/switch debounce counter
@@ -36,27 +36,27 @@ bool name_entered = false;
 bool player_dead = false;
 
 /* Chars on the game over screen */
-char char_0 = DEFAULT_GAME_OVER_CHAR_0;
-char char_1 = DEFAULT_GAME_OVER_CHAR_1;
-char char_2 = DEFAULT_GAME_OVER_CHAR_2;
+char char_0 = GLOBALS_DEFAULT_GAME_OVER_CHAR_0;
+char char_1 = GLOBALS_DEFAULT_GAME_OVER_CHAR_1;
+char char_2 = GLOBALS_DEFAULT_GAME_OVER_CHAR_2;
 char selected_char = 0;
 
 /* Moving Alien attribtes */
-uint32_t current_pos_alien = ALIEN_START_POS;
+uint32_t current_pos_alien = GLOBALS_ALIEN_START_POS;
 bool moving_right_alien = false;
 
 /* Player attribtes */
-uint8_t lives = NO_LIVES;
-uint32_t current_pos_player = PLAYER_START_POS;
+uint8_t lives = GLOBALS_NO_LIVES;
+uint32_t current_pos_player = GLOBALS_PLAYER_START_POS;
 
 /* Saucer attributes */
-uint32_t current_pos_saucer = SAUCER_STARTING_POS;
+uint32_t current_pos_saucer = GLOBALS_SAUCER_STARTING_POS;
 bool saucer_moving = false;
 
 /* Player bullet attributes */
 bool bullet_moving = false;
-uint32_t current_pos_bullet = BULLET_STARTING_POS;
+uint32_t current_pos_bullet = GLOBALS_BULLET_STARTING_POS;
 
 /* Alien bullet attributes */
-uint32_t alien_bullet_pos[MAX_BULLETS] = {0, 0, 0, 0};
-bool alien_bullet_moving[MAX_BULLETS] = {false, false, false, false};
+uint32_t alien_bullet_pos[GLOBALS_MAX_BULLETS] = {0, 0, 0, 0};
+bool alien_bullet_moving[GLOBALS_MAX_BULLETS] = {false, false, false, false};

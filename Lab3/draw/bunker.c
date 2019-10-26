@@ -73,7 +73,7 @@ const uint32_t* bunker_take_damage(const uint32_t* damage_sprite)
 void bunker_init()
 {
     // Get the pos of the first bunker
-    uint32_t pos = PIXEL_SIZE_GLOBAL*BUNKER_STARTING_POS;
+    uint32_t pos = GLOBALS_PIXEL_SIZE*BUNKER_STARTING_POS;
 
     // Print bunkers
     for (uint8_t i = 0; i < NUM_BUNKERS; i++) // loop through the bunkers
@@ -84,21 +84,21 @@ void bunker_init()
             bunker_pos[i][j] = pos; // assign bunkers
             if (j < NUM_BUNKERS)
             {
-                pos = (j == BUNKER_FIRST_ROW) ? (current_bunker_pos + NEW_LINE * SIZE_SCALAR * BUNKER_DAMAGE_DIM) : (pos + PIXEL_SIZE_GLOBAL * SIZE_SCALAR * BUNKER_DAMAGE_DIM);
+                pos = (j == BUNKER_FIRST_ROW) ? (current_bunker_pos + GLOBALS_NEW_LINE * GLOBALS_SIZE_SCALAR * BUNKER_DAMAGE_DIM) : (pos + GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR * BUNKER_DAMAGE_DIM);
             }
 
             else if (j < BUNKER_THIRD_ROW)
             {
-                pos = (j == BUNKER_SECOND_ROW) ? (current_bunker_pos + NEW_LINE * SIZE_SCALAR * BUNKER_ROWS_DOWN) : (pos + PIXEL_SIZE_GLOBAL * SIZE_SCALAR * BUNKER_DAMAGE_DIM);
+                pos = (j == BUNKER_SECOND_ROW) ? (current_bunker_pos + GLOBALS_NEW_LINE * GLOBALS_SIZE_SCALAR * BUNKER_ROWS_DOWN) : (pos + GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR * BUNKER_DAMAGE_DIM);
             }
 
             else if (j == BUNKER_THIRD_ROW)
             {
-                pos += PIXEL_SIZE_GLOBAL * SIZE_SCALAR * BUNKER_DAMAGE_DIM * ALIEN_BULLET_WIDTH;
+                pos += GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR * BUNKER_DAMAGE_DIM * GLOBALS_ALIEN_BULLET_WIDTH;
             }
         }
-        alien_draw(bunker_24x18, current_bunker_pos, BUNKER_WIDTH, BUNKER_HEIGHT, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, red); // draw the bunkers
-        pos = current_bunker_pos + (PIXEL_SIZE_GLOBAL * BUNKER_WIDTH) * BUNKER_DAMAGE_DIM; // change the position
+        alien_draw(bunker_24x18, current_bunker_pos, BUNKER_WIDTH, BUNKER_HEIGHT, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, red); // draw the bunkers
+        pos = current_bunker_pos + (GLOBALS_PIXEL_SIZE * BUNKER_WIDTH) * BUNKER_DAMAGE_DIM; // change the position
     }
 }
 
@@ -106,7 +106,7 @@ void bunker_init()
 void bunker_detect_hits() 
 {
     bunker_detect_hit_player(); // sees if it was hit by the player
-    for (uint8_t i = 0; i < MAX_BULLETS; i++) // loops through all bullets to see what has been hit
+    for (uint8_t i = 0; i < GLOBALS_MAX_BULLETS; i++) // loops through all bullets to see what has been hit
     {
         if (alien_bullet_moving[i]) 
         {
@@ -129,11 +129,11 @@ void bunker_detect_hit_player()
         {  
             // Set x borders
             uint32_t left_border = bunker_pos[i][j];
-            uint32_t right_border = bunker_pos[i][j] + BUNKER_DAMAGE_DIM * PIXEL_SIZE_GLOBAL * SIZE_SCALAR;
+            uint32_t right_border = bunker_pos[i][j] + BUNKER_DAMAGE_DIM * GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR;
 
             // Set y borders
             uint32_t top_border = bunker_pos[i][j];
-            uint32_t bot_border = bunker_pos[i][j] + BUNKER_DAMAGE_DIM * NEW_LINE * SIZE_SCALAR;
+            uint32_t bot_border = bunker_pos[i][j] + BUNKER_DAMAGE_DIM * GLOBALS_NEW_LINE * GLOBALS_SIZE_SCALAR;
 
             // Get coord values for the Y borders
             uint16_t top_border_y = alien_get_y_coord(top_border);
@@ -166,11 +166,11 @@ void bunker_detect_hit_player()
                 }
 
                 // Draw new damage
-                alien_draw(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, red);
+                alien_draw(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, red);
 
                 // Erase bullet
                 bullet_moving = false; // make sure bullet stops travelling
-                alien_draw(tankbullet_1x5, current_pos_bullet, PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black); // erase bullet
+                alien_draw(tankbullet_1x5, current_pos_bullet, GLOBALS_PLAYER_BULLET_WIDTH, GLOBALS_PLAYER_BULLET_HEIGHT, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, black); // erase bullet
             }
         }
     }
@@ -190,7 +190,7 @@ void bunker_redraw_all()
             }
 
             // Draw new damage
-            alien_draw(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, red);
+            alien_draw(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, red);
         }
     }
 }
@@ -203,16 +203,16 @@ void bunker_detect_hit_alien(uint8_t bullet_num)
     {
         for (int16_t j = 0; j < NUM_BLOCKS; j++) // loop through the 11 X aliens
         {  
-            uint32_t bullet_bottom_left = alien_bullet_pos[bullet_num] + SIZE_SCALAR * NEW_LINE * ALIEN_BULLET_HEIGHT;
-            uint32_t bullet_bottom_right = bullet_bottom_left + SIZE_SCALAR * PIXEL_SIZE_GLOBAL * ALIEN_BULLET_WIDTH;
+            uint32_t bullet_bottom_left = alien_bullet_pos[bullet_num] + GLOBALS_SIZE_SCALAR * GLOBALS_NEW_LINE * GLOBALS_ALIEN_BULLET_HEIGHT;
+            uint32_t bullet_bottom_right = bullet_bottom_left + GLOBALS_SIZE_SCALAR * GLOBALS_PIXEL_SIZE * GLOBALS_ALIEN_BULLET_WIDTH;
 
             // Set x borders
             uint32_t left_border = bunker_pos[i][j];
-            uint32_t right_border = bunker_pos[i][j] + BUNKER_DAMAGE_DIM * PIXEL_SIZE_GLOBAL * SIZE_SCALAR;
+            uint32_t right_border = bunker_pos[i][j] + BUNKER_DAMAGE_DIM * GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR;
 
             // Set y borders
             uint32_t top_border = bunker_pos[i][j];
-            uint32_t bot_border = bunker_pos[i][j] + BUNKER_DAMAGE_DIM * NEW_LINE * SIZE_SCALAR;
+            uint32_t bot_border = bunker_pos[i][j] + BUNKER_DAMAGE_DIM * GLOBALS_NEW_LINE * GLOBALS_SIZE_SCALAR;
 
             // Get coord values for the Y borders
             uint16_t top_border_y = alien_get_y_coord(top_border);
@@ -246,11 +246,11 @@ void bunker_detect_hit_alien(uint8_t bullet_num)
                 }
 
                 // Draw new damage
-                alien_draw(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, red);
+                alien_draw(new_sprite, bunker_pos[i][j], BUNKER_DAMAGE_DIM, BUNKER_DAMAGE_DIM, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, red);
 
                 // Erase bullet
                 alien_bullet_moving[bullet_num] = false; // make sure bullet stops travelling
-                alien_draw(alienbullet2_down_3x5, alien_bullet_pos[bullet_num], ALIEN_BULLET_WIDTH, ALIEN_BULLET_HEIGHT, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black); // erase bullet
+                alien_draw(alienbullet2_down_3x5, alien_bullet_pos[bullet_num], GLOBALS_ALIEN_BULLET_WIDTH, GLOBALS_ALIEN_BULLET_HEIGHT, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, black); // erase bullet
             }
         }
     }

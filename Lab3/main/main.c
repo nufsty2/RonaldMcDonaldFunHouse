@@ -11,6 +11,13 @@
 #include "../../Lab2/buttons/buttons.h"
 #include "../../Lab2/switches/switches.h"
 
+/* Defines for the main only */
+#define LAST_CHAR 2
+#define RANDOM_SCALAR 10
+#define GUN_OFFSET 42
+#define HEIGHT_OF_TANK_FOR_BULLET 10
+#define DIE_CTR_MAX 30
+
 /* Buttons and Switches */
 extern uint32_t debounce_ctr;
 extern uint32_t buttons_val;
@@ -70,7 +77,7 @@ uint32_t player_death_ctr = 0;
 // BTN3: Submit letter
 void respond_to_press()
 {
-    if (buttons_val == BTN_0) 
+    if (buttons_val == GLOBALS_BTN_0) 
     {
         char val = *ui_get_selected_char();
 
@@ -80,7 +87,7 @@ void respond_to_press()
             *ui_get_selected_char() += 1;
     }
 
-    else if (buttons_val == BTN_1)
+    else if (buttons_val == GLOBALS_BTN_1)
     {
         char val = *ui_get_selected_char();
 
@@ -90,9 +97,9 @@ void respond_to_press()
             *ui_get_selected_char() -= 1;
     }
 
-    else if (buttons_val == BTN_3)
+    else if (buttons_val == GLOBALS_BTN_3)
     {
-        if (++selected_char > 2) {
+        if (++selected_char > LAST_CHAR) {
            name_entered = true;
            score_t new_score = {.name = {char_0, char_1, char_2}, .value = score};
            scores_write_new_score(new_score);
@@ -100,7 +107,7 @@ void respond_to_press()
         }
     }
 
-    if (selected_char <= 2) 
+    if (selected_char <= LAST_CHAR) 
     {
         game_over_blink_cursor(true);
         half_sec_ctr = 0;
@@ -112,14 +119,80 @@ void respond_to_press()
 // This is our main controller for drawing and where our state machine is located
 void isr_fit()
 {
-    // Check first if the player lives are zero
-    if (lives == 0 && !game_over) 
+    if (!game_over) 
     {
-        init_end_game();
-    }
+        // Check first if the player lives are zero
+        if (lives == 0) 
+        {
+            init_end_game();
+            return;
+        }
 
+        // If the player is dead, this is our player death animation
+        if (player_dead) 
+        {
+            if (++player_death_ctr >= GLOBALS_PLAYER_DEATH_MAX_VAL) // reset
+            {
+                current_pos_player = GLOBALS_PLAYER_START_POS;
+                alien_draw(tank_15x8, current_pos_player, GLOBALS_TANK_WIDTH, GLOBALS_TANK_HEIGHT, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, cyan);
+                player_dead = false;
+                player_death_ctr = 0;
+            }
+            else if (++player_death_ctr >= GLOBALS_PLAYER_DEATH_STAGE_3) // animate
+            {
+                alien_draw(tank_gone_15x8, current_pos_player, GLOBALS_TANK_WIDTH, GLOBALS_TANK_HEIGHT, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, cyan);
+            }
+            else if (++player_death_ctr >= GLOBALS_PLAYER_DEATH_STAGE_2) // animate
+            {
+                alien_draw(tank_explosion2_15x8, current_pos_player, GLOBALS_TANK_WIDTH, GLOBALS_TANK_HEIGHT, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, cyan);
+            }
+            else if (++player_death_ctr >= GLOBALS_PLAYER_DEATH_STAGE_1) // animate
+            {
+                alien_draw(tank_explosion1_15x8, current_pos_player, GLOBALS_TANK_WIDTH, GLOBALS_TANK_HEIGHT, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, cyan);
+            }
+        }
+
+
+        if ((++alien_bullet_ctr >= (rand() % GLOBALS_ALIEN_BULLET_MAX_VAL + GLOBALS_ALIEN_BULLET_MIN_VAL) * RANDOM_SCALAR)) 
+        {
+            alien_bullet_ctr = 0;
+            alien_trigger_bullets();
+        }
+
+        // If we don't game over, always check if anything (bunkers and player) is hit
+        alien_fire_bullets();
+        bunker_detect_hits();
+        if (!player_dead) player_detect_alien_hit();
+
+        // This is our saucer move
+        if ((++saucer_ctr >= GLOBALS_SAUCER_MAX_VAL))
+        {
+            saucer_moving = true;
+            saucer_ctr = 0;
+        }
+        saucer_moving = alien_move_saucer(saucer_moving); // move the saucer if the flag is set
+
+            // This is the player firing a bullet
+        if (bullet_moving && !start_die_ctr) // bullet firing
+        {
+            player_fire_bullet(); // this is our bullet firing
+            start_die_ctr = alien_detect_hit_army(); // if we get a hit (return true), start the die ctr
+            if (saucer_moving) // if the saucer is moving, continously check for a hit on the saucer
+            {
+                alien_detect_hit_saucer();
+            }
+        }
+
+        // This moves the aliens at a fixed rate
+        if ((++alien_move_ctr >= GLOBALS_ALIEN_MOVE_MAX_VAL))
+        {
+            alien_move_ctr = 0;
+            alien_move_army(); // have a counter that moves the alien army
+        }    
+    }
+    
     // This is our debouncer for buttons and switches
-    if (++debounce_ctr >= DEBOUNCE_MAX_VAL)
+    if (++debounce_ctr >= GLOBALS_DEBOUNCE_MAX_VAL)
     {
         debounce_ctr = 0; // reset debounce counter when max value hit
         buttons_val = new_buttons_val; // assign the buttons val
@@ -131,7 +204,7 @@ void isr_fit()
     if (buttons_val == new_buttons_val) 
     {
         // Counter used to auto-increment
-        if (++increment_ctr >= INCREMENT_MAX_VAL) 
+        if (++increment_ctr >= GLOBALS_INCREMENT_MAX_VAL) 
         {
             // Move player, should respond to button press
             if (!player_dead && !game_over) 
@@ -140,89 +213,21 @@ void isr_fit()
             }
 
             // Init fire bullet if statement
-            if ((buttons_val == BTN_3) && !(bullet_moving) && !game_over) 
+            if ((buttons_val == GLOBALS_BTN_3) && !(bullet_moving) && !game_over) 
             {
                 bullet_moving = true; // ste the flag
-                current_pos_bullet = (current_pos_player + 42) - NEW_LINE * 10; // get position
+                current_pos_bullet = (current_pos_player + GUN_OFFSET) - GLOBALS_NEW_LINE * HEIGHT_OF_TANK_FOR_BULLET; // get position
             }
 
             increment_ctr = 0;
         }
     }
 
-    // If the player is dead, this is our player death animation
-    if (player_dead && !game_over) 
-    {
-        if (++player_death_ctr >= PLAYER_DEATH_MAX_VAL) // reset
-        {
-            current_pos_player = PLAYER_START_POS;
-            alien_draw(tank_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
-            player_dead = false;
-            player_death_ctr = 0;
-        }
-        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_3) // animate
-        {
-            alien_draw(tank_gone_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
-        }
-        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_2) // animate
-        {
-            alien_draw(tank_explosion2_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
-        }
-        else if (++player_death_ctr >= PLAYER_DEATH_STAGE_1) // animate
-        {
-            alien_draw(tank_explosion1_15x8, current_pos_player, 15, 8, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, cyan);
-        }
- 
-    }
-
-    if ((++alien_bullet_ctr >= (rand() % ALIEN_BULLET_MAX_VAL + ALIEN_BULLET_MIN_VAL) * 10) && !game_over) 
-    {
-        alien_bullet_ctr = 0;
-        alien_trigger_bullets();
-    }
-
-    // If we don't game over, always check if anything (bunkers and player) is hit
-    if (!game_over) 
-    {
-        alien_fire_bullets();
-        bunker_detect_hits();
-        if (!player_dead) player_detect_alien_hit();
-    }
-
-    // This moves the aliens at a fixed rate
-    if ((++alien_move_ctr >= ALIEN_MOVE_MAX_VAL) && !game_over)
-    {
-        alien_move_ctr = 0;
-        alien_move_army(); // have a counter that moves the alien army
-    }
-
-    // This is our saucer move
-    if (!game_over) 
-    {
-        if ((++saucer_ctr >= SAUCER_MAX_VAL) && !game_over)
-        {
-            saucer_moving = true;
-            saucer_ctr = 0;
-        }
-        saucer_moving = alien_move_saucer(saucer_moving); // move the saucer if the flag is set
-    }
-    
-
-    // This is the player firing a bullet
-    if ((!game_over) && (bullet_moving) && !start_die_ctr) // bullet firing
-    {
-         player_fire_bullet(); // this is our bullet firing
-         start_die_ctr = alien_detect_hit_army(); // if we get a hit (return true), start the die ctr
-         if (saucer_moving) // if the saucer is moving, continously check for a hit on the saucer
-         {
-             alien_detect_hit_saucer();
-         }
-    }
 
     /* This is the die ctr, it wil lshow an explosion then erase the alien */
     if (start_die_ctr) // once an alien gets hit, start the counter
     {
-        if ((++die_ctr >= 30) && !game_over) // so we can show an explosion and then erase
+        if ((++die_ctr >= DIE_CTR_MAX) && !game_over) // so we can show an explosion and then erase
         {
             alien_erase_dead(); // erase
             die_ctr = 0; // reset ctr
@@ -231,10 +236,13 @@ void isr_fit()
     }
 
     // The time will auto-increment if pressed for 1/2 second
-    if ((++half_sec_ctr >= HALF_SECOND) && game_over && !name_entered)
+    if (game_over) 
     {
-        game_over_blink_cursor(false); // this is our blink cursor, blinks after half second
-        half_sec_ctr = 0; // reset counter
+        if ((++half_sec_ctr >= GLOBALS_HALF_SECOND) && !name_entered)
+        {
+            game_over_blink_cursor(false); // this is our blink cursor, blinks after half second
+            half_sec_ctr = 0; // reset counter
+        }
     }
 }
 
@@ -283,17 +291,17 @@ int main()
         uint32_t num_interrupts = intc_wait_for_interrupt(); // wait
         uint32_t interrupt_value = intc_get_interrupt_val(); // get the ISR
             
-        if (interrupt_value & FIT_MASK) // if fit is enabled go into isr_fit
+        if (interrupt_value & GLOBALS_FIT_MASK) // if fit is enabled go into isr_fit
         {
             isr_fit();
         }
 
-        if (interrupt_value & BTN_MASK) // if button mask detected an interrupt, go into usr_buttons()
+        if (interrupt_value & GLOBALS_BTN_MASK) // if button mask detected an interrupt, go into usr_buttons()
         {
             isr_buttons();
         }
 
-        if (interrupt_value & SW_MASK) // if the switch detects an interrupt, go into isr_switches
+        if (interrupt_value & GLOBALS_SW_MASK) // if the switch detects an interrupt, go into isr_switches
         {
             isr_switches();
         }

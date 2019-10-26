@@ -32,6 +32,13 @@
 #define OFFSET_CHAR_2 26
 #define OFFSET_ROW_FOR_CHARS 640*80
 
+#define BLINK_OFFSET_1  79
+#define BLINK_OFFSET_2  80 
+#define LETTER_WIDTH_SCALAR 24
+#define BASE_OFFSET 80
+#define SCORE_PADDING 20
+#define CURSOR_DIM 5
+
 
 /* Flags */
 extern bool blink;
@@ -63,42 +70,42 @@ void game_over_print_score(score_t score, uint32_t pos)
         }
     }
 
-    generic_draw_sprite(generic_get_sprite_from_digit(score.name[LETTER_0_SCORE]),       pos + LETTER_WIDTH*PRINT_SCORE_0, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, cyan);
-    generic_draw_sprite(generic_get_sprite_from_digit(score.name[LETTER_1_SCORE]),       pos + LETTER_WIDTH*PRINT_SCORE_1, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, cyan);
-    generic_draw_sprite(generic_get_sprite_from_digit(score.name[LETTER_2_SCORE]),       pos + LETTER_WIDTH*PRINT_SCORE_2, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, cyan);
-    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_0]),  pos + LETTER_WIDTH*PRINT_SCORE_4, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
-    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_1]),  pos + LETTER_WIDTH*PRINT_SCORE_5, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
-    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_2]),  pos + LETTER_WIDTH*PRINT_SCORE_6, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
-    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_3]),  pos + LETTER_WIDTH*PRINT_SCORE_7, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
-    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[SCORE_DIGIT_4]),  pos + LETTER_WIDTH*PRINT_SCORE_8, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, white);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.name[GLOBALS_LETTER_0_SCORE]),       pos + GLOBALS_LETTER_WIDTH*PRINT_SCORE_0, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, cyan);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.name[GLOBALS_LETTER_1_SCORE]),       pos + GLOBALS_LETTER_WIDTH*PRINT_SCORE_1, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, cyan);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.name[GLOBALS_LETTER_2_SCORE]),       pos + GLOBALS_LETTER_WIDTH*PRINT_SCORE_2, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, cyan);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[GLOBALS_SCORE_DIGIT_0]),  pos + GLOBALS_LETTER_WIDTH*PRINT_SCORE_4, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, white);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[GLOBALS_SCORE_DIGIT_1]),  pos + GLOBALS_LETTER_WIDTH*PRINT_SCORE_5, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, white);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[GLOBALS_SCORE_DIGIT_2]),  pos + GLOBALS_LETTER_WIDTH*PRINT_SCORE_6, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, white);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[GLOBALS_SCORE_DIGIT_3]),  pos + GLOBALS_LETTER_WIDTH*PRINT_SCORE_7, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, white);
+    generic_draw_sprite(generic_get_sprite_from_digit(score.value_char[GLOBALS_SCORE_DIGIT_4]),  pos + GLOBALS_LETTER_WIDTH*PRINT_SCORE_8, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, white);
 }
 
 // This is our main function print all the scores
 void game_over_print_scores()
 {
     // Erase ENTER
-    generic_draw_sprite(letterE_5x5, LETTER_WIDTH*OFFSET_E_0 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    generic_draw_sprite(letterN_5x5, LETTER_WIDTH*OFFEST_N_0 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    generic_draw_sprite(letterT_5x5, LETTER_WIDTH*OFFEST_T_0 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    generic_draw_sprite(letterE_5x5, LETTER_WIDTH*OFFEST_E_1 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    generic_draw_sprite(letterR_5x5, LETTER_WIDTH*OFFEST_R_0 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    generic_draw_sprite(letterE_5x5, GLOBALS_LETTER_WIDTH*OFFSET_E_0 + GLOBALS_GAME_OVER_LETTERS_SCALAR*GLOBALS_PIXEL_SIZE, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black);
+    generic_draw_sprite(letterN_5x5, GLOBALS_LETTER_WIDTH*OFFEST_N_0 + GLOBALS_GAME_OVER_LETTERS_SCALAR*GLOBALS_PIXEL_SIZE, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black);
+    generic_draw_sprite(letterT_5x5, GLOBALS_LETTER_WIDTH*OFFEST_T_0 + GLOBALS_GAME_OVER_LETTERS_SCALAR*GLOBALS_PIXEL_SIZE, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black);
+    generic_draw_sprite(letterE_5x5, GLOBALS_LETTER_WIDTH*OFFEST_E_1 + GLOBALS_GAME_OVER_LETTERS_SCALAR*GLOBALS_PIXEL_SIZE, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black);
+    generic_draw_sprite(letterR_5x5, GLOBALS_LETTER_WIDTH*OFFEST_R_0 + GLOBALS_GAME_OVER_LETTERS_SCALAR*GLOBALS_PIXEL_SIZE, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black);
     // Erase NAME
-    generic_draw_sprite(letterN_5x5, LETTER_WIDTH*OFFEST_N_1 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    generic_draw_sprite(letterA_5x5, LETTER_WIDTH*OFFEST_A_0 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    generic_draw_sprite(letterM_5x5, LETTER_WIDTH*OFFEST_M_0 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    generic_draw_sprite(letterE_5x5, LETTER_WIDTH*OFFEST_E_2 + GAME_OVER_LETTERS_SCALAR*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    generic_draw_sprite(letterN_5x5, GLOBALS_LETTER_WIDTH*OFFEST_N_1 + GLOBALS_GAME_OVER_LETTERS_SCALAR*GLOBALS_PIXEL_SIZE, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black);
+    generic_draw_sprite(letterA_5x5, GLOBALS_LETTER_WIDTH*OFFEST_A_0 + GLOBALS_GAME_OVER_LETTERS_SCALAR*GLOBALS_PIXEL_SIZE, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black);
+    generic_draw_sprite(letterM_5x5, GLOBALS_LETTER_WIDTH*OFFEST_M_0 + GLOBALS_GAME_OVER_LETTERS_SCALAR*GLOBALS_PIXEL_SIZE, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black);
+    generic_draw_sprite(letterE_5x5, GLOBALS_LETTER_WIDTH*OFFEST_E_2 + GLOBALS_GAME_OVER_LETTERS_SCALAR*GLOBALS_PIXEL_SIZE, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black);
     // Draw initials
-    generic_draw_sprite(generic_get_sprite_from_digit(char_0), LETTER_WIDTH*OFFSET_CHAR_0 + OFFSET_ROW_FOR_CHARS*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    generic_draw_sprite(generic_get_sprite_from_digit(char_1), LETTER_WIDTH*OFFSET_CHAR_1 + OFFSET_ROW_FOR_CHARS*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
-    generic_draw_sprite(generic_get_sprite_from_digit(char_2), LETTER_WIDTH*OFFSET_CHAR_2 + OFFSET_ROW_FOR_CHARS*PIXEL_SIZE_GLOBAL, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL*SIZE_SCALAR, black);
+    generic_draw_sprite(generic_get_sprite_from_digit(char_0), GLOBALS_LETTER_WIDTH*OFFSET_CHAR_0 + OFFSET_ROW_FOR_CHARS*GLOBALS_PIXEL_SIZE, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black);
+    generic_draw_sprite(generic_get_sprite_from_digit(char_1), GLOBALS_LETTER_WIDTH*OFFSET_CHAR_1 + OFFSET_ROW_FOR_CHARS*GLOBALS_PIXEL_SIZE, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black);
+    generic_draw_sprite(generic_get_sprite_from_digit(char_2), GLOBALS_LETTER_WIDTH*OFFSET_CHAR_2 + OFFSET_ROW_FOR_CHARS*GLOBALS_PIXEL_SIZE, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black);
 
     // get the top ten
-    score_t top_ten[NO_SCORES_TO_DISPLAY];
+    score_t top_ten[GLOBALS_NO_SCORES_TO_DISPLAY];
     scores_get_top_10_scores(top_ten);
     // For loop to print top 10
-    for (uint8_t i = 0; i < NO_SCORES_TO_DISPLAY; i++) 
+    for (uint8_t i = 0; i < GLOBALS_NO_SCORES_TO_DISPLAY; i++) 
     {
-        game_over_print_score(top_ten[i], PIXEL_SIZE_GLOBAL*((80+20*i)*640) + LETTER_WIDTH*20);
+        game_over_print_score(top_ten[i], GLOBALS_NEW_LINE*((BASE_OFFSET+SCORE_PADDING*i)) + GLOBALS_LETTER_WIDTH*SCORE_PADDING);
     }
 }
 
@@ -108,19 +115,19 @@ void game_over_blink_cursor(bool force)
 {
     // Draw the sprite
     generic_draw_sprite(letterBLOCK_6x6, 
-                LETTER_WIDTH*24 - 3 + (selected_char * LETTER_WIDTH) + 640*79*PIXEL_SIZE_GLOBAL, 
-                6, 
-                6, 
-                PIXEL_SIZE_GLOBAL*SIZE_SCALAR, 
+                GLOBALS_LETTER_WIDTH*LETTER_WIDTH_SCALAR - GLOBALS_PIXEL_SIZE + (selected_char * GLOBALS_LETTER_WIDTH) + BLINK_OFFSET_1*GLOBALS_NEW_LINE, 
+                GLOBALS_BLACK_BOX_DIM, 
+                GLOBALS_BLACK_BOX_DIM, 
+                GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, 
                 force ? black : 
                     blink ? cyan : black
     );
     char* current = ui_get_selected_char(); // get the current selected cursors
     generic_draw_sprite(generic_get_sprite_from_digit(*current),     
-                LETTER_WIDTH*24 +     (selected_char * LETTER_WIDTH) + 640*80*PIXEL_SIZE_GLOBAL, 
-                5, 
-                5, 
-                PIXEL_SIZE_GLOBAL*SIZE_SCALAR, 
+                GLOBALS_LETTER_WIDTH*LETTER_WIDTH_SCALAR +     (selected_char * GLOBALS_LETTER_WIDTH) + BLINK_OFFSET_2*GLOBALS_NEW_LINE, 
+                CURSOR_DIM, 
+                CURSOR_DIM, 
+                GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, 
                 force ? cyan : 
                     blink ? black : cyan
     );  

@@ -85,16 +85,16 @@ void ui_increase_score(uint16_t row)
 {
     switch (row) 
     {
-        case TOP_ALIEN:
-            score += TOP_ALIEN_SCORE;
+        case GLOBALS_TOP_ALIEN:
+            score += GLOBALS_TOP_ALIEN_SCORE;
             break;
-        case MID_ALIEN_0:
-        case MID_ALIEN_1:
-            score += MID_ALIEN_SCORE;
+        case GLOBALS_MID_ALIEN_0:
+        case GLOBALS_MID_ALIEN_1:
+            score += GLOBALS_MID_ALIEN_SCORE;
             break;
-        case BOT_ALIEN_0:
-        case BOT_ALIEN_1:
-            score += BOT_ALIEN_SCORE;
+        case GLOBALS_BOT_ALIEN_0:
+        case GLOBALS_BOT_ALIEN_1:
+            score += GLOBALS_BOT_ALIEN_SCORE;
             break;
     }
 }
@@ -111,30 +111,30 @@ void ui_increase_score_saucer()
 void ui_update_score(bool firstRun) 
 {
     uint32_t score_copy = score;
-    uint32_t digit_location = LETTER_WIDTH * DIGIT_OFFSET;
+    uint32_t digit_location = GLOBALS_LETTER_WIDTH * DIGIT_OFFSET;
 
     // Print numbers
-    for (uint16_t i = 0; i < SCORE_DIGITS; i++)
+    for (uint16_t i = 0; i < GLOBALS_SCORE_DIGITS; i++)
     {
         uint8_t digit_val = score_copy % DIGIT_OFFSET;
 
         if ((*ui_get_score_digit(i) != digit_val) && !firstRun)
         {
             // Erase
-            generic_draw_sprite(generic_get_sprite_from_digit(*ui_get_score_digit(i)), digit_location, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, black);
+            generic_draw_sprite(generic_get_sprite_from_digit(*ui_get_score_digit(i)), digit_location, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, black);
             // Draw
-            generic_draw_sprite(generic_get_sprite_from_digit(digit_val), digit_location, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, green);
+            generic_draw_sprite(generic_get_sprite_from_digit(digit_val), digit_location, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, green);
             // Replace value
             *ui_get_score_digit(i) = digit_val;
         }
         else if (firstRun)
         {
             // Draw
-            alien_draw(generic_get_sprite_from_digit(digit_val), digit_location, LETTER_DIM, LETTER_DIM, PIXEL_SIZE_GLOBAL * SIZE_SCALAR, green);
+            alien_draw(generic_get_sprite_from_digit(digit_val), digit_location, GLOBALS_LETTER_DIM, GLOBALS_LETTER_DIM, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, green);
         }
 
         score_copy /= DIGIT_OFFSET;
-        digit_location -= LETTER_WIDTH;
+        digit_location -= GLOBALS_LETTER_WIDTH;
     }
 }
 
@@ -159,19 +159,19 @@ void ui_decrement_lives()
 // @param firstRun - if it's the first run or not
 void ui_update_lives(bool firstRun) 
 {
-    uint32_t pos = RIGHT_EDGE - LETTER_WIDTH * WIDTH_SCALAR + NEW_LINE * SIZE_SCALAR;
+    uint32_t pos = GLOBALS_RIGHT_EDGE - GLOBALS_LETTER_WIDTH * WIDTH_SCALAR + GLOBALS_NEW_LINE * GLOBALS_SIZE_SCALAR;
     uint32_t initial_pos = pos;
 
     for (uint8_t l = 0; l < MAX_LIVES; l++)
      {
-        alien_draw(tank_15x8, pos, TANK_WIDTH, TANK_HEIGHT, PIXEL_SIZE_GLOBAL, black);
-        pos += TANK_WIDTH * PIXEL_SIZE_GLOBAL + TANK_WIDTH;
+        alien_draw(tank_15x8, pos, GLOBALS_TANK_WIDTH, GLOBALS_TANK_HEIGHT, GLOBALS_PIXEL_SIZE, black);
+        pos += GLOBALS_TANK_WIDTH * GLOBALS_PIXEL_SIZE + GLOBALS_TANK_WIDTH;
     }
 
     pos = initial_pos;
     for (uint8_t l = 0; l < lives; l++)
      {
-        alien_draw(tank_15x8, pos, TANK_WIDTH, TANK_HEIGHT, PIXEL_SIZE_GLOBAL, cyan);
-        pos += TANK_WIDTH * PIXEL_SIZE_GLOBAL + TANK_WIDTH;
+        alien_draw(tank_15x8, pos, GLOBALS_TANK_WIDTH, GLOBALS_TANK_HEIGHT, GLOBALS_PIXEL_SIZE, cyan);
+        pos += GLOBALS_TANK_WIDTH * GLOBALS_PIXEL_SIZE + GLOBALS_TANK_WIDTH;
     }
 }
