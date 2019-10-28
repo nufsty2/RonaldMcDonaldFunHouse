@@ -30,11 +30,16 @@ void init()
     //select_line_in(I2C_INDEX); // play it through headphones
 }
 
+void parseWAVFile()
+{
+    
+}
+
 int main()
 { 
     init(); // inits what we want
 
-    char buffer[BUFFER_SIZE];
-    write(file, buffer, BUFFER_SIZE);
-    read(file, buffer, BUFFER_SIZE);
+    // char buffer[BUFFER_SIZE];
+    // write(file, buffer, BUFFER_SIZE);
+    // read(file, buffer, BUFFER_SIZE);
 }
