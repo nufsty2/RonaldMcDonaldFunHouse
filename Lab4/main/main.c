@@ -7,6 +7,7 @@
 #include "../config/config.h"
 #include "../wav/wav.h"
 
+
 #define FILE_NOT_FOUND (-1)
 #define BUFFER_SIZE 10
 #define I2C_INDEX 0
@@ -31,17 +32,18 @@ void init()
     select_line_in(I2C_INDEX); // play it through headphones
 }
 
-void parse_wav_file()
+int32_t* parse_wav_file()
 {
-    /*return*/ wav_read_data("../wav_files/invader_die.wav"); // TEST
+    return wav_read_data("../wav_files/invader_die.wav"); // TEST
 }
 
 int main()
 { 
     init(); // inits what we want
 
-    /*int32_t buffer[512] =*/ parse_wav_file();
+    int32_t* audo_data = parse_wav_file(); // data to test
 
-    // write(file, buffer, 512);
-    // read(file, buffer, 512);
+    // write(file, buffer, 2048);
+    // read(file, buffer, 2048);
+
 }
