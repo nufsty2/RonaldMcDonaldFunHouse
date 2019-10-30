@@ -34,6 +34,8 @@ MODULE_DESCRIPTION("ECEn 427 Audio Driver");
 
 // Globals
 static s32* kern_buf;
+static u32 index = 0;
+static u32 size_buf = 0;
 
 // Function declarations for the kernal
 static int audio_init(void);
@@ -270,6 +272,9 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
 
   // Allocate new buffer
   kern_buf = kmalloc(size, GFP_KERNEL); // GFP_KERNAL = allocate memory based on kernal
+  index = 0;
+
+  size_buf = kern_buf/4;
   if (!kern_buf)
   {
     pr_info("DEBUG M2: BAD - kmalloc for write not working\n");
@@ -306,27 +311,35 @@ static irqreturn_t audio_irq(int i, void *v)
 
   // Getting the data count in the FIFOs
   u32 fifo = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
-  u32 fifo_right = (fifo &= 0x00003FE) >> 1;
-  u32 fifo_left = (fifo &= 0x00FFC00) >> 10;
+  u32 fifo_right = (fifo & 0x00003FE) >> 1;
+  u32 fifo_left = (fifo & 0x00FFC00) >> 10;
 
   printk("LEFT: %x\n", fifo_left);
   printk("RIGHT: %x\n", fifo_right);
 
   printk("Kern buff %x\n", kern_buf); // make sure it ain't null
 
-  iowrite32(kern_buf, (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
-  iowrite32(kern_buf, (adev.virt_addr + 0x0C / WORD_SIZE)); // left
-
-  printk("LEFT: %x\n", fifo_left);
-  printk("RIGHT: %x\n", fifo_right);
-
   if (fifo_left <= 256 || fifo_right <= 256) // if fifos are less, fire an interrupt
   {
-    // DISABLE INTERRUPTS
+    // DISABLE INTERRUPTS SO NO INFINIT LOOP
     u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
     status &= DISABLE_IRQ;
     iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
   }
+
+  u32 index_copy = index;
+  for (u32 i = index_copy; i < 1024 - fifo_left; i++)
+  {
+    if (kern_buf[index < size_buf)
+    {
+      iowrite32(kern_buf[index_copy + i], (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
+      iowrite32(kern_buf[index_copy + i], (adev.virt_addr + 0x0C / WORD_SIZE)); // left
+      index++;
+    }
+  }
+
+  printk("LEFT: %x\n", fifo_left);
+  printk("RIGHT: %x\n", fifo_right);
 
   return IRQ_HANDLED;
 }
