@@ -1,7 +1,7 @@
 #include "wav.h"
 
 
-int32_t* wav_read_data(char * input)
+void wav_read_data(int32_t *array, char * input)
 {
 
     FILE * fp;
@@ -9,10 +9,9 @@ int32_t* wav_read_data(char * input)
     if ((fp = fopen(input, "rb")) == NULL) // cant open
     {
         printf("FP is null mmkay\n\r");
-        return NULL;
+        return;
     }
 
-    int32_t* data_to_return;
     fseek(fp, 44L, 0); // read from 44 byte to end (data)
 
     int16_t value = 0;
@@ -23,8 +22,7 @@ int32_t* wav_read_data(char * input)
         if (value < 0) value = -value;
         value32 = value << 8;
         //printf("%x\n\r", value32);
-        data_to_return[i++] = value32;
+        array[i++] = value32;
     }
 
-    return &(data_to_return[0]);
 }

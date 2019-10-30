@@ -33,7 +33,7 @@ MODULE_DESCRIPTION("ECEn 427 Audio Driver");
 #define WORD_SIZE 4
 
 // Globals
-static char* old_buffer;
+static s32* kern_buf;
 
 // Function declarations for the kernal
 static int audio_init(void);
@@ -244,8 +244,10 @@ static ssize_t audio_read(struct file *f, char __user *u, size_t size, loff_t *o
   // 2nd param = source address in kernal space
   // 3rd param = number of bytes to copy
   // Return 0 if everything went well
-  long no_bytes_not_copied = copy_to_user(u, old_buffer, size);
-  pr_info("DEBUG M2: u (read) = %x\n", &u);
+  long no_bytes_not_copied = copy_to_user(u, kern_buf, size);
+  pr_info("DEBUG M2: kern_buf[0] (read) = %x\n", kern_buf[0]);
+  pr_info("DEBUG M2: kern_buf[1] (read) = %x\n", kern_buf[1]);
+  pr_info("DEBUG M2: kern_buf[2] (read) = %x\n", kern_buf[2]);
   if (no_bytes_not_copied != 0)
     pr_info("DEBUG M2: BAD - read not reading bytes = %ld\n", no_bytes_not_copied);
 
@@ -263,14 +265,16 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
   iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
 
   // Free the buffer used to store old sound sample
-  if (old_buffer != NULL)
-    kfree(old_buffer);
-  old_buffer = u; // set the old buffer
+  if (kern_buf != NULL)
+    kfree(kern_buf);
 
   // Allocate new buffer
-  int32_t *kern_buf = kmalloc(size, GFP_KERNEL); // GFP_KERNAL = allocate memory based on kernal
-  pr_info("DEBUG M2: kern_buf = %x\n", kern_buf);
-  pr_info("DEBUG M2: u (write) = %x\n", &u);
+  kern_buf = kmalloc(size, GFP_KERNEL); // GFP_KERNAL = allocate memory based on kernal
+  if (!kern_buf)
+  {
+    pr_info("DEBUG M2: BAD - kmalloc for write not working\n");
+    return -ENOMEM;
+  }
 
   // Copy the userspace to newly allocated buffer (LDD3 pg 64)
   // 1st param = destination address in kernal space
@@ -278,10 +282,12 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
   // 3rd param = number of bytes to copy
   // Return 0 if everything went well
   long no_bytes_not_copied = copy_from_user(kern_buf, u, size);
+  pr_info("DEBUG M2: kern_buf[0] (write) = %x\n", kern_buf[0]);
+  pr_info("DEBUG M2: kern_buf[1] (write) = %x\n", kern_buf[1]);
+  pr_info("DEBUG M2: kern_buf[2] (write) = %x\n", kern_buf[2]);
   if (no_bytes_not_copied != 0)
-    pr_info("DEBUG M2: BAD - Bytes not copied = %ld\n", no_bytes_not_copied);
-  else
   {
+    pr_info("DEBUG M2: BAD - Bytes not copied = %ld\n", no_bytes_not_copied);
     kfree(kern_buf);
     return -EFAULT;
   }
@@ -296,12 +302,31 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
 
 static irqreturn_t audio_irq(int i, void *v) 
 {
-  pr_info("DEBUG: Called audio_irq()!\n");
-  u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
-  status &= DISABLE_IRQ;
-  iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
+  //pr_info("DEBUG: Called audio_irq()!\n");
 
-  pr_info("DEBUG: Got to the end of audio_irq!\n");
+  // Getting the data count in the FIFOs
+  u32 fifo = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
+  u32 fifo_right = (fifo &= 0x00003FE) >> 1;
+  u32 fifo_left = (fifo &= 0x00FFC00) >> 10;
+
+  printk("LEFT: %x\n", fifo_left);
+  printk("RIGHT: %x\n", fifo_right);
+
+  printk("Kern buff %x\n", kern_buf); // make sure it ain't null
+
+  iowrite32(kern_buf, (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
+  iowrite32(kern_buf, (adev.virt_addr + 0x0C / WORD_SIZE)); // left
+
+  printk("LEFT: %x\n", fifo_left);
+  printk("RIGHT: %x\n", fifo_right);
+
+  if (fifo_left <= 256 || fifo_right <= 256) // if fifos are less, fire an interrupt
+  {
+    // DISABLE INTERRUPTS
+    u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
+    status &= DISABLE_IRQ;
+    iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
+  }
 
   return IRQ_HANDLED;
 }

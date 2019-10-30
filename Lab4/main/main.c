@@ -13,6 +13,9 @@
 
 static uint32_t file;
 
+// audio data rray
+static int32_t audio_data[32000];
+
 void open_audio_driver()
 {
     file = open("/dev/audio", O_RDWR);
@@ -23,30 +26,23 @@ void open_audio_driver()
 void init()
 {
     // Open audio driver
-    //open_audio_driver();
+    open_audio_driver();
 
     // config the codec
     config_audio_pll(I2C_INDEX);
-    //config_audio_codec(I2C_INDEX);
-    //select_line_in(I2C_INDEX); // play it through headphones
-}
-
-int32_t* parse_wav_file()
-{
-    return wav_read_data("../wav_files/invader_die.wav"); // TEST
+    config_audio_codec(I2C_INDEX);
 }
 
 int main()
 { 
     init(); // inits what we want
 
-    //int32_t* audio_data = parse_wav_file(); // data to test
+    wav_read_data(audio_data, "../wav_files/invader_die.wav"); // TEST
 
     if (file != -1)
     {
-        // char buf[1] = {0x7F};
-        // write(file, buf, 1);
-        // read(file, buf, 1);
+        write(file, audio_data, 32000);
+        //read(file, audio_data, 32000);
     }
 
 }
