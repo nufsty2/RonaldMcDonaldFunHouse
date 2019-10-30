@@ -9,7 +9,6 @@
 
 
 #define FILE_NOT_FOUND (-1)
-#define BUFFER_SIZE 10
 #define I2C_INDEX 0
 
 static uint32_t file;
@@ -24,12 +23,12 @@ void open_audio_driver()
 void init()
 {
     // Open audio driver
-    open_audio_driver();
+    //open_audio_driver();
 
     // config the codec
     config_audio_pll(I2C_INDEX);
-    config_audio_codec(I2C_INDEX);
-    select_line_in(I2C_INDEX); // play it through headphones
+    //config_audio_codec(I2C_INDEX);
+    //select_line_in(I2C_INDEX); // play it through headphones
 }
 
 int32_t* parse_wav_file()
@@ -41,9 +40,13 @@ int main()
 { 
     init(); // inits what we want
 
-    int32_t* audo_data = parse_wav_file(); // data to test
+    //int32_t* audio_data = parse_wav_file(); // data to test
 
-    // write(file, buffer, 2048);
-    // read(file, buffer, 2048);
+    if (file != -1)
+    {
+        // char buf[1] = {0x7F};
+        // write(file, buf, 1);
+        // read(file, buf, 1);
+    }
 
 }

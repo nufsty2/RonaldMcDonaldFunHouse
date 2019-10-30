@@ -33,7 +33,7 @@ MODULE_DESCRIPTION("ECEn 427 Audio Driver");
 #define WORD_SIZE 4
 
 // Globals
-static int32_t* old_buffer;
+static char* old_buffer;
 
 // Function declarations for the kernal
 static int audio_init(void);
@@ -235,7 +235,7 @@ static int audio_remove(struct platform_device * pdev)
   return 0;
 }
 
-static ssize_t audio_read(struct file *f, int32_t __user *u, size_t size, loff_t *off)
+static ssize_t audio_read(struct file *f, char __user *u, size_t size, loff_t *off)
 {
   pr_info("DEBUG: Called audio_read()!\n"); // make sure we enter
 
@@ -244,15 +244,16 @@ static ssize_t audio_read(struct file *f, int32_t __user *u, size_t size, loff_t
   // 2nd param = source address in kernal space
   // 3rd param = number of bytes to copy
   // Return 0 if everything went well
-  long no_bytes_not_copied = copy_to_user(u, old_buffer, sizeof(int32_t));
-  pr_info("DEBUG M2: u = %x\n", u);
+  long no_bytes_not_copied = copy_to_user(u, old_buffer, size);
+  pr_info("DEBUG M2: u (read) = %x\n", &u);
   if (no_bytes_not_copied != 0)
     pr_info("DEBUG M2: BAD - read not reading bytes = %ld\n", no_bytes_not_copied);
+
 
   return no_bytes_not_copied; // 0 = audio playing, anything else = audio not playing
 }
 
-static ssize_t audio_write(struct file *f, const int32_t __user *u, size_t size, loff_t *off)
+static ssize_t audio_write(struct file *f, const char __user *u, size_t size, loff_t *off)
 {
   pr_info("DEBUG: Called audio_write()!\n"); // make sure we enter
 
@@ -269,6 +270,7 @@ static ssize_t audio_write(struct file *f, const int32_t __user *u, size_t size,
   // Allocate new buffer
   int32_t *kern_buf = kmalloc(size, GFP_KERNEL); // GFP_KERNAL = allocate memory based on kernal
   pr_info("DEBUG M2: kern_buf = %x\n", kern_buf);
+  pr_info("DEBUG M2: u (write) = %x\n", &u);
 
   // Copy the userspace to newly allocated buffer (LDD3 pg 64)
   // 1st param = destination address in kernal space
@@ -298,5 +300,8 @@ static irqreturn_t audio_irq(int i, void *v)
   u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
   status &= DISABLE_IRQ;
   iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
+
+  pr_info("DEBUG: Got to the end of audio_irq!\n");
+
   return IRQ_HANDLED;
 }
