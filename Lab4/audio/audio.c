@@ -316,8 +316,20 @@ static irqreturn_t audio_irq(int i, void *v)
 
   printk("LEFT: %x\n", fifo_left);
   printk("RIGHT: %x\n", fifo_right);
+  printk("FIFO VALUE: %x\n", fifo);
 
   printk("Kern buff %x\n", kern_buf); // make sure it ain't null
+
+  u32 index_copy = index;
+  for (u32 j = index_copy; j < 1024 - fifo_left; j++)
+  {
+    iowrite32(1, (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
+    iowrite32(1, (adev.virt_addr + 0x0C / WORD_SIZE)); // left
+    if (index < size_buf)
+    {
+      index++;
+    }
+  }
 
   if (fifo_left <= 256 || fifo_right <= 256) // if fifos are less, fire an interrupt
   {
@@ -327,19 +339,7 @@ static irqreturn_t audio_irq(int i, void *v)
     iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
   }
 
-  u32 index_copy = index;
-  for (u32 i = index_copy; i < 1024 - fifo_left; i++)
-  {
-    if (index < size_buf)
-    {
-      iowrite32(kern_buf[index_copy + i], (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
-      iowrite32(kern_buf[index_copy + i], (adev.virt_addr + 0x0C / WORD_SIZE)); // left
-      index++;
-    }
-  }
-
   printk("Index: %d\n", index);
-
   printk("LEFT:  %x\n", fifo_left);
   printk("RIGHT: %x\n", fifo_right);
 

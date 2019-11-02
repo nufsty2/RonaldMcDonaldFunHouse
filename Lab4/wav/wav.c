@@ -3,7 +3,6 @@
 
 void wav_read_data(int32_t *array, char * input)
 {
-
     FILE * fp;
 
     if ((fp = fopen(input, "rb")) == NULL) // cant open
