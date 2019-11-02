@@ -44,5 +44,8 @@ int main()
         write(file, audio_data, 32000);
         //read(file, audio_data, 32000);
     }
+    else {
+        printf("Couldn't find file!\n\r");
+    }
 
 }

@@ -273,8 +273,8 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
   // Allocate new buffer
   kern_buf = kmalloc(size, GFP_KERNEL); // GFP_KERNAL = allocate memory based on kernal
   index = 0;
+  size_buf = size / WORD_SIZE;
 
-  size_buf = kern_buf/4;
   if (!kern_buf)
   {
     pr_info("DEBUG M2: BAD - kmalloc for write not working\n");
@@ -311,8 +311,8 @@ static irqreturn_t audio_irq(int i, void *v)
 
   // Getting the data count in the FIFOs
   u32 fifo = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
-  u32 fifo_right = (fifo & 0x00003FE) >> 1;
-  u32 fifo_left = (fifo & 0x00FFC00) >> 10;
+  u32 fifo_right = (fifo & 0x000003FE) >> 1;
+  u32 fifo_left  = (fifo & 0x001FF800) >> 11;
 
   printk("LEFT: %x\n", fifo_left);
   printk("RIGHT: %x\n", fifo_right);
@@ -330,7 +330,7 @@ static irqreturn_t audio_irq(int i, void *v)
   u32 index_copy = index;
   for (u32 i = index_copy; i < 1024 - fifo_left; i++)
   {
-    if (kern_buf[index < size_buf)
+    if (index < size_buf)
     {
       iowrite32(kern_buf[index_copy + i], (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
       iowrite32(kern_buf[index_copy + i], (adev.virt_addr + 0x0C / WORD_SIZE)); // left
@@ -338,7 +338,9 @@ static irqreturn_t audio_irq(int i, void *v)
     }
   }
 
-  printk("LEFT: %x\n", fifo_left);
+  printk("Index: %d\n", index);
+
+  printk("LEFT:  %x\n", fifo_left);
   printk("RIGHT: %x\n", fifo_right);
 
   return IRQ_HANDLED;
