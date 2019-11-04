@@ -267,8 +267,10 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
   iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
 
   // Free the buffer used to store old sound sample
-  if (kern_buf != NULL)
+  if (kern_buf != NULL) {
+    printk("kfree!\n");
     kfree(kern_buf);
+  }
 
   // Allocate new buffer
   kern_buf = kmalloc(size, GFP_KERNEL); // GFP_KERNAL = allocate memory based on kernal
@@ -302,12 +304,16 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
   status |= ENABLE_IRQ;
   iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
 
+  printk("After iowrite32: kern_buf[0] = %x\n", kern_buf[0]);
+
   return 0;
 }
 
 static irqreturn_t audio_irq(int i, void *v) 
 {
   //pr_info("DEBUG: Called audio_irq()!\n");
+  printk("Upon entering audio_irq: kern_buf[0] = %x\n", kern_buf[0]);
+
 
   // Getting the data count in the FIFOs
   u32 fifo = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
@@ -317,18 +323,19 @@ static irqreturn_t audio_irq(int i, void *v)
   printk("LEFT: %x\n", fifo_left);
   printk("RIGHT: %x\n", fifo_right);
   printk("FIFO VALUE: %x\n", fifo);
-
-  printk("Kern buff %x\n", kern_buf); // make sure it ain't null
+  if (kern_buf != NULL) {
+    printk("Kern buf %x\n", kern_buf); // make sure it ain't null
+  }
 
   u32 index_copy = index;
   for (u32 j = index_copy; j < 1024 - fifo_left; j++)
   {
-    iowrite32(1, (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
-    iowrite32(1, (adev.virt_addr + 0x0C / WORD_SIZE)); // left
-    if (index < size_buf)
+    if (index_copy + j < size_buf)
     {
-      index++;
+      iowrite32(kern_buf[index_copy + j], (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
+      iowrite32(kern_buf[index_copy + j], (adev.virt_addr + 0x0C / WORD_SIZE)); // left
     }
+    index++;
   }
 
   if (fifo_left <= 256 || fifo_right <= 256) // if fifos are less, fire an interrupt

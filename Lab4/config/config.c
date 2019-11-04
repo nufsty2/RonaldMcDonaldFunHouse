@@ -135,9 +135,9 @@ void config_audio_codec(int iic_index) {
     // Mute left input to mixer3 (R23) and right input to mixer4 (R25)
     write_audio_reg(R23_PLAYBACK_MIXER_LEFT_CONTROL_1, 0x00, iic_fd);
     write_audio_reg(R25_PLAYBACK_MIXER_RIGHT_CONTROL_1, 0x00, iic_fd);
-    // Mute left and right channels output; enable them when output is needed
-    write_audio_reg(R29_PLAYBACK_HEADPHONE_LEFT_VOLUME_CONTROL, 0xE5, iic_fd);
-    write_audio_reg(R30_PLAYBACK_HEADPHONE_RIGHT_VOLUME_CONTROL, 0xE5, iic_fd);
+    // // Mute left and right channels output; enable them when output is needed
+    // write_audio_reg(R29_PLAYBACK_HEADPHONE_LEFT_VOLUME_CONTROL, 0xE5, iic_fd);
+    // write_audio_reg(R30_PLAYBACK_HEADPHONE_RIGHT_VOLUME_CONTROL, 0xE5, iic_fd);
     // Enable play back right and left channels
     write_audio_reg(R35_PLAYBACK_POWER_MANAGEMENT, 0x03, iic_fd);
     // Enable DAC for both channels
@@ -149,6 +149,13 @@ void config_audio_codec(int iic_index) {
     // Enable DSP and DSP Run
     write_audio_reg(R61_DSP_ENABLE, 0x01, iic_fd);
     write_audio_reg(R62_DSP_RUN, 0x01, iic_fd);
+
+    // Unmute left and right DAC, enable Mixer3 and Mixer4 *****************************
+    write_audio_reg(R22_PLAYBACK_MIXER_LEFT_CONTROL_0, 0x21, iic_fd);
+    write_audio_reg(R24_PLAYBACK_MIXER_RIGHT_CONTROL_0, 0x41, iic_fd);
+    // Enable Left/Right Headphone out
+    write_audio_reg(R29_PLAYBACK_HEADPHONE_LEFT_VOLUME_CONTROL, 0xE7, iic_fd);
+    write_audio_reg(R30_PLAYBACK_HEADPHONE_RIGHT_VOLUME_CONTROL, 0xE7, iic_fd);
     /* 
      * Enable Digital Clock Generator 0 and 1. 
      * Generator 0 generates sample rates for the ADCs, DACs, and DSP. 
@@ -254,12 +261,12 @@ void play(unsigned int audio_mmap_size,
         *((volatile int *)(((uint8_t *)uio_ptr) + I2S_DATA_TX_R_REG)) = DataR;
     }
 
-    // Mute left and right DAC
-    write_audio_reg(R22_PLAYBACK_MIXER_LEFT_CONTROL_0, 0x01, iic_fd);
-    write_audio_reg(R24_PLAYBACK_MIXER_RIGHT_CONTROL_0, 0x01, iic_fd);
-    // Mute left input to mixer3 (R23) and right input to mixer4 (R25)
-    write_audio_reg(R23_PLAYBACK_MIXER_LEFT_CONTROL_1, 0x00, iic_fd);
-    write_audio_reg(R25_PLAYBACK_MIXER_RIGHT_CONTROL_1, 0x00, iic_fd);
+    // // Mute left and right DAC
+    // write_audio_reg(R22_PLAYBACK_MIXER_LEFT_CONTROL_0, 0x01, iic_fd);
+    // write_audio_reg(R24_PLAYBACK_MIXER_RIGHT_CONTROL_0, 0x01, iic_fd);
+    // // Mute left input to mixer3 (R23) and right input to mixer4 (R25)
+    // write_audio_reg(R23_PLAYBACK_MIXER_LEFT_CONTROL_1, 0x00, iic_fd);
+    // write_audio_reg(R25_PLAYBACK_MIXER_RIGHT_CONTROL_1, 0x00, iic_fd);
 
     if (unsetUIO(uio_ptr, audio_mmap_size) < 0){
         printf("Unable to free UIO %d.\n", uio_index);
