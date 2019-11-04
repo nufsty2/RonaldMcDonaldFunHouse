@@ -200,12 +200,12 @@ static int audio_probe(struct platform_device *pdev)
     return AUDIO_PROBE_CDEV_ADD_FAIL;
  
   // Enabling interrupts
-  u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
-  pr_info("DEBUG: Before oring status %x\n", status);
-  status |= ENABLE_IRQ;
-  pr_info("DEBUG: After oring status %x\n", status);
-  iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
-  pr_info("DEBUG: After iowrite32!!\n");
+  // u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
+  // pr_info("DEBUG: Before oring status %x\n", status);
+  // status |= ENABLE_IRQ;
+  // pr_info("DEBUG: After oring status %x\n", status);
+  // iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
+  // pr_info("DEBUG: After iowrite32!!\n");
 
   return AUDIO_PROBE_SUCCESS; //(success)
 }
@@ -312,7 +312,7 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
 static irqreturn_t audio_irq(int i, void *v) 
 {
   //pr_info("DEBUG: Called audio_irq()!\n");
-  printk("Upon entering audio_irq: kern_buf[0] = %x\n", kern_buf[0]);
+  // printk("Upon entering audio_irq: kern_buf[0] = %x\n", kern_buf[0]);
 
 
   // Getting the data count in the FIFOs
@@ -340,7 +340,7 @@ static irqreturn_t audio_irq(int i, void *v)
 
   if (fifo_left <= 256 || fifo_right <= 256) // if fifos are less, fire an interrupt
   {
-    // DISABLE INTERRUPTS SO NO INFINIT LOOP
+    // DISABLE INTERRUPTS SO NO INFINITE LOOP
     u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
     status &= DISABLE_IRQ;
     iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
