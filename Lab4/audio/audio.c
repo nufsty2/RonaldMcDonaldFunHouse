@@ -312,8 +312,18 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
 
 static irqreturn_t audio_irq(int i, void *v) 
 {
+<<<<<<< HEAD
   printk("DEBUG: Called audio_irq()!\n");
   printk("Upon entering audio_irq: kern_buf[0] = %x\n", kern_buf[0]);
+=======
+<<<<<<< HEAD
+  //pr_info("DEBUG: Called audio_irq()!\n");
+  // printk("Upon entering audio_irq: kern_buf[0] = %x\n", kern_buf[0]);
+=======
+  printk("DEBUG: Called audio_irq()!\n");
+  printk("Upon entering audio_irq: kern_buf[0] = %x\n", kern_buf[0]);
+>>>>>>> a36c763736c9f1a0a7a126a72827c61c2c2d83fa
+>>>>>>> parent of f027dff... Revert "adfasd"
 
   // Getting the data count in the FIFOs
   u32 fifo = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
