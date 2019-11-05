@@ -4,16 +4,17 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
-#include <string.h>
 #include "../config/config.h"
 #include "../wav/wav.h"
 
 
 #define FILE_NOT_FOUND (-1)
 #define I2C_INDEX 0
-#define SUPER_BIG 100000
 
 static uint32_t file;
+
+// audio data rray
+static int32_t audio_data[32000];
 
 void open_audio_driver()
 {
@@ -32,31 +33,19 @@ void init()
     config_audio_codec(I2C_INDEX);
 }
 
-int main(int argc, char *argv[])
+int main()
 { 
-    if(argc < 2) 
+    init(); // inits what we want
+
+    wav_read_data(audio_data, "../wav_files/invader_die.wav"); // TEST
+
+    if (file != -1)
     {
-        printf("No sound file specified on command line!\n\r");
-        return 1;
+        write(file, audio_data, 32000);
+        //read(file, audio_data, 32000);
+    }
+    else {
+        printf("Couldn't find file!\n\r");
     }
 
-    else
-    {
-        init(); // inits what we want
-
-        for (uint16_t i = 1; i < argc; i++) {
-            char file_path[100] = "../wav_files/";
-            strcat(file_path, argv[i]);
-
-            int32_t audio_data[SUPER_BIG];
-            uint32_t size = wav_read_data(audio_data, file_path); // TEST
-
-            for (uint8_t j = 0; j < 2; j++) 
-            {
-                write(file, audio_data, size);
-                while(!read(file, audio_data, size));
-            }
-        }
-        return 0;
-    }
 }

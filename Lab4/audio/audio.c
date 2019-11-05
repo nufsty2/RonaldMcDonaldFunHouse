@@ -29,14 +29,13 @@ MODULE_DESCRIPTION("ECEn 427 Audio Driver");
 #define IRQ_OFFSET 0x10
 #define DISABLE_IRQ 0xFFFFFFFE
 #define ENABLE_IRQ 0x1
-#define SPACE_AVAIL ((1024 * 3) / 4)
 
 #define WORD_SIZE 4
 
 // Globals
 static s32* kern_buf;
-u32 buf_index = 0;
-u32 size_buf = 0;
+static u32 index = 0;
+static u32 size_buf = 0;
 
 // Function declarations for the kernal
 static int audio_init(void);
@@ -255,7 +254,7 @@ static ssize_t audio_read(struct file *f, char __user *u, size_t size, loff_t *o
     pr_info("DEBUG M2: BAD - read not reading bytes = %ld\n", no_bytes_not_copied);
 
 
-  return (buf_index >= size_buf); // 0 = audio playing, anything else = audio not playing
+  return no_bytes_not_copied; // 0 = audio playing, anything else = audio not playing
 }
 
 static ssize_t audio_write(struct file *f, const char __user *u, size_t size, loff_t *off)
@@ -275,7 +274,7 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
 
   // Allocate new buffer
   kern_buf = kmalloc(size, GFP_KERNEL); // GFP_KERNAL = allocate memory based on kernal
-  buf_index = 0;
+  index = 0;
   size_buf = size / WORD_SIZE;
 
   if (!kern_buf)
@@ -312,18 +311,8 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
 
 static irqreturn_t audio_irq(int i, void *v) 
 {
-<<<<<<< HEAD
-  printk("DEBUG: Called audio_irq()!\n");
-  printk("Upon entering audio_irq: kern_buf[0] = %x\n", kern_buf[0]);
-=======
-<<<<<<< HEAD
   //pr_info("DEBUG: Called audio_irq()!\n");
   // printk("Upon entering audio_irq: kern_buf[0] = %x\n", kern_buf[0]);
-=======
-  printk("DEBUG: Called audio_irq()!\n");
-  printk("Upon entering audio_irq: kern_buf[0] = %x\n", kern_buf[0]);
->>>>>>> a36c763736c9f1a0a7a126a72827c61c2c2d83fa
->>>>>>> parent of f027dff... Revert "adfasd"
 
   // Getting the data count in the FIFOs
   u32 fifo = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
@@ -333,18 +322,22 @@ static irqreturn_t audio_irq(int i, void *v)
   printk("LEFT: %x\n", fifo_left);
   printk("RIGHT: %x\n", fifo_right);
   printk("FIFO VALUE: %x\n", fifo);
-
-  for (u32 j = 0; j < SPACE_AVAIL; j++)
-  {
-    if (buf_index < size_buf)
-    {
-      iowrite32(kern_buf[buf_index], (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
-      iowrite32(kern_buf[buf_index], (adev.virt_addr + 0x0C / WORD_SIZE)); // left
-    }
-    buf_index++;
+  if (kern_buf != NULL) {
+    printk("Kern buf %x\n", kern_buf); // make sure it ain't null
   }
 
-  if (buf_index >= size_buf) // clip done
+  u32 index_copy = index;
+  for (u32 j = index_copy; j < 1024 - fifo_left; j++)
+  {
+    if (index_copy + j < size_buf)
+    {
+      iowrite32(kern_buf[index_copy + j], (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
+      iowrite32(kern_buf[index_copy + j], (adev.virt_addr + 0x0C / WORD_SIZE)); // left
+    }
+    index++;
+  }
+
+  if (fifo_left <= 256 || fifo_right <= 256) // if fifos are less, fire an interrupt
   {
     // DISABLE INTERRUPTS SO NO INFINITE LOOP
     u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
@@ -352,7 +345,7 @@ static irqreturn_t audio_irq(int i, void *v)
     iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
   }
 
-  printk("Index: %d\n", buf_index);
+  printk("Index: %d\n", index);
   printk("LEFT:  %x\n", fifo_left);
   printk("RIGHT: %x\n", fifo_right);
 

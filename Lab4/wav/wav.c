@@ -1,15 +1,14 @@
 #include "wav.h"
 
 
-uint32_t wav_read_data(int32_t *array, char * input)
+void wav_read_data(int32_t *array, char * input)
 {
-    uint32_t num_samples = 0;
     FILE * fp;
 
     if ((fp = fopen(input, "rb")) == NULL) // cant open
     {
         printf("FP is null mmkay\n\r");
-        return 0;
+        return;
     }
 
     fseek(fp, 44L, 0); // read from 44 byte to end (data)
@@ -23,7 +22,6 @@ uint32_t wav_read_data(int32_t *array, char * input)
         value32 = value << 8;
         //printf("%x\n\r", value32);
         array[i++] = value32;
-        num_samples++;
     }
-    return num_samples * 4;
+
 }
