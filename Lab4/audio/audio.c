@@ -314,7 +314,6 @@ static irqreturn_t audio_irq(int i, void *v)
   //pr_info("DEBUG: Called audio_irq()!\n");
   // printk("Upon entering audio_irq: kern_buf[0] = %x\n", kern_buf[0]);
 
-
   // Getting the data count in the FIFOs
   u32 fifo = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
   u32 fifo_right = (fifo & 0x000003FE) >> 1;
