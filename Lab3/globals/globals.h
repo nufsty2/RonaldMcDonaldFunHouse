@@ -134,5 +134,4 @@
 /* Black box defines */
 #define GLOBALS_BLACK_BOX_DIM 6 
 
-
 #endif

@@ -74,6 +74,7 @@ static struct file_operations fops =
   .owner = THIS_MODULE,
   .read = audio_read,
   .write = audio_write
+  // .unlocked_ioctl = 
 };
 static struct class *the_class; // for our class_create function, gets init'd later
 static dev_t dev_device; // gets init'd in alloc_chrdev_region

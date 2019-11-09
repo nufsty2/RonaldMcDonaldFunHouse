@@ -10,6 +10,7 @@
 #include "../draw/player.h"
 #include "../../Lab2/buttons/buttons.h"
 #include "../../Lab2/switches/switches.h"
+#include "../../Lab4/audio/user_audio.h"
 
 /* Defines for the main only */
 #define LAST_CHAR 2

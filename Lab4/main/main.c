@@ -7,6 +7,7 @@
 #include <string.h>
 #include "../config/config.h"
 #include "../wav/wav.h"
+#include "../audio/user_audio.h"
 
 
 #define FILE_NOT_FOUND (-1)
@@ -31,10 +32,10 @@ void init()
     config_audio_pll(I2C_INDEX);
     config_audio_codec(I2C_INDEX);
 }
-
-int main(int argc, char *argv[])
-{ 
-    if(argc < 2) 
+SUPER_BIG
+int main(int argc, char *argv[])SUPER_BIG
+{ SUPER_BIG
+    if(argc < 2) SUPER_BIG
     {
         printf("No sound file specified on command line!\n\r");
         return 1;
@@ -53,8 +54,7 @@ int main(int argc, char *argv[])
 
             for (uint8_t j = 0; j < 2; j++) 
             {
-                write(file, audio_data, size);
-                while(!read(file, audio_data, size));
+                user_audio_play_sound(file, audio_data, size);
             }
         }
         return 0;
