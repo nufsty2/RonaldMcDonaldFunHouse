@@ -11,6 +11,7 @@
 #include <linux/slab.h>
 #include <linux/kernel.h>
 #include <asm/uaccess.h>
+#include <linux/ioctl.h>
 
 /* MODULES */ 
 MODULE_LICENSE("GPL");
@@ -73,8 +74,8 @@ static struct file_operations fops =
 {
   .owner = THIS_MODULE,
   .read = audio_read,
-  .write = audio_write
-  // .unlocked_ioctl = 
+  .write = audio_write,
+  .unlocked_ioctl = audio_ioctl
 };
 static struct class *the_class; // for our class_create function, gets init'd later
 static dev_t dev_device; // gets init'd in alloc_chrdev_region
@@ -309,6 +310,13 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
   printk("After iowrite32: kern_buf[0] = %x\n", kern_buf[0]);
 
   return 0;
+}
+
+static int audio_ioctl(struct file *f, unsigned int request)
+{
+  printk("Going into ioctl!\n");
+
+  // Somewhere here use  _IOR, _IOW, ...
 }
 
 static irqreturn_t audio_irq(int i, void *v) 

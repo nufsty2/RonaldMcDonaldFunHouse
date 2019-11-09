@@ -1,4 +1,4 @@
-#include "user_audio.h"
+ #include "user_audio.h"
 
 static uint32_t file;
 static int32_t invader_die[SUPER_BIG];
@@ -62,7 +62,7 @@ void user_audio_play_sound(uint8_t sound_num)
             user_audio_play(file, laser, laser_size);
             break;      
         case SOUND_PLAYER_DIE:
-            user_audio_play(file, player_die, player_die_size);
+            user_audio_play(file, player_diev, player_die_size);
             break; 
         case SOUND_UFO_DIE:
             user_audio_play(file, ufo_die, ufo_die_size);
