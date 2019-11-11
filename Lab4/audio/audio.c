@@ -312,11 +312,34 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
   return 0;
 }
 
-static int audio_ioctl(struct file *f, unsigned int request)
+
+/* IOCTL STUFF */
+// magic number = unique number - use major number
+// command number = number tah tis assigned to the ioctl
+// Last line is type of data (int32_t, etc.)
+#define WR_VALUE _IOW('a', 'a', int32_t*) // TODO: actually define the 3 params, this is just guessing
+#define RD_VALUE _IOR('a', 'b', int32_t*)
+// 1st Param - file - the file pointer passed from the application
+// 2nd Param - cmd - is the ioctl command that was called from user space
+// 3rd Param - arg - the arguements passed from the user space
+// According to Dakota, we just read continouslly from the kern_buf and restart
+// wehenver we reach the end
+static int audio_ioctl(struct file *f, unsigned long cmd, unsigned long arg)
 {
   printk("Going into ioctl!\n");
 
-  // Somewhere here use  _IOR, _IOW, ...
+  // TODO: these values
+  switch (cmd)
+  {
+     case RD_VALUE:
+      printk("IOCTL RD\n");
+      break;
+    case WR_VALUE:
+      printk("IOCTL WR\n");
+      break;
+  }
+
+  return 0;
 }
 
 static irqreturn_t audio_irq(int i, void *v) 

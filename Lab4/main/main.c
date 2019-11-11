@@ -32,8 +32,8 @@ void init()
     config_audio_pll(I2C_INDEX);
     config_audio_codec(I2C_INDEX);
 }
-SUPER_BIG
-int main(int argc, char *argv[])SUPER_BIG
+
+int main(int argc, char *argv[])
 { SUPER_BIG
     if(argc < 2) SUPER_BIG
     {
