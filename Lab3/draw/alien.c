@@ -14,6 +14,22 @@
 #define RANDOM_ALIEN_BULLET_STARTING 1
 #define RANDOM_FIRE_BULLET 2
 
+#define ALIEN_WALK_1 0
+#define ALIEN_WALK_2 1
+#define ALIEN_WALK_3 2
+#define ALIEN_WALK_4 3
+
+#define SOUND_SAUCER_MAX 20
+#define SOUND_ALIEN_MAX  2
+
+/* Sound counters */
+uint8_t  sound_alien_type = 0;
+uint16_t sound_alien_ctr  = 0;
+uint16_t sound_saucer_ctr = 0;
+
+/* Player bullet */
+extern bool new_shot;
+
 /* Positions */
 extern uint32_t current_pos_saucer;
 extern uint32_t current_pos_alien;
@@ -278,6 +294,15 @@ void alien_toggle_all_sprites()
     }
 }
 
+void alien_saucer_sound()
+{
+    if (++sound_saucer_ctr >= SOUND_SAUCER_MAX)
+    {
+        user_audio_play_sound(SOUND_UFO, false);
+        sound_saucer_ctr = 0;
+    }
+}
+
 // This is our move saucer function, it will move the saucer every 30 seconds
 // @param saucer_moving_local - this is what we pass in to the move saucer function to see if moving
 // @return - returns false when saucer is done moving, else keep moving
@@ -290,6 +315,7 @@ bool alien_move_saucer(bool saucer_moving_local)
             alien_draw(block_2x8, current_pos_saucer, GLOBALS_BLOCK_WIDTH, GLOBALS_BLOCK_HEIGHT, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black); // draw
             current_pos_saucer += GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR; // inc the pos
             alien_draw(saucer_16x7, current_pos_saucer, GLOBALS_SAUCER_WIDTH, GLOBALS_SAUCER_HEIGHT, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, green); // draw
+            alien_saucer_sound();
 
             return true; // return true, still moving
         }
@@ -303,12 +329,49 @@ bool alien_move_saucer(bool saucer_moving_local)
     }
 }
 
+// This function plays the alien walk sound and cycles between the correct sound
+void alien_army_walk_sound() 
+{
+    if (++sound_alien_ctr >= SOUND_ALIEN_MAX)
+    {
+        sound_alien_ctr = 0;
+
+        // Increment/loop sound counter
+        sound_alien_type++;
+        if (sound_alien_type >= ALIEN_WALK_4 + 1) 
+        {
+            sound_alien_type = ALIEN_WALK_1;
+        }
+
+        switch (sound_alien_type) 
+        {
+            case ALIEN_WALK_1:
+                user_audio_play_sound(SOUND_WALK_1, true);
+                break;
+            case ALIEN_WALK_2:
+                user_audio_play_sound(SOUND_WALK_2, true);
+                break;
+            case ALIEN_WALK_3:
+                user_audio_play_sound(SOUND_WALK_3, true);
+                break;
+            case ALIEN_WALK_4:
+                user_audio_play_sound(SOUND_WALK_4, true);
+                break;
+        }
+    }
+}
+
 // This is our move alien army function, this gets called repeatly because aliens are moving all the time
 void alien_move_army() 
 {
     int8_t move_distance; // move disstance
     uint32_t old_pos = current_pos_alien; // calculate old pos to erase
     bool move_down; // bool to determine if we should move down
+
+    if (!saucer_moving) 
+    {
+        alien_army_walk_sound();
+    }
 
     alien_toggle_all_sprites();
 
@@ -391,7 +454,7 @@ bool alien_detect_hit_army()
                 // Change sprite to the explosion and set boolean flag
                 alien_army_is_alive[row][col] = false;
                 alien_army_sprites[row][col] = alien_explosion_12x10;
-                user_audio_play_sound(0);
+                user_audio_play_sound(SOUND_INVADER_DIE, false);
 
                 // Re-track edges
                 alien_track_right_edge();
@@ -403,6 +466,7 @@ bool alien_detect_hit_army()
 
                 bullet_moving = false; // make sure bullet stops travelling
                 alien_draw(tankbullet_1x5, current_pos_bullet, GLOBALS_PLAYER_BULLET_WIDTH, GLOBALS_PLAYER_BULLET_HEIGHT, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black); // erase bullet
+                new_shot = true;
 
                 alien_check_alien_reset();
 
@@ -443,6 +507,8 @@ void alien_detect_hit_saucer()
         alien_draw(saucer_16x7, current_pos_saucer, GLOBALS_SAUCER_WIDTH, GLOBALS_SAUCER_HEIGHT, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black); // erase
         alien_draw(tankbullet_1x5, current_pos_bullet, GLOBALS_PLAYER_BULLET_WIDTH, GLOBALS_PLAYER_BULLET_HEIGHT, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black); // erase old bullet
         current_pos_saucer = GLOBALS_SAUCER_STARTING_POS; // reset saucer pos
+        new_shot = true;
+        user_audio_play_sound(SOUND_UFO_DIE, false);
 
         // Inc the score
         ui_increase_score_saucer();

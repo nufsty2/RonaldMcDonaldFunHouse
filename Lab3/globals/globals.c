@@ -48,6 +48,7 @@ bool moving_right_alien = false;
 /* Player attribtes */
 uint8_t lives = GLOBALS_NO_LIVES;
 uint32_t current_pos_player = GLOBALS_PLAYER_START_POS;
+bool new_shot = true;
 
 /* Saucer attributes */
 uint32_t current_pos_saucer = GLOBALS_SAUCER_STARTING_POS;

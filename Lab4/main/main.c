@@ -35,30 +35,10 @@ void init()
 }
 
 int main(int argc, char *argv[])
-{ SUPER_BIG
-    if(argc < 2) SUPER_BIG
-    {
-        printf("No sound file specified on command line!\n\r");
-        return 1;
-    }
+{
+        user_audio_init(); // inits what we want
 
-    else
-    {
-        init(); // inits what we want
+        user_audio_play_sound(SOUND_INVADER_DIE, false);
 
-        for (uint16_t i = 1; i < argc; i++) {
-            char file_path[100] = "../wav_files/";
-            strcat(file_path, argv[i]);
-
-            int32_t audio_data[SUPER_BIG];
-            uint32_t size = wav_read_data(audio_data, file_path); // TEST
-
-            for (uint8_t j = 0; j < 2; j++) 
-            {
-               // ioctl();
-                user_audio_play_sound(file, audio_data, size);
-            }
-        }
         return 0;
-    }
 }

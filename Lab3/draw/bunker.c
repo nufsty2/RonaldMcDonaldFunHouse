@@ -18,6 +18,7 @@
 /* Player bullet attributes */
 extern uint32_t current_pos_bullet;
 extern bool bullet_moving;
+extern bool new_shot;
 
 /* Alien bullet attributes */
 extern uint32_t alien_bullet_pos[];
@@ -171,6 +172,7 @@ void bunker_detect_hit_player()
                 // Erase bullet
                 bullet_moving = false; // make sure bullet stops travelling
                 alien_draw(tankbullet_1x5, current_pos_bullet, GLOBALS_PLAYER_BULLET_WIDTH, GLOBALS_PLAYER_BULLET_HEIGHT, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, black); // erase bullet
+                new_shot = true;
             }
         }
     }

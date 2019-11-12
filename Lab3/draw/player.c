@@ -2,6 +2,7 @@
 #include "ui.h"
 #include "../sprites/sprites.c"
 #include "alien.h"
+#include "../../Lab4/audio/user_audio.h"
 
 /* Defines for this c file */
 #define PLAYER_BULLET_SPEED 8
@@ -15,6 +16,7 @@ extern uint32_t current_pos_bullet;
 extern uint32_t current_pos_player;
 extern bool bullet_moving;
 extern bool player_dead;
+extern bool new_shot;
 
 /* Colors */
 extern char black[];
@@ -30,6 +32,12 @@ extern bool alien_bullet_moving[];
 // This function fires a bullet
 void player_fire_bullet()
 {
+    if (new_shot) 
+    {
+        user_audio_play_sound(SOUND_LASER, false);
+        new_shot = false;
+    }
+
     // Declare variables
     uint32_t old_pos_bullet = current_pos_bullet;
 
@@ -48,6 +56,7 @@ void player_fire_bullet()
     {
         bullet_moving = false;
         alien_draw(tankbullet_1x5, current_pos_bullet, GLOBALS_PLAYER_BULLET_WIDTH, GLOBALS_PLAYER_BULLET_HEIGHT, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black); // erase old bullet
+        new_shot = true;
     }
 }
 
@@ -122,7 +131,7 @@ void player_detect_alien_hit()
         uint16_t left_border_x = alien_get_x_coord(left_border, left_border_y);
         uint16_t right_border_x = alien_get_x_coord(right_border, right_border_y);       
 
-        // Check if a bullet is within one of the bunker blocks
+        // Check if a bullet is within the player block
         if ((bullet_bottom_left_x >= left_border_x  || bullet_bottom_right_x >= left_border_x)  &&
             (bullet_bottom_left_x <  right_border_x || bullet_bottom_right_x <  right_border_x) &&
             (bullet_bottom_y >= top_border_y) &&
@@ -132,6 +141,8 @@ void player_detect_alien_hit()
             alien_bullet_moving[i] = false; // make sure bullet stops travelling
             alien_draw(alienbullet2_down_3x5, alien_bullet_pos[i], GLOBALS_ALIEN_BULLET_WIDTH, GLOBALS_ALIEN_BULLET_HEIGHT, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, black); // erase bullet
             player_destroy();
+            user_audio_play_sound(SOUND_PLAYER_DIE, false);
+
             return;
         }
     }
