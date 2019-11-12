@@ -38,6 +38,7 @@ MODULE_DESCRIPTION("ECEn 427 Audio Driver");
 static s32* kern_buf;
 u32 buf_index = 0;
 u32 size_buf = 0;
+u32 loop = 0; // Loop = 0 when looping is disabled -> loop = 1 when enabled
 
 // Function declarations for the kernal
 static int audio_init(void);
@@ -47,6 +48,7 @@ static int audio_remove(struct platform_device * pdev);
 static ssize_t audio_read(struct file *f, char __user *u, size_t size, loff_t *off);
 static ssize_t audio_write(struct file *f, const char __user *u, size_t size, loff_t *off);
 static irqreturn_t audio_irq(int i, void *v);
+static long audio_ioctl(struct file *f, unsigned int cmd, unsigned long arg);
 
 // Init and exit declarations 
 module_init(audio_init);
@@ -317,25 +319,31 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
 // magic number = unique number - use major number
 // command number = number tah tis assigned to the ioctl
 // Last line is type of data (int32_t, etc.)
-#define WR_VALUE _IOW('a', 'a', int32_t*) // TODO: actually define the 3 params, this is just guessing
-#define RD_VALUE _IOR('a', 'b', int32_t*)
+#define WR_VALUE _IOW(242, 242, s32*) // 242 = major number
+#define RD_VALUE _IOR(242, 243, s32*) // 243 = different number
 // 1st Param - file - the file pointer passed from the application
 // 2nd Param - cmd - is the ioctl command that was called from user space
 // 3rd Param - arg - the arguements passed from the user space
 // According to Dakota, we just read continouslly from the kern_buf and restart
 // wehenver we reach the end
-static int audio_ioctl(struct file *f, unsigned long cmd, unsigned long arg)
+// JEFF GO HERE FOR INFO: https://embetronicx.com/tutorials/linux/device-drivers/ioctl-tutorial-in-linux/
+static long audio_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 {
   printk("Going into ioctl!\n");
+  //u32 bytes_copy_from_user = 0;
+  //u32 bytes_copy_to_user = 0;
 
-  // TODO: these values
   switch (cmd)
   {
-     case RD_VALUE:
-      printk("IOCTL RD\n");
-      break;
-    case WR_VALUE:
+    case WR_VALUE: // when we write
       printk("IOCTL WR\n");
+      //bytes_copy_from_user = copy_from_user(&kern_buf, (s32*)arg, sizeof(kern_buf));
+      loop = 1;
+      break;
+     case RD_VALUE: // when we read
+      printk("IOCTL RD\n");
+      //bytes_copy_to_user = copy_to_user((s32*)arg, &kern_buf, sizeof(kern_buf));
+      loop = 0;
       break;
   }
 

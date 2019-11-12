@@ -8,7 +8,7 @@ uint32_t wav_read_data(int32_t *array, char * input)
 
     if ((fp = fopen(input, "rb")) == NULL) // cant open
     {
-        printf("FP is null mmkay\n\r");
+        printf("FP in wav.c is null mmkay\n\r");
         return 0;
     }
 

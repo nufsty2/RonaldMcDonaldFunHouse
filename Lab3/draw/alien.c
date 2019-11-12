@@ -3,6 +3,7 @@
 #include "../draw/ui.h"
 #include "../draw/bunker.h"
 #include "../hdmi/hdmi.h"
+#include "../../Lab4/audio/user_audio.h"
 
 #define GLOBALS_SAUCER_HEIGHT 7
 #define SACCER_WIDTH  16
@@ -390,6 +391,7 @@ bool alien_detect_hit_army()
                 // Change sprite to the explosion and set boolean flag
                 alien_army_is_alive[row][col] = false;
                 alien_army_sprites[row][col] = alien_explosion_12x10;
+                user_audio_play_sound(0);
 
                 // Re-track edges
                 alien_track_right_edge();

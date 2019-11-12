@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
+#include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <string.h>
 #include "../config/config.h"
@@ -54,6 +55,7 @@ int main(int argc, char *argv[])
 
             for (uint8_t j = 0; j < 2; j++) 
             {
+               // ioctl();
                 user_audio_play_sound(file, audio_data, size);
             }
         }

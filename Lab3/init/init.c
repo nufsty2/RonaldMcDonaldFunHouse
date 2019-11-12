@@ -7,6 +7,7 @@
 #include "../../Lab2/intc/intc.h"
 #include "../../Lab2/buttons/buttons.h"
 #include "../../Lab2/switches/switches.h"
+#include "../../Lab4/audio/user_audio.h"
 
 /* Defines in this file */
 #define ROWS_ON_SCREEN 80
@@ -200,4 +201,7 @@ void init()
     alien_init();
     ui_init();
     init_player();
+
+    // INIT the sound
+    user_audio_init();
 }

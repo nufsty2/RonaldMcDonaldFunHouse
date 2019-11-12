@@ -24,25 +24,23 @@ void user_audio_init()
 {
     file = open("/dev/audio", O_RDWR);
     if (file == FILE_NOT_FOUND)
-        printf("File not found\n\r");
-
-    // Open audio driver
-    open_audio_driver();
+        printf("Audio file not found\n\r");
 
     // config the codec
     config_audio_pll(I2C_INDEX);
     config_audio_codec(I2C_INDEX);
 
     // load sound data
-    invader_die_size    = wav_read_data(invader_die,    "../wav_files/invader_die.wav");
-    laser_size          = wav_read_data(laser,          "../wav_files/laser.wav");
-    player_die_size     = wav_read_data(player_die,     "../wav_files/player_die.wav");
-    ufo_die_size        = wav_read_data(ufo_die,        "../wav_files/ufo_die.wav");
-    ufo_size            = wav_read_data(ufo,            "../wav_files/ufo.wav");
-    walk1_size          = wav_read_data(walk1,          "../wav_files/walk1.wav");
-    walk2_size          = wav_read_data(walk2,          "../wav_files/walk2.wav");
-    walk3_size          = wav_read_data(walk3,          "../wav_files/walk3.wav");
-    walk4_size          = wav_read_data(walk4,          "../wav_files/walk4.wav");
+    invader_die_size    = wav_read_data(invader_die,    "../../Lab4/wav_files/invader_die.wav");
+    laser_size          = wav_read_data(laser,          "../../Lab4/wav_files/laser.wav");
+    player_die_size     = wav_read_data(player_die,     "../../Lab4/wav_files/player_die.wav");
+    ufo_die_size        = wav_read_data(ufo_die,        "../../Lab4/wav_files/ufo_die.wav");
+    ufo_size            = wav_read_data(ufo,            "../../Lab4/wav_files/ufo.wav");
+    walk1_size          = wav_read_data(walk1,          "../../Lab4/wav_files/walk1.wav");
+    walk2_size          = wav_read_data(walk2,          "../../Lab4/wav_files/walk2.wav");
+    walk3_size          = wav_read_data(walk3,          "../../Lab4/wav_files/walk3.wav");
+    walk4_size          = wav_read_data(walk4,          "../../Lab4/wav_files/walk4.wav");
+    
 }
 
 void user_audio_play(uint32_t file, int32_t audio_data[], uint32_t size) 
@@ -62,7 +60,7 @@ void user_audio_play_sound(uint8_t sound_num)
             user_audio_play(file, laser, laser_size);
             break;      
         case SOUND_PLAYER_DIE:
-            user_audio_play(file, player_diev, player_die_size);
+            user_audio_play(file, player_die, player_die_size);
             break; 
         case SOUND_UFO_DIE:
             user_audio_play(file, ufo_die, ufo_die_size);
