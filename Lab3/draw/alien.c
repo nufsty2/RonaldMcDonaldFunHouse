@@ -19,7 +19,7 @@
 #define ALIEN_WALK_3 2
 #define ALIEN_WALK_4 3
 
-#define SOUND_SAUCER_MAX 20
+#define SOUND_SAUCER_MAX 10
 #define SOUND_ALIEN_MAX  2
 
 /* Sound counters */

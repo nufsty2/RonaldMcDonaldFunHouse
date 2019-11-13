@@ -118,7 +118,7 @@ static int audio_init(void)
   // Create a device class. -- class_create() - this will put in in /sys/class
   // 1st param - owner - pointer to the module that is to "own" this struct class
   // 2nd param - name - this is a pointer to a string to the name
-  the_class = class_create(THIS_MODULE, MODULE_NAME); // TODO: first paramter might be wrong
+  the_class = class_create(THIS_MODULE, MODULE_NAME);
 
   adev.minor_num = MINOR(dev_device);
   adev.phys_addr = 0x43C20000;
@@ -173,7 +173,7 @@ static int audio_probe(struct platform_device *pdev)
   // 1st Param - the cdev structrure
   // 2nd Param - first device number
   // 3rd Param - number of consecutive minor numbers corresponding to deviec
-  int cdev_added = cdev_add(&adev.cdev, dev_device, 1); // TODO: 3rd param was just a guess
+  int cdev_added = cdev_add(&adev.cdev, dev_device, 1);
   pr_info("DEBUG: Cdev Added: %d\n", cdev_added);
   pr_info("DEBUG: adev.cdev major number on init: %d\n", MAJOR(adev.cdev.dev));
  
@@ -181,13 +181,13 @@ static int audio_probe(struct platform_device *pdev)
   adev.dev = device_create(the_class, NULL, dev_device, NULL, MODULE_NAME);
  
   // Get the physical device address from the device tree -- platform_get_resource
-  phys_address = platform_get_resource(pdev, IORESOURCE_MEM, adev.minor_num); // TODO: check 2nd and 3rd params
+  phys_address = platform_get_resource(pdev, IORESOURCE_MEM, adev.minor_num);
 
   // Reserve the memory region -- request_mem_region
   // 1st param - starting point
   // 2nd param - length of bytes
   // 3rd param - name of module
-  struct resource *mem_resource = request_mem_region(phys_address->start, adev.mem_size, MODULE_NAME); // TODO: check 1st and 2nd params
+  struct resource *mem_resource = request_mem_region(phys_address->start, adev.mem_size, MODULE_NAME);
   if (mem_resource == NULL)
     pr_info("MEM is null in probe!\n");
 
@@ -228,7 +228,7 @@ static int audio_remove(struct platform_device * pdev)
   iounmap(adev.virt_addr);
 
   // release_mem_region
-  // 1st param - start - TODO - find right values for it
+  // 1st param - start
   // 2nd param - length
   release_mem_region(adev.phys_addr, adev.mem_size);
 

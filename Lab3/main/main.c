@@ -87,12 +87,10 @@ void adjust_volume()
 {
     if (switches_val & GLOBALS_SW_0)
     {
-        printf("Incrementing Volame\n\r");
         ioctl(audio_file, WR_VALUE, INC_VOL);
     }
     else 
     {
-        printf("Dec Volame\n\r");
         ioctl(audio_file, WR_VALUE, DEC_VOL);
     }
 }
@@ -326,7 +324,6 @@ void isr_buttons()
 // This is invoked each time there is a change in switch state
 void isr_switches()
 {
-    printf("Reading switches!!!\n\r");
     generic_reset_counters();
     new_switches_val = read_switches(); // read the switches
     clear_switches_interrupts(); // clear the interrupts
