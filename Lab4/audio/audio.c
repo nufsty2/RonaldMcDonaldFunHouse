@@ -23,7 +23,6 @@ MODULE_DESCRIPTION("ECEn 427 Audio Driver");
 #define AUDIO_INIT_SUCCESS 0
 #define AUDIO_INIT_ALLOC_CHRDEV_REGION_FAIL -1
 #define AUDIO_INIT_ALLOC_PLATFORM_DRIVER_REG_FAIL -2
-
 #define AUDIO_PROBE_SUCCESS 0
 #define AUDIO_PROBE_CDEV_ADD_FAIL -3
 
@@ -33,15 +32,39 @@ MODULE_DESCRIPTION("ECEn 427 Audio Driver");
 #define SPACE_AVAIL ((1024 * 3) / 4)
 
 #define WORD_SIZE 4
+#define DEV_NUM 1
 
+/* Volume stuff */
 #define INC_VOLUME 1
 #define DEC_VOLUME 0
+#define INC_FLAG 1
+#define DEC_FLAG -1
+#define VOLUME_MAX 5
+#define VOLUME_MIN -4
+#define NORMAL_VOL 1
 
-// Globals
+/* Audio struct attributes */
+#define AUDIO_PHYS_ADDR 0x43C20000
+#define AUDIO_MEM_SIZE 0x10000
+
+/* IOCTL STUFF */
+// magic number = unique number - use major number
+// command number = number tah tis assigned to the ioctl
+// Last line is type of data (int32_t, etc.)
+#define WR_VALUE _IOW(242, 242, s32*) // 242 = major number
+#define RD_VALUE _IOR(242, 243, s32*) // 243 = different number
+
+/* Bitmasks */
+#define RIGHT_FIFO_BITMASK 0x000003FE
+#define LEFT_FIFO_BITMASK 0x001FF800
+#define RIGHT_FIFO_SHIFT 1
+#define LEFT_FIFO_SHIFT 11
+
+/* Globals for this file */
 static s32* kern_buf;
-u32 buf_index = 0;
-u32 size_buf = 0;
-s8 volume_level = 1; // volume level 
+static u32 buf_index = 0;
+static u32 size_buf = 0;
+static s8 volume_level = 1; // volume level 
 
 // Function declarations for the kernal
 static int audio_init(void);
@@ -68,8 +91,6 @@ struct audio_device
   phys_addr_t phys_addr;              // Physical address
   u32 mem_size;                       // Allocated mem space size 
   u32* virt_addr;                     // Virtual address
- 
-    // Add any items to this that you need
 }; 
 
 static struct resource* phys_address;
@@ -103,6 +124,7 @@ static struct platform_driver pd =
 };
  
 // This is called when Linux loads your driver
+// @return either a success code (1) or fail (neg)
 static int audio_init(void) 
 {
   pr_info("DEBUG: Initializing Audio Driver!\n");
@@ -112,7 +134,7 @@ static int audio_init(void)
   // 2nd param - requested first minor number to use, usually 0
   // 3rd param - count - total number of contiguous device numbers requested
   // 4th param - name - name of device associated with number range (appear in /proc/devices and sysfs)
-  int major_num = alloc_chrdev_region(&dev_device, 0, 1, MODULE_NAME);
+  int major_num = alloc_chrdev_region(&dev_device, 0, DEV_NUM, MODULE_NAME);
   pr_info("DEBUG: Major Number for Audio: %d\n", MAJOR(dev_device));
  
   // Create a device class. -- class_create() - this will put in in /sys/class
@@ -121,8 +143,8 @@ static int audio_init(void)
   the_class = class_create(THIS_MODULE, MODULE_NAME);
 
   adev.minor_num = MINOR(dev_device);
-  adev.phys_addr = 0x43C20000;
-  adev.mem_size = 0x10000;
+  adev.phys_addr = AUDIO_PHYS_ADDR;
+  adev.mem_size = AUDIO_MEM_SIZE;
 
   // Register the driver as a platform driver -- platform_driver_register
   // Param - platform driver structure
@@ -155,7 +177,7 @@ static void audio_exit(void)
   // unregister_chrdev_region
   // 1st param - first number in the range
   // 2nd param - number of device numbers to unregister
-  unregister_chrdev_region(dev_device, 1);
+  unregister_chrdev_region(dev_device, DEV_NUM);
 
   pr_info("DEBUG: Audio module exited!\n");
   return;
@@ -169,11 +191,12 @@ static int audio_probe(struct platform_device *pdev)
   // 1st Param - the cdev to init - Output
   // 2nd Param - file operations for this device
   cdev_init(&adev.cdev, &fops);
+
   // Register the character device with Linux (cdev_add)  
   // 1st Param - the cdev structrure
   // 2nd Param - first device number
   // 3rd Param - number of consecutive minor numbers corresponding to deviec
-  int cdev_added = cdev_add(&adev.cdev, dev_device, 1);
+  int cdev_added = cdev_add(&adev.cdev, dev_device, DEV_NUM);
   pr_info("DEBUG: Cdev Added: %d\n", cdev_added);
   pr_info("DEBUG: adev.cdev major number on init: %d\n", MAJOR(adev.cdev.dev));
  
@@ -206,14 +229,6 @@ static int audio_probe(struct platform_device *pdev)
   // you reverse any function calls that were successful.
   if (cdev_added < 0)
     return AUDIO_PROBE_CDEV_ADD_FAIL;
- 
-  // Enabling interrupts
-  // u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
-  // pr_info("DEBUG: Before oring status %x\n", status);
-  // status |= ENABLE_IRQ;
-  // pr_info("DEBUG: After oring status %x\n", status);
-  // iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
-  // pr_info("DEBUG: After iowrite32!!\n");
 
   return AUDIO_PROBE_SUCCESS; //(success)
 }
@@ -255,9 +270,6 @@ static ssize_t audio_read(struct file *f, char __user *u, size_t size, loff_t *o
   // 3rd param = number of bytes to copy
   // Return 0 if everything went well
   long no_bytes_not_copied = copy_to_user(u, kern_buf, size);
-  pr_info("DEBUG M2: kern_buf[0] (read) = %x\n", kern_buf[0]);
-  pr_info("DEBUG M2: kern_buf[1] (read) = %x\n", kern_buf[1]);
-  pr_info("DEBUG M2: kern_buf[2] (read) = %x\n", kern_buf[2]);
   if (no_bytes_not_copied != 0)
     pr_info("DEBUG M2: BAD - read not reading bytes = %ld\n", no_bytes_not_copied);
 
@@ -282,8 +294,8 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
 
   // Allocate new buffer
   kern_buf = kmalloc(size, GFP_KERNEL); // GFP_KERNAL = allocate memory based on kernal
-  buf_index = 0;
-  size_buf = (size) / WORD_SIZE;
+  buf_index = 0; // reset the buffer
+  size_buf = (size) / WORD_SIZE; // get the size
 
   if (!kern_buf)
   {
@@ -297,9 +309,6 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
   // 3rd param = number of bytes to copy
   // Return 0 if everything went well
   long no_bytes_not_copied = copy_from_user(kern_buf, u, size);
-  pr_info("DEBUG M2: kern_buf[0] (write) = %x\n", kern_buf[0]);
-  pr_info("DEBUG M2: kern_buf[1] (write) = %x\n", kern_buf[1]);
-  pr_info("DEBUG M2: kern_buf[2] (write) = %x\n", kern_buf[2]);
   if (no_bytes_not_copied != 0)
   {
     pr_info("DEBUG M2: BAD - Bytes not copied = %ld\n", no_bytes_not_copied);
@@ -317,79 +326,63 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
   return 0;
 }
 
-
-/* IOCTL STUFF */
-// magic number = unique number - use major number
-// command number = number tah tis assigned to the ioctl
-// Last line is type of data (int32_t, etc.)
-#define WR_VALUE _IOW(242, 242, s32*) // 242 = major number
-#define RD_VALUE _IOR(242, 243, s32*) // 243 = different number
+// This function interacts with userspace and passes in values from the arg
+// This is mainly used for our volume control
 // 1st Param - file - the file pointer passed from the application
 // 2nd Param - cmd - is the ioctl command that was called from user space
 // 3rd Param - arg - the arguements passed from the user space
-// According to Dakota, we just read continouslly from the kern_buf and restart
-// wehenver we reach the end
-// JEFF GO HERE FOR INFO: https://embetronicx.com/tutorials/linux/device-drivers/ioctl-tutorial-in-linux/
 static long audio_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 {
-  s8 val = (arg == INC_VOLUME) ? 1 : -1;
+  s8 val = (arg == INC_VOLUME) ? INC_FLAG : DEC_FLAG;
 
   printk("Going into ioctl!\n");
   printk("Volume level = %d\n", volume_level);
-  //u32 bytes_copy_from_user = 0;
-  //u32 bytes_copy_to_user = 0;
 
   switch (cmd)
   {
     case WR_VALUE: // when we write
-      printk("IOCTL WR\n");
-      //bytes_copy_from_user = copy_from_user(&kern_buf, (s32*)arg, sizeof(kern_buf));
-      if ((val+volume_level) > 5) 
+      if ((val+volume_level) > VOLUME_MAX) 
       { 
-         printk("HIT TOP!!\n"); 
-         volume_level = 5; 
+         volume_level = VOLUME_MAX; 
       } 
-      else if ((val+volume_level) < -4) 
+      else if ((val+volume_level) < VOLUME_MIN) 
       {
-         printk("HIT BOT!!\n"); 
-         volume_level = -4;
+         volume_level = VOLUME_MIN;
       }
       else if ((val+volume_level) == 0) 
       {
-         printk("HIT ZERO!!\n"); 
          if (val > 0)
          {
-           volume_level = 1;
+           volume_level = NORMAL_VOL;
          }
          else
          {
-           volume_level = -1;
+           volume_level = -NORMAL_VOL;
          }
       }
       else
       {
-        printk("HIT REGULAR CASE!!\n"); 
         volume_level += val;
       }
       break;
      case RD_VALUE: // when we read
       printk("IOCTL RD\n");
-      //bytes_copy_to_user = copy_to_user((s32*)arg, &kern_buf, sizeof(kern_buf));
       break;
   }
 
-  return 0;
+  return 0; // just return zero, we really don't need to do anything
 }
 
+// This is our ISR for the audio, it gets called after every interrupt
+// @return returns a flag, either ISR_HANDLED meaning that we take responsability for the interrupt or
+//         it returns IRQ_NONE meaning we are not responsible for the interrupt
 static irqreturn_t audio_irq(int i, void *v) 
 {
-  //printk("DEBUG: Called audio_irq()!\n");
-  //printk("Upon entering audio_irq: kern_buf[0] = %x\n", kern_buf[0]);
 
-  // Getting the data count in the FIFOs
+  // Getting the data count in the FIFOs - we do this to check we are actually getting stuff
   u32 fifo = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
-  u32 fifo_right = (fifo & 0x000003FE) >> 1;
-  u32 fifo_left  = (fifo & 0x001FF800) >> 11;
+  u32 fifo_right = (fifo & RIGHT_FIFO_BITMASK) >> RIGHT_FIFO_SHIFT;
+  u32 fifo_left  = (fifo & LEFT_FIFO_BITMASK) >> LEFT_FIFO_SHIFT;
 
   printk("LEFT: %x\n", fifo_left);
   printk("RIGHT: %x\n", fifo_right);
@@ -399,12 +392,12 @@ static irqreturn_t audio_irq(int i, void *v)
   {
     if (buf_index < (size_buf))
     {
-      if (volume_level > 0)
+      if (volume_level > 0) // if volume level is high
       { 
         iowrite32(kern_buf[buf_index]*volume_level, (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
         iowrite32(kern_buf[buf_index]*volume_level, (adev.virt_addr + 0x0C / WORD_SIZE)); // left
       }
-      else
+      else // if volume is not high
       {
         iowrite32(kern_buf[buf_index]/-(volume_level), (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
         iowrite32(kern_buf[buf_index]/-(volume_level), (adev.virt_addr + 0x0C / WORD_SIZE)); // left
@@ -413,7 +406,7 @@ static irqreturn_t audio_irq(int i, void *v)
     buf_index++;
   }
 
-  if (buf_index >= size_buf) // clip done
+  if (buf_index >= size_buf) // If the clip is done
   {
     // DISABLE INTERRUPTS SO NO INFINITE LOOP
     u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);

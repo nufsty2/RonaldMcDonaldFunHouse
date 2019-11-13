@@ -1,3 +1,4 @@
+/*!!!!! THIS FILE WAS NOT RAN, JUST A TEST FILE!!!!!!!!!*/
 #include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -9,7 +10,6 @@
 #include "../config/config.h"
 #include "../wav/wav.h"
 #include "../audio/user_audio.h"
-
 
 #define FILE_NOT_FOUND (-1)
 #define I2C_INDEX 0
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 {
         user_audio_init(); // inits what we want
 
-        user_audio_play_sound(SOUND_UFO);
+        user_audio_play_sound(SOUND_UFO); // test
 
         return 0;
 }

@@ -1,6 +1,9 @@
  #include "user_audio.h"
 
+/* File descriptor */
 static uint32_t file;
+
+/* Audio data arrays */
 static int32_t invader_die[SUPER_BIG];
 static int32_t laser[SUPER_BIG];
 static int32_t player_die[SUPER_BIG];
@@ -10,6 +13,8 @@ static int32_t walk1[SUPER_BIG];
 static int32_t walk2[SUPER_BIG];
 static int32_t walk3[SUPER_BIG];
 static int32_t walk4[SUPER_BIG];
+
+/* Audio sizes */
 static uint32_t invader_die_size;
 static uint32_t laser_size;
 static uint32_t player_die_size;
@@ -20,6 +25,10 @@ static uint32_t walk2_size;
 static uint32_t walk3_size;
 static uint32_t walk4_size;
 
+// This function inits the audio by:
+// 1) Opening the char driver /dev/
+// 2) Config the Codec code
+// 3) Reads in the .wav files
 void user_audio_init()
 {
     file = open("/dev/audio", O_RDWR);
@@ -43,14 +52,20 @@ void user_audio_init()
     
 }
 
+// This wrapper function plays the sound and outputs to the headphones
+// @param file - file of driver found in /dev/
+// @param audio_data - the array read in from the .wav files
+// @param size - just a huge size
 void user_audio_play(uint32_t file, int32_t audio_data[], uint32_t size) 
 {
-    // read(file, audio_data, size);
-    write(file, audio_data, size);
+    write(file, audio_data, size); // just write
 }
 
+// This function plays the sound given which sound as specified by identifiers on top
+// @param sound_num - a number between 1-8 to play that specified sound
 void user_audio_play_sound(uint8_t sound_num)
 {
+    // Switch statement to play a certain sound
     switch (sound_num)
     {
         case SOUND_INVADER_DIE:

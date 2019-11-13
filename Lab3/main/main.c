@@ -83,13 +83,14 @@ uint32_t player_death_ctr = 0;
 /*File global for audio file*/ 
 static uint32_t audio_file;
 
+// This is a a helper function to adjust the vole
 void adjust_volume()
 {
-    if (switches_val & GLOBALS_SW_0)
+    if (switches_val & GLOBALS_SW_0) // if switcch zero is up
     {
         ioctl(audio_file, WR_VALUE, INC_VOL);
     }
-    else 
+    else // if switch zero is not up
     {
         ioctl(audio_file, WR_VALUE, DEC_VOL);
     }
@@ -142,7 +143,8 @@ void respond_to_press()
 }
 
 // Increments the sound counters
-void increment_sound_ctrs() {
+void increment_sound_ctrs() 
+{
     // Increment counters
     if (sound_invader_die_ctr > 0)
     {

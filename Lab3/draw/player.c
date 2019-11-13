@@ -29,7 +29,7 @@ extern uint32_t buttons_val;
 extern uint32_t alien_bullet_pos[];
 extern bool alien_bullet_moving[];
 
-/* */
+/* Counters for sound */
 extern uint32_t sound_player_die_ctr;
 
 // This function fires a bullet
@@ -37,7 +37,7 @@ void player_fire_bullet()
 {
     if (new_shot) 
     {
-        user_audio_play_sound(SOUND_LASER);
+        user_audio_play_sound(SOUND_LASER); // it makes the laser sound
         new_shot = false;
     }
 

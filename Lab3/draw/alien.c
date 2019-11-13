@@ -19,6 +19,7 @@
 #define ALIEN_WALK_3 2
 #define ALIEN_WALK_4 3
 
+/* Sound defines */
 #define SOUND_SAUCER_MAX 10
 #define SOUND_ALIEN_MAX  2
 
@@ -299,12 +300,13 @@ void alien_toggle_all_sprites()
     }
 }
 
+// This function plays the alien saucer sound
 void alien_saucer_sound()
 {
-    if (++sound_saucer_ctr >= SOUND_SAUCER_MAX)
+    if (++sound_saucer_ctr >= SOUND_SAUCER_MAX) // inc the counter to a good value
     {
-        user_audio_play_sound(SOUND_UFO);
-        sound_saucer_ctr = 0;
+        user_audio_play_sound(SOUND_UFO); // play the clip
+        sound_saucer_ctr = 0; // reset the ctr
     }
 }
 
@@ -337,6 +339,7 @@ bool alien_move_saucer(bool saucer_moving_local)
 // This function plays the alien walk sound and cycles between the correct sound
 void alien_army_walk_sound() 
 {
+    // This is the sound if statement
     if (++sound_alien_ctr >= SOUND_ALIEN_MAX &&
         (sound_invader_die_ctr >= (SOUND_INVADER_DIE_CTR_MAX - 1) || sound_invader_die_ctr == 0) &&
         (sound_player_die_ctr >= (SOUND_PLAYER_DIE_CTR_MAX - 1) || sound_player_die_ctr == 0) &&
@@ -351,6 +354,7 @@ void alien_army_walk_sound()
             sound_alien_type = ALIEN_WALK_1;
         }
 
+        // Switch statement to go through the walks
         switch (sound_alien_type) 
         {
             case ALIEN_WALK_1:
