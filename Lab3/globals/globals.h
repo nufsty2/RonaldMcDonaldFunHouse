@@ -134,4 +134,9 @@
 /* Black box defines */
 #define GLOBALS_BLACK_BOX_DIM 6 
 
+/* Sound counters */
+#define SOUND_INVADER_DIE_CTR_MAX 4
+#define SOUND_PLAYER_DIE_CTR_MAX 4
+#define SOUND_UFO_DIE_CTR_MAX 4
+
 #endif

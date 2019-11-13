@@ -41,6 +41,9 @@ extern uint32_t increment_ctr;
 extern uint32_t alien_move_ctr;
 extern uint32_t saucer_ctr;
 uint32_t alien_bullet_ctr = 0;
+extern uint32_t sound_invader_die_ctr;
+extern uint32_t sound_player_die_ctr;
+extern uint32_t sound_ufo_die_ctr;
 
 /* Positions */
 extern uint32_t current_pos_alien;
@@ -140,6 +143,32 @@ void respond_to_press()
     }   
 }
 
+// Increments the sound counters
+void increment_sound_ctrs() {
+    // Increment counters
+    if (sound_invader_die_ctr > 0)
+    {
+        if (++sound_invader_die_ctr >= SOUND_INVADER_DIE_CTR_MAX)
+        {
+            sound_invader_die_ctr = 0;
+        }
+    }
+    if (sound_player_die_ctr > 0)
+    {
+        if (++sound_player_die_ctr >= SOUND_PLAYER_DIE_CTR_MAX)
+        {
+            sound_player_die_ctr = 0;
+        }
+    }
+    if (sound_ufo_die_ctr > 0)
+    {
+        if (++sound_ufo_die_ctr >= SOUND_UFO_DIE_CTR_MAX)
+        {
+            sound_ufo_die_ctr = 0;
+        }
+    }
+}
+
 // This is our ISR FIT function that gets called every 10 ms
 // This is our main controller for drawing and where our state machine is located
 void isr_fit()
@@ -153,8 +182,10 @@ void isr_fit()
             return;
         }
 
+        increment_sound_ctrs();
+
         // If the player is dead, this is our player death animation
-        if (player_dead) 
+        if (player_dead)
         {
             if (++player_death_ctr >= GLOBALS_PLAYER_DEATH_MAX_VAL) // reset
             {

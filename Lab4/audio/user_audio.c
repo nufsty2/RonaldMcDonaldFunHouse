@@ -43,42 +43,42 @@ void user_audio_init()
     
 }
 
-void user_audio_play(uint32_t file, int32_t audio_data[], uint32_t size, bool low_priority) 
+void user_audio_play(uint32_t file, int32_t audio_data[], uint32_t size) 
 {
     // read(file, audio_data, size);
     write(file, audio_data, size);
 }
 
-void user_audio_play_sound(uint8_t sound_num, bool low_priority)
+void user_audio_play_sound(uint8_t sound_num)
 {
     switch (sound_num)
     {
         case SOUND_INVADER_DIE:
-            user_audio_play(file, invader_die, invader_die_size, low_priority);
+            user_audio_play(file, invader_die, invader_die_size);
             break;
         case SOUND_LASER:
-            user_audio_play(file, laser, laser_size, low_priority);
+            user_audio_play(file, laser, laser_size);
             break;      
         case SOUND_PLAYER_DIE:
-            user_audio_play(file, player_die, player_die_size, low_priority);
+            user_audio_play(file, player_die, player_die_size);
             break; 
         case SOUND_UFO_DIE:
-            user_audio_play(file, ufo_die, ufo_die_size, low_priority);
+            user_audio_play(file, ufo_die, ufo_die_size);
             break;    
         case SOUND_UFO:
-            user_audio_play(file, ufo, ufo_size, low_priority);
+            user_audio_play(file, ufo, ufo_size);
             break;        
         case SOUND_WALK_1:
-            user_audio_play(file, walk1, walk1_size, low_priority);
+            user_audio_play(file, walk1, walk1_size);
             break;     
         case SOUND_WALK_2:
-            user_audio_play(file, walk2, walk2_size, low_priority);
+            user_audio_play(file, walk2, walk2_size);
             break;     
         case SOUND_WALK_3:
-            user_audio_play(file, walk3, walk3_size, low_priority);
+            user_audio_play(file, walk3, walk3_size);
             break;     
         case SOUND_WALK_4:
-            user_audio_play(file, walk4, walk4_size, low_priority);
+            user_audio_play(file, walk4, walk4_size);
             break;
     }
 }

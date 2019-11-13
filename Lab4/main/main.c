@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 {
         user_audio_init(); // inits what we want
 
-        user_audio_play_sound(SOUND_INVADER_DIE, false);
+        user_audio_play_sound(SOUND_INVADER_DIE);
 
         return 0;
 }

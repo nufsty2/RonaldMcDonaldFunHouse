@@ -29,12 +29,15 @@ extern uint32_t buttons_val;
 extern uint32_t alien_bullet_pos[];
 extern bool alien_bullet_moving[];
 
+/* */
+extern uint32_t sound_player_die_ctr;
+
 // This function fires a bullet
 void player_fire_bullet()
 {
     if (new_shot) 
     {
-        user_audio_play_sound(SOUND_LASER, false);
+        user_audio_play_sound(SOUND_LASER);
         new_shot = false;
     }
 
@@ -141,7 +144,9 @@ void player_detect_alien_hit()
             alien_bullet_moving[i] = false; // make sure bullet stops travelling
             alien_draw(alienbullet2_down_3x5, alien_bullet_pos[i], GLOBALS_ALIEN_BULLET_WIDTH, GLOBALS_ALIEN_BULLET_HEIGHT, GLOBALS_PIXEL_SIZE * GLOBALS_SIZE_SCALAR, black); // erase bullet
             player_destroy();
-            user_audio_play_sound(SOUND_PLAYER_DIE, false);
+            user_audio_play_sound(SOUND_PLAYER_DIE);
+            // Start incrementing the sound counter
+            sound_player_die_ctr++;
 
             return;
         }

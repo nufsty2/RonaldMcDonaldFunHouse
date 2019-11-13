@@ -27,6 +27,10 @@ uint32_t alien_move_ctr = 0;
 uint32_t saucer_ctr = 0;
 uint32_t die_ctr = 0;
 bool start_die_ctr = false; 
+// Sound counters
+uint32_t sound_invader_die_ctr  = 0;
+uint32_t sound_player_die_ctr   = 0;
+uint32_t sound_ufo_die_ctr      = 0;
 
 /* Flags */
 bool debounced = false; // Flag used to determine if debounce timer is done

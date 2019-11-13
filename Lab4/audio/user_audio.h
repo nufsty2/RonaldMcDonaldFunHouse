@@ -29,8 +29,8 @@
 
 void user_audio_init();
 
-void user_audio_play(uint32_t file, int32_t* audio_data, uint32_t size, bool low_priority);
+void user_audio_play(uint32_t file, int32_t* audio_data, uint32_t size);
 
-void user_audio_play_sound(uint8_t sound_num, bool low_priority);
+void user_audio_play_sound(uint8_t sound_num);
 
 #endif

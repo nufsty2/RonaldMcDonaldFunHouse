@@ -50,6 +50,11 @@ extern bool saucer_moving;
 uint16_t rightmost_col = GLOBALS_NO_ALIEN_X - 1;
 uint16_t leftmost_col = 0;
 
+/* Sound Counters */
+extern uint32_t sound_invader_die_ctr;
+extern uint32_t sound_ufo_die_ctr;
+extern uint32_t sound_player_die_ctr;
+
 /* Alien army sprites stored locally because storing them globally is not good */
 const uint32_t* alien_army_sprites[GLOBALS_NO_ALIEN_Y][GLOBALS_NO_ALIEN_X] = 
 {
@@ -298,7 +303,7 @@ void alien_saucer_sound()
 {
     if (++sound_saucer_ctr >= SOUND_SAUCER_MAX)
     {
-        user_audio_play_sound(SOUND_UFO, false);
+        user_audio_play_sound(SOUND_UFO);
         sound_saucer_ctr = 0;
     }
 }
@@ -332,7 +337,10 @@ bool alien_move_saucer(bool saucer_moving_local)
 // This function plays the alien walk sound and cycles between the correct sound
 void alien_army_walk_sound() 
 {
-    if (++sound_alien_ctr >= SOUND_ALIEN_MAX)
+    if (++sound_alien_ctr >= SOUND_ALIEN_MAX &&
+        (sound_invader_die_ctr >= (SOUND_INVADER_DIE_CTR_MAX - 1) || sound_invader_die_ctr == 0) &&
+        (sound_player_die_ctr >= (SOUND_PLAYER_DIE_CTR_MAX - 1) || sound_player_die_ctr == 0) &&
+        (sound_ufo_die_ctr >= (SOUND_UFO_DIE_CTR_MAX - 1) || sound_ufo_die_ctr == 0)
     {
         sound_alien_ctr = 0;
 
@@ -346,16 +354,16 @@ void alien_army_walk_sound()
         switch (sound_alien_type) 
         {
             case ALIEN_WALK_1:
-                user_audio_play_sound(SOUND_WALK_1, true);
+                user_audio_play_sound(SOUND_WALK_1);
                 break;
             case ALIEN_WALK_2:
-                user_audio_play_sound(SOUND_WALK_2, true);
+                user_audio_play_sound(SOUND_WALK_2);
                 break;
             case ALIEN_WALK_3:
-                user_audio_play_sound(SOUND_WALK_3, true);
+                user_audio_play_sound(SOUND_WALK_3);
                 break;
             case ALIEN_WALK_4:
-                user_audio_play_sound(SOUND_WALK_4, true);
+                user_audio_play_sound(SOUND_WALK_4);
                 break;
         }
     }
@@ -454,7 +462,9 @@ bool alien_detect_hit_army()
                 // Change sprite to the explosion and set boolean flag
                 alien_army_is_alive[row][col] = false;
                 alien_army_sprites[row][col] = alien_explosion_12x10;
-                user_audio_play_sound(SOUND_INVADER_DIE, false);
+                user_audio_play_sound(SOUND_INVADER_DIE);
+                // Start incrementing the sound counter
+                sound_invader_die_ctr++;
 
                 // Re-track edges
                 alien_track_right_edge();
@@ -508,7 +518,8 @@ void alien_detect_hit_saucer()
         alien_draw(tankbullet_1x5, current_pos_bullet, GLOBALS_PLAYER_BULLET_WIDTH, GLOBALS_PLAYER_BULLET_HEIGHT, GLOBALS_PIXEL_SIZE*GLOBALS_SIZE_SCALAR, black); // erase old bullet
         current_pos_saucer = GLOBALS_SAUCER_STARTING_POS; // reset saucer pos
         new_shot = true;
-        user_audio_play_sound(SOUND_UFO_DIE, false);
+        user_audio_play_sound(SOUND_UFO_DIE);
+        sound_ufo_die_ctr++;
 
         // Inc the score
         ui_increase_score_saucer();
