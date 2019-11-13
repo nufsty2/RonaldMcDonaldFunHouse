@@ -340,7 +340,7 @@ void alien_army_walk_sound()
     if (++sound_alien_ctr >= SOUND_ALIEN_MAX &&
         (sound_invader_die_ctr >= (SOUND_INVADER_DIE_CTR_MAX - 1) || sound_invader_die_ctr == 0) &&
         (sound_player_die_ctr >= (SOUND_PLAYER_DIE_CTR_MAX - 1) || sound_player_die_ctr == 0) &&
-        (sound_ufo_die_ctr >= (SOUND_UFO_DIE_CTR_MAX - 1) || sound_ufo_die_ctr == 0)
+        (sound_ufo_die_ctr >= (SOUND_UFO_DIE_CTR_MAX - 1) || sound_ufo_die_ctr == 0))
     {
         sound_alien_ctr = 0;
 

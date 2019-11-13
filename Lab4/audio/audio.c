@@ -391,9 +391,9 @@ static irqreturn_t audio_irq(int i, void *v)
   u32 fifo_right = (fifo & 0x000003FE) >> 1;
   u32 fifo_left  = (fifo & 0x001FF800) >> 11;
 
-  //printk("LEFT: %x\n", fifo_left);
-  //printk("RIGHT: %x\n", fifo_right);
-  //printk("FIFO VALUE: %x\n", fifo);
+  printk("LEFT: %x\n", fifo_left);
+  printk("RIGHT: %x\n", fifo_right);
+  printk("FIFO VALUE: %x\n", fifo);
 
   for (u32 j = 0; j < SPACE_AVAIL; j++)
   {
@@ -421,9 +421,9 @@ static irqreturn_t audio_irq(int i, void *v)
     iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
   }
 
-  //printk("Index: %d\n", buf_index);
-  //printk("LEFT:  %x\n", fifo_left);
-  //printk("RIGHT: %x\n", fifo_right);
+  printk("Index: %d\n", buf_index);
+  printk("LEFT:  %x\n", fifo_left);
+  printk("RIGHT: %x\n", fifo_right);
 
   return IRQ_HANDLED;
 }
