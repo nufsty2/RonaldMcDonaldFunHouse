@@ -11,6 +11,7 @@
 #include "../../Lab2/buttons/buttons.h"
 #include "../../Lab2/switches/switches.h"
 #include "../../Lab4/audio/user_audio.h"
+#include <sys/ioctl.h>
 
 /* Defines for the main only */
 #define LAST_CHAR 2
@@ -18,6 +19,10 @@
 #define GUN_OFFSET 42
 #define HEIGHT_OF_TANK_FOR_BULLET 10
 #define DIE_CTR_MAX 30
+#define WR_VALUE _IOW(242, 242, int32_t*) // 242 = major number
+
+#define INC_VOL 1
+#define DEC_VOL 0
 
 /* Buttons and Switches */
 extern uint32_t debounce_ctr;
@@ -72,9 +77,28 @@ extern uint32_t die_ctr;
 extern bool start_die_ctr;
 uint32_t player_death_ctr = 0;
 
+/*File global for audio file*/ 
+static uint32_t audio_file;
+
+void adjust_volume()
+{
+    if (switches_val & GLOBALS_SW_0)
+    {
+        printf("Incrementing Volame\n\r");
+        ioctl(audio_file, WR_VALUE, INC_VOL);
+    }
+    else 
+    {
+        printf("Dec Volame\n\r");
+        ioctl(audio_file, WR_VALUE, DEC_VOL);
+    }
+}
+
+
 // This function responds to button presses for the gameover
 // BTN0: Increase letter
 // BTN1: Decrease letter
+// BTN2: Inc/Dec vols
 // BTN3: Submit letter
 void respond_to_press()
 {
@@ -259,6 +283,10 @@ void isr_buttons()
     {
         if (game_over && !name_entered) 
             respond_to_press();
+        else if (!game_over && buttons_val == GLOBALS_BTN_2)
+        {
+            adjust_volume();
+        }
 
         debounced = false;
     }
@@ -267,6 +295,7 @@ void isr_buttons()
 // This is invoked each time there is a change in switch state
 void isr_switches()
 {
+    printf("Reading switches!!!\n\r");
     generic_reset_counters();
     new_switches_val = read_switches(); // read the switches
     clear_switches_interrupts(); // clear the interrupts
@@ -276,6 +305,7 @@ void isr_switches()
 int main() 
 {
     // Init 
+    audio_file = open("/dev/audio", O_RDWR);
     init();
     srand(time(0));
         

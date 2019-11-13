@@ -34,11 +34,14 @@ MODULE_DESCRIPTION("ECEn 427 Audio Driver");
 
 #define WORD_SIZE 4
 
+#define INC_VOLUME 1
+#define DEC_VOLUME 0
+
 // Globals
 static s32* kern_buf;
 u32 buf_index = 0;
 u32 size_buf = 0;
-u32 loop = 0; // Loop = 0 when looping is disabled -> loop = 1 when enabled
+s8 volume_level = 1; // volume level 
 
 // Function declarations for the kernal
 static int audio_init(void);
@@ -280,7 +283,7 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
   // Allocate new buffer
   kern_buf = kmalloc(size, GFP_KERNEL); // GFP_KERNAL = allocate memory based on kernal
   buf_index = 0;
-  size_buf = size / WORD_SIZE;
+  size_buf = (size) / WORD_SIZE;
 
   if (!kern_buf)
   {
@@ -329,7 +332,10 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
 // JEFF GO HERE FOR INFO: https://embetronicx.com/tutorials/linux/device-drivers/ioctl-tutorial-in-linux/
 static long audio_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 {
+  s8 val = (arg == INC_VOLUME) ? 1 : -1;
+
   printk("Going into ioctl!\n");
+  printk("Volume level = %d\n", volume_level);
   //u32 bytes_copy_from_user = 0;
   //u32 bytes_copy_to_user = 0;
 
@@ -338,12 +344,37 @@ static long audio_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
     case WR_VALUE: // when we write
       printk("IOCTL WR\n");
       //bytes_copy_from_user = copy_from_user(&kern_buf, (s32*)arg, sizeof(kern_buf));
-      loop = 1;
+      if ((val+volume_level) > 5) 
+      { 
+         printk("HIT TOP!!\n"); 
+         volume_level = 5; 
+      } 
+      else if ((val+volume_level) < -4) 
+      {
+         printk("HIT BOT!!\n"); 
+         volume_level = -4;
+      }
+      else if ((val+volume_level) == 0) 
+      {
+         printk("HIT ZERO!!\n"); 
+         if (val > 0)
+         {
+           volume_level = 1;
+         }
+         else
+         {
+           volume_level = -1;
+         }
+      }
+      else
+      {
+        printk("HIT REGULAR CASE!!\n"); 
+        volume_level += val;
+      }
       break;
      case RD_VALUE: // when we read
       printk("IOCTL RD\n");
       //bytes_copy_to_user = copy_to_user((s32*)arg, &kern_buf, sizeof(kern_buf));
-      loop = 0;
       break;
   }
 
@@ -352,24 +383,32 @@ static long audio_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 
 static irqreturn_t audio_irq(int i, void *v) 
 {
-  printk("DEBUG: Called audio_irq()!\n");
-  printk("Upon entering audio_irq: kern_buf[0] = %x\n", kern_buf[0]);
+  //printk("DEBUG: Called audio_irq()!\n");
+  //printk("Upon entering audio_irq: kern_buf[0] = %x\n", kern_buf[0]);
 
   // Getting the data count in the FIFOs
   u32 fifo = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
   u32 fifo_right = (fifo & 0x000003FE) >> 1;
   u32 fifo_left  = (fifo & 0x001FF800) >> 11;
 
-  printk("LEFT: %x\n", fifo_left);
-  printk("RIGHT: %x\n", fifo_right);
-  printk("FIFO VALUE: %x\n", fifo);
+  //printk("LEFT: %x\n", fifo_left);
+  //printk("RIGHT: %x\n", fifo_right);
+  //printk("FIFO VALUE: %x\n", fifo);
 
   for (u32 j = 0; j < SPACE_AVAIL; j++)
   {
-    if (buf_index < size_buf)
+    if (buf_index < (size_buf))
     {
-      iowrite32(kern_buf[buf_index], (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
-      iowrite32(kern_buf[buf_index], (adev.virt_addr + 0x0C / WORD_SIZE)); // left
+      if (volume_level > 0)
+      { 
+        iowrite32(kern_buf[buf_index]*volume_level, (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
+        iowrite32(kern_buf[buf_index]*volume_level, (adev.virt_addr + 0x0C / WORD_SIZE)); // left
+      }
+      else
+      {
+        iowrite32(kern_buf[buf_index]/-(volume_level), (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
+        iowrite32(kern_buf[buf_index]/-(volume_level), (adev.virt_addr + 0x0C / WORD_SIZE)); // left
+      }
     }
     buf_index++;
   }
@@ -382,9 +421,9 @@ static irqreturn_t audio_irq(int i, void *v)
     iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
   }
 
-  printk("Index: %d\n", buf_index);
-  printk("LEFT:  %x\n", fifo_left);
-  printk("RIGHT: %x\n", fifo_right);
+  //printk("Index: %d\n", buf_index);
+  //printk("LEFT:  %x\n", fifo_left);
+  //printk("RIGHT: %x\n", fifo_right);
 
   return IRQ_HANDLED;
 }
