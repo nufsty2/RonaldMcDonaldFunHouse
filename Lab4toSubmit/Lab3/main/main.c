@@ -20,6 +20,7 @@
 #define HEIGHT_OF_TANK_FOR_BULLET 10
 #define DIE_CTR_MAX 30
 #define WR_VALUE _IOW(242, 242, int32_t*) // 242 = major number
+#define INCREMENT 1
 
 #define INC_VOL 1
 #define DEC_VOL 0
@@ -111,7 +112,7 @@ void respond_to_press()
         if (++val > 'Z')
             *ui_get_selected_char() = 'A';
         else
-            *ui_get_selected_char() += 1;
+            *ui_get_selected_char() += INCREMENT;
     }
 
     else if (buttons_val == GLOBALS_BTN_1)
@@ -121,7 +122,7 @@ void respond_to_press()
         if (--val < 'A')
             *ui_get_selected_char() = 'Z';
         else
-            *ui_get_selected_char() -= 1;
+            *ui_get_selected_char() -= INCREMENT;
     }
 
     else if (buttons_val == GLOBALS_BTN_3)

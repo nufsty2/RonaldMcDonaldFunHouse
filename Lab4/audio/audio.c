@@ -46,6 +46,8 @@ MODULE_DESCRIPTION("ECEn 427 Audio Driver");
 /* Audio struct attributes */
 #define AUDIO_PHYS_ADDR 0x43C20000
 #define AUDIO_MEM_SIZE 0x10000
+#define RIGHT_CH_OFFSET 0x08
+#define LEFT_CH_OFFSET 0x0C
 
 /* IOCTL STUFF */
 // magic number = unique number - use major number
@@ -64,7 +66,7 @@ MODULE_DESCRIPTION("ECEn 427 Audio Driver");
 static s32* kern_buf;
 static u32 buf_index = 0;
 static u32 size_buf = 0;
-static s8 volume_level = 1; // volume level 
+static s8 volume_level = NORMAL_VOL; // volume level 
 
 // Function declarations for the kernal
 static int audio_init(void);
@@ -127,8 +129,6 @@ static struct platform_driver pd =
 // @return either a success code (1) or fail (neg)
 static int audio_init(void) 
 {
-  pr_info("DEBUG: Initializing Audio Driver!\n");
-
   // Get a major number for the driver -- alloc_chrdev_region; // pg. 45, LDD3.
   // 1st param - output - will hold first number of allocated range
   // 2nd param - requested first minor number to use, usually 0
@@ -179,14 +179,12 @@ static void audio_exit(void)
   // 2nd param - number of device numbers to unregister
   unregister_chrdev_region(dev_device, DEV_NUM);
 
-  pr_info("DEBUG: Audio module exited!\n");
   return;
 }
  
 // Called by kernel when a platform device is detected that matches the 'compatible' name of this driver.
 static int audio_probe(struct platform_device *pdev) 
 {   
-  pr_info("DEBUG: Calling audio_probe!\n");
   // Initialize the character device structure (cdev_init)
   // 1st Param - the cdev to init - Output
   // 2nd Param - file operations for this device
@@ -235,7 +233,6 @@ static int audio_probe(struct platform_device *pdev)
  
 static int audio_remove(struct platform_device * pdev) 
 {
-  pr_info("DEBUG: Removing audio module...\n");
   free_irq(irq->start, NULL);
 
   // iounmap
@@ -256,14 +253,11 @@ static int audio_remove(struct platform_device * pdev)
   // 1st Param - cdev structure
   cdev_del(&adev.cdev);
 
-  pr_info("DEBUG: Audio module successfully removed!\n");
   return 0;
 }
 
 static ssize_t audio_read(struct file *f, char __user *u, size_t size, loff_t *off)
 {
-  pr_info("DEBUG: Called audio_read()!\n"); // make sure we enter
-
   // Return 1 byte of data with 0 or 1, indicated whether an audio sample is currently being played
   // 1st param = destination address in user space
   // 2nd param = source address in kernal space
@@ -279,8 +273,6 @@ static ssize_t audio_read(struct file *f, char __user *u, size_t size, loff_t *o
 
 static ssize_t audio_write(struct file *f, const char __user *u, size_t size, loff_t *off)
 {
-  pr_info("DEBUG: Called audio_write()!\n"); // make sure we enter
-
   // Immediatley Disable the interrupts
   u32 status = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
   status &= DISABLE_IRQ;
@@ -288,7 +280,6 @@ static ssize_t audio_write(struct file *f, const char __user *u, size_t size, lo
 
   // Free the buffer used to store old sound sample
   if (kern_buf != NULL) {
-    printk("kfree!\n");
     kfree(kern_buf);
   }
 
@@ -333,9 +324,6 @@ static long audio_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
 {
   s8 val = (arg == INC_VOLUME) ? INC_FLAG : DEC_FLAG;
 
-  printk("Going into ioctl!\n");
-  printk("Volume level = %d\n", volume_level);
-
   switch (cmd)
   {
     case WR_VALUE: // when we write
@@ -364,7 +352,6 @@ static long audio_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
       }
       break;
      case RD_VALUE: // when we read
-      printk("IOCTL RD\n");
       break;
   }
 
@@ -378,11 +365,7 @@ static irqreturn_t audio_irq(int i, void *v)
 {
   // Getting the data count in the FIFOs - we do this to check we are actually getting stuff
   u32 fifo = ioread32(adev.virt_addr + IRQ_OFFSET / WORD_SIZE);
-  u32 fifo_right = (fifo & RIGHT_FIFO_BITMASK) >> RIGHT_FIFO_SHIFT;
-  u32 fifo_left  = (fifo & LEFT_FIFO_BITMASK) >> LEFT_FIFO_SHIFT;
 
-  printk("LEFT: %x\n", fifo_left);
-  printk("RIGHT: %x\n", fifo_right);
   printk("FIFO VALUE: %x\n", fifo);
 
   for (u32 j = 0; j < SPACE_AVAIL; j++)
@@ -391,13 +374,13 @@ static irqreturn_t audio_irq(int i, void *v)
     {
       if (volume_level > 0) // if volume level is high
       { 
-        iowrite32(kern_buf[buf_index]*volume_level, (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
-        iowrite32(kern_buf[buf_index]*volume_level, (adev.virt_addr + 0x0C / WORD_SIZE)); // left
+        iowrite32(kern_buf[buf_index]*volume_level, (adev.virt_addr + RIGHT_CH_OFFSET / WORD_SIZE)); // RIGHT
+        iowrite32(kern_buf[buf_index]*volume_level, (adev.virt_addr + LEFT_CH_OFFSET / WORD_SIZE)); // left
       }
       else // if volume is not high
       {
-        iowrite32(kern_buf[buf_index]/-(volume_level), (adev.virt_addr + 0x08 / WORD_SIZE)); // RIGHT
-        iowrite32(kern_buf[buf_index]/-(volume_level), (adev.virt_addr + 0x0C / WORD_SIZE)); // left
+        iowrite32(kern_buf[buf_index]/-(volume_level), (adev.virt_addr + RIGHT_CH_OFFSET / WORD_SIZE)); // RIGHT
+        iowrite32(kern_buf[buf_index]/-(volume_level), (adev.virt_addr + LEFT_CH_OFFSET / WORD_SIZE)); // left
       }
     }
     buf_index++;
@@ -410,10 +393,6 @@ static irqreturn_t audio_irq(int i, void *v)
     status &= DISABLE_IRQ;
     iowrite32(status, (adev.virt_addr + IRQ_OFFSET / WORD_SIZE));
   }
-
-  printk("Index: %d\n", buf_index);
-  printk("LEFT:  %x\n", fifo_left);
-  printk("RIGHT: %x\n", fifo_right);
 
   return IRQ_HANDLED;
 }
