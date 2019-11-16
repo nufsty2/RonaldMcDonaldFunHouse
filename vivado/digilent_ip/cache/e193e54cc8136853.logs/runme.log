@@ -1,0 +1,80 @@
+
+*** Running vivado
+    with args -log hdmi_out_auto_pc_0.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source hdmi_out_auto_pc_0.tcl
+
+
+****** Vivado v2016.4 (64-bit)
+  **** SW Build 1756540 on Mon Jan 23 19:11:19 MST 2017
+  **** IP Build 1755317 on Mon Jan 23 20:30:07 MST 2017
+    ** Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
+
+Sourcing tcl script '/home/jgoeders/.Xilinx/Vivado/init.tcl'
+source hdmi_out_auto_pc_0.tcl -notrace
+Starting RTL Elaboration : Time (s): cpu = 00:00:18 ; elapsed = 00:00:22 . Memory (MB): peak = 1136.555 ; gain = 206.086 ; free physical = 26807 ; free virtual = 51127
+INFO: [Synth 8-638] synthesizing module 'hdmi_out_auto_pc_0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_auto_pc_0/synth/hdmi_out_auto_pc_0.v:58]
+INFO: [Synth 8-638] synthesizing module 'axi_protocol_converter_v2_1_11_axi_protocol_converter' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/df1b/hdl/axi_protocol_converter_v2_1_vl_rfs.v:4806]
+INFO: [Synth 8-638] synthesizing module 'axi_protocol_converter_v2_1_11_axi3_conv' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/df1b/hdl/axi_protocol_converter_v2_1_vl_rfs.v:954]
+INFO: [Synth 8-638] synthesizing module 'axi_protocol_converter_v2_1_11_a_axi3_conv' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/df1b/hdl/axi_protocol_converter_v2_1_vl_rfs.v:62]
+INFO: [Synth 8-638] synthesizing module 'axi_data_fifo_v2_1_10_axic_fifo' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/39ba/hdl/axi_data_fifo_v2_1_vl_rfs.v:64]
+INFO: [Synth 8-638] synthesizing module 'axi_data_fifo_v2_1_10_fifo_gen' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/39ba/hdl/axi_data_fifo_v2_1_vl_rfs.v:168]
+INFO: [Synth 8-256] done synthesizing module 'axi_data_fifo_v2_1_10_fifo_gen' (19#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/39ba/hdl/axi_data_fifo_v2_1_vl_rfs.v:168]
+INFO: [Synth 8-256] done synthesizing module 'axi_data_fifo_v2_1_10_axic_fifo' (20#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/39ba/hdl/axi_data_fifo_v2_1_vl_rfs.v:64]
+INFO: [Synth 8-256] done synthesizing module 'axi_protocol_converter_v2_1_11_a_axi3_conv' (21#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/df1b/hdl/axi_protocol_converter_v2_1_vl_rfs.v:62]
+INFO: [Synth 8-638] synthesizing module 'axi_protocol_converter_v2_1_11_r_axi3_conv' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/df1b/hdl/axi_protocol_converter_v2_1_vl_rfs.v:1789]
+INFO: [Synth 8-256] done synthesizing module 'axi_protocol_converter_v2_1_11_r_axi3_conv' (22#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/df1b/hdl/axi_protocol_converter_v2_1_vl_rfs.v:1789]
+INFO: [Synth 8-256] done synthesizing module 'axi_protocol_converter_v2_1_11_axi3_conv' (23#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/df1b/hdl/axi_protocol_converter_v2_1_vl_rfs.v:954]
+INFO: [Synth 8-256] done synthesizing module 'axi_protocol_converter_v2_1_11_axi_protocol_converter' (24#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/df1b/hdl/axi_protocol_converter_v2_1_vl_rfs.v:4806]
+INFO: [Synth 8-256] done synthesizing module 'hdmi_out_auto_pc_0' (25#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_auto_pc_0/synth/hdmi_out_auto_pc_0.v:58]
+Finished RTL Elaboration : Time (s): cpu = 00:01:02 ; elapsed = 00:01:07 . Memory (MB): peak = 1258.023 ; gain = 327.555 ; free physical = 26189 ; free virtual = 50565
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:01:02 ; elapsed = 00:01:08 . Memory (MB): peak = 1258.023 ; gain = 327.555 ; free physical = 26189 ; free virtual = 50565
+INFO: [Device 21-403] Loading part xc7z020clg400-1
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.05 ; elapsed = 00:00:00.04 . Memory (MB): peak = 1568.898 ; gain = 1.000 ; free physical = 26219 ; free virtual = 50610
+Finished Constraint Validation : Time (s): cpu = 00:01:16 ; elapsed = 00:01:35 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 26078 ; free virtual = 50469
+Finished Loading Part and Timing Information : Time (s): cpu = 00:01:16 ; elapsed = 00:01:35 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 26078 ; free virtual = 50468
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:01:16 ; elapsed = 00:01:35 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 26078 ; free virtual = 50468
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:01:16 ; elapsed = 00:01:36 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 26033 ; free virtual = 50425
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:01:18 ; elapsed = 00:01:37 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 25979 ; free virtual = 50372
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+
+Distributed RAM: Preliminary Mapping  Report (see note below)
++-----------------------+-------------------------------------------------------------------------------+----------------+----------------------+----------------+
+|Module Name            | RTL Object                                                                    | Inference      | Size (Depth x Width) | Primitives     | 
++-----------------------+-------------------------------------------------------------------------------+----------------+----------------------+----------------+
+|fifo_generator_v13_1_3 | inst_fifo_gen/gconvfifo.rf/grf.rf/gntv_or_sync_fifo.mem/gdm.dm_gen.dm/RAM_reg | User Attribute | 32 x 1               | RAM32X1D x 1   | 
++-----------------------+-------------------------------------------------------------------------------+----------------+----------------------+----------------+
+
+Note: The table above is a preliminary report that shows the Distributed RAMs at the current stage of the synthesis flow. Some Distributed RAMs may be reimplemented as non Distributed RAM primitives later in the synthesis flow. Multiple instantiated RAMs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP and Shift Register Reporting
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:29 ; elapsed = 00:01:49 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 25770 ; free virtual = 50163
+Finished Timing Optimization : Time (s): cpu = 00:01:30 ; elapsed = 00:01:50 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 25720 ; free virtual = 50112
+Finished Technology Mapping : Time (s): cpu = 00:01:30 ; elapsed = 00:01:50 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 25701 ; free virtual = 50093
+Finished IO Insertion : Time (s): cpu = 00:01:31 ; elapsed = 00:01:51 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 25685 ; free virtual = 50078
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:31 ; elapsed = 00:01:51 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 25685 ; free virtual = 50078
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:31 ; elapsed = 00:01:51 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 25685 ; free virtual = 50077
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:31 ; elapsed = 00:01:51 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 25685 ; free virtual = 50077
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:31 ; elapsed = 00:01:51 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 25684 ; free virtual = 50077
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:31 ; elapsed = 00:01:51 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 25684 ; free virtual = 50077
+
+Report Cell Usage: 
++------+---------+------+
+|      |Cell     |Count |
++------+---------+------+
+|1     |CARRY4   |     8|
+|2     |LUT1     |     8|
+|3     |LUT2     |    21|
+|4     |LUT3     |    25|
+|5     |LUT4     |    26|
+|6     |LUT5     |    71|
+|7     |LUT6     |    31|
+|8     |RAM32X1D |     1|
+|9     |FDCE     |    23|
+|10    |FDPE     |    21|
+|11    |FDRE     |   146|
+|12    |FDSE     |     1|
++------+---------+------+
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:31 ; elapsed = 00:01:51 . Memory (MB): peak = 1568.898 ; gain = 638.430 ; free physical = 25684 ; free virtual = 50077
+synth_design: Time (s): cpu = 00:01:23 ; elapsed = 00:01:41 . Memory (MB): peak = 1568.898 ; gain = 519.926 ; free physical = 25665 ; free virtual = 50058

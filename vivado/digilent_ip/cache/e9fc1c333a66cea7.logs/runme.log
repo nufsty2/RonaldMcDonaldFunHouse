@@ -1,0 +1,243 @@
+
+*** Running vivado
+    with args -log hdmi_out_axi_vdma_0_0.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source hdmi_out_axi_vdma_0_0.tcl
+
+
+****** Vivado v2016.4 (64-bit)
+  **** SW Build 1756540 on Mon Jan 23 19:11:19 MST 2017
+  **** IP Build 1755317 on Mon Jan 23 20:30:07 MST 2017
+    ** Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
+
+Sourcing tcl script '/home/jgoeders/.Xilinx/Vivado/init.tcl'
+source hdmi_out_axi_vdma_0_0.tcl -notrace
+Starting RTL Elaboration : Time (s): cpu = 00:00:18 ; elapsed = 00:00:22 . Memory (MB): peak = 1141.547 ; gain = 211.086 ; free physical = 26805 ; free virtual = 51126
+INFO: [Synth 8-638] synthesizing module 'hdmi_out_axi_vdma_0_0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axi_vdma_0_0/synth/hdmi_out_axi_vdma_0_0.vhd:105]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:69480]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_rst_module' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:16457]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_reset' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:14862]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync' (1#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized0' (1#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized1' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized1' (1#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized2' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized2' (1#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized3' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized3' (1#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized4' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized4' (1#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized5' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized5' (1#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_reset' (2#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:14862]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_rst_module' (3#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:16457]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_reg_if' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:39644]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_lite_if' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:16952]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized6' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized6' (3#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_lite_if' (4#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:16952]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized7' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized7' (4#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_reg_if' (5#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:39644]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_intrpt' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:40370]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_intrpt' (6#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:40370]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_mm2s_axis_dwidth_converter' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:68170]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_v6_2_10_axis_dwidth_converter_v1_0_axis_dwidth_converter' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:1938]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_v6_2_10_axis_dwidth_converter_v1_0_axisc_upsizer' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:1191]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_v6_2_10_axis_dwidth_converter_v1_0_axisc_upsizer' (7#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:1191]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_v6_2_10_axis_dwidth_converter_v1_0_axisc_downsizer' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:1558]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_v6_2_10_axis_dwidth_converter_v1_0_axisc_downsizer' (8#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:1558]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_v6_2_10_axis_register_slice_v1_0_axis_register_slice' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:979]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_v6_2_10_axis_infrastructure_v1_0_util_axis2vector' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:63]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_v6_2_10_axis_infrastructure_v1_0_util_axis2vector' (9#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:63]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_v6_2_10_axis_register_slice_v1_0_axisc_register_slice' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:391]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_v6_2_10_axis_register_slice_v1_0_axisc_register_slice' (10#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:391]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_v6_2_10_axis_infrastructure_v1_0_util_vector2axis' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:228]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_v6_2_10_axis_infrastructure_v1_0_util_vector2axis' (11#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:228]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_v6_2_10_axis_register_slice_v1_0_axis_register_slice' (12#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:979]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_v6_2_10_axis_register_slice_v1_0_axis_register_slice__parameterized0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:979]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_v6_2_10_axis_infrastructure_v1_0_util_axis2vector__parameterized0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:63]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_v6_2_10_axis_infrastructure_v1_0_util_axis2vector__parameterized0' (12#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:63]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_v6_2_10_axis_register_slice_v1_0_axisc_register_slice__parameterized0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:391]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_v6_2_10_axis_register_slice_v1_0_axisc_register_slice__parameterized0' (12#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:391]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_v6_2_10_axis_infrastructure_v1_0_util_vector2axis__parameterized0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:228]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_v6_2_10_axis_infrastructure_v1_0_util_vector2axis__parameterized0' (12#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:228]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_v6_2_10_axis_register_slice_v1_0_axis_register_slice__parameterized0' (12#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:979]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_v6_2_10_axis_dwidth_converter_v1_0_axis_dwidth_converter' (13#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.v:1938]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_mm2s_axis_dwidth_converter' (14#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:68170]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_reg_module' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:38829]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_register' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:18712]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_register' (15#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:18712]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_regdirect' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:20526]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_regdirect' (16#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:20526]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_reg_mux' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:29591]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_reg_mux' (17#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:29591]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_reg_module' (18#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:38829]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_mngr' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:63815]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_sm' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:61558]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_sm' (19#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:61558]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_cmdsts_if' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:62697]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_cmdsts_if' (20#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:62697]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_sts_mngr' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:63204]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_sts_mngr' (21#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:63204]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_vidreg_module' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:55739]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_vregister' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:53625]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_vregister' (22#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:53625]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_vaddrreg_mux' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:55216]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_vaddrreg_mux' (23#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:55216]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_vidreg_module' (24#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:55739]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_genlock_mngr' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:58282]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_greycoder' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:57995]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_greycoder' (25#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:57995]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_genlock_mngr' (26#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:58282]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_mngr' (27#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:63815]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_fsync_gen' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:52754]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_fsync_gen' (28#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:52754]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_vid_cdc' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:13249]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized8' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized8' (28#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized9' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized9' (28#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized10' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized10' (28#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized11' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized11' (28#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized12' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized12' (28#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized13' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized13' (28#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_vid_cdc' (29#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:13249]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_sof_gen' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:40980]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_sof_gen' (30#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:40980]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_mm2s_linebuf' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:45948]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_afifo_builtin' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:43237]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_afifo_builtin' (41#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:43237]
+INFO: [Synth 8-638] synthesizing module 'axi_vdma_skid_buf' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:41227]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_skid_buf' (42#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:41227]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized14' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized14' (42#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized15' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized15' (42#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized16' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized16' (42#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized17' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized17' (42#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-638] synthesizing module 'cdc_sync__parameterized18' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'cdc_sync__parameterized18' (42#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/52cb/hdl/lib_cdc_v1_0_rfs.vhd:106]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma_mm2s_linebuf' (43#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:45948]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:48516]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_mm2s_full_wrap' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:46666]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_reset' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:153]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_reset' (44#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:153]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_cmd_status' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:2693]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_fifo' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:1881]
+INFO: [Synth 8-638] synthesizing module 'srl_fifo_f' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:1000]
+INFO: [Synth 8-638] synthesizing module 'srl_fifo_rbu_f' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:697]
+INFO: [Synth 8-638] synthesizing module 'cntr_incr_decr_addn_f' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:143]
+INFO: [Synth 8-256] done synthesizing module 'cntr_incr_decr_addn_f' (45#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:143]
+INFO: [Synth 8-638] synthesizing module 'dynshreg_f' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:397]
+INFO: [Synth 8-256] done synthesizing module 'dynshreg_f' (46#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:397]
+INFO: [Synth 8-256] done synthesizing module 'srl_fifo_rbu_f' (47#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:697]
+INFO: [Synth 8-256] done synthesizing module 'srl_fifo_f' (48#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:1000]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_fifo' (49#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:1881]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_fifo__parameterized0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:1881]
+INFO: [Synth 8-638] synthesizing module 'srl_fifo_f__parameterized0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:1000]
+INFO: [Synth 8-638] synthesizing module 'srl_fifo_rbu_f__parameterized0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:697]
+INFO: [Synth 8-638] synthesizing module 'dynshreg_f__parameterized0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:397]
+INFO: [Synth 8-256] done synthesizing module 'dynshreg_f__parameterized0' (49#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:397]
+INFO: [Synth 8-256] done synthesizing module 'srl_fifo_rbu_f__parameterized0' (49#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:697]
+INFO: [Synth 8-256] done synthesizing module 'srl_fifo_f__parameterized0' (49#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:1000]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_fifo__parameterized0' (49#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:1881]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_cmd_status' (50#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:2693]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_rd_status_cntl' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:13741]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_rd_status_cntl' (51#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:13741]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_pcc' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:7411]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_strb_gen2' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:4337]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_strb_gen2' (52#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:4337]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_strb_gen2__parameterized0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:4337]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_strb_gen2__parameterized0' (52#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:4337]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_pcc' (53#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:7411]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_addr_cntl' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:9995]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_fifo__parameterized1' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:1881]
+INFO: [Synth 8-638] synthesizing module 'srl_fifo_f__parameterized1' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:1000]
+INFO: [Synth 8-638] synthesizing module 'srl_fifo_rbu_f__parameterized1' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:697]
+INFO: [Synth 8-638] synthesizing module 'dynshreg_f__parameterized1' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:397]
+INFO: [Synth 8-256] done synthesizing module 'dynshreg_f__parameterized1' (53#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:397]
+INFO: [Synth 8-256] done synthesizing module 'srl_fifo_rbu_f__parameterized1' (53#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:697]
+INFO: [Synth 8-256] done synthesizing module 'srl_fifo_f__parameterized1' (53#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:1000]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_fifo__parameterized1' (53#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:1881]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_addr_cntl' (54#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:9995]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_rddata_cntl' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:12180]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_rdmux' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:10676]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_rdmux' (55#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:10676]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_fifo__parameterized2' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:1881]
+INFO: [Synth 8-638] synthesizing module 'srl_fifo_f__parameterized2' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:1000]
+INFO: [Synth 8-638] synthesizing module 'srl_fifo_rbu_f__parameterized2' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:697]
+INFO: [Synth 8-638] synthesizing module 'dynshreg_f__parameterized2' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:397]
+INFO: [Synth 8-256] done synthesizing module 'dynshreg_f__parameterized2' (55#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:397]
+INFO: [Synth 8-256] done synthesizing module 'srl_fifo_rbu_f__parameterized2' (55#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:697]
+INFO: [Synth 8-256] done synthesizing module 'srl_fifo_f__parameterized2' (55#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:1000]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_fifo__parameterized2' (55#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:1881]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_rddata_cntl' (56#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:12180]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_rd_sf' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:20200]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_fifo__parameterized3' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:1881]
+INFO: [Synth 8-638] synthesizing module 'srl_fifo_f__parameterized3' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:1000]
+INFO: [Synth 8-638] synthesizing module 'srl_fifo_rbu_f__parameterized3' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:697]
+INFO: [Synth 8-638] synthesizing module 'dynshreg_f__parameterized3' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:397]
+INFO: [Synth 8-256] done synthesizing module 'dynshreg_f__parameterized3' (56#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:397]
+INFO: [Synth 8-256] done synthesizing module 'srl_fifo_rbu_f__parameterized3' (56#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:697]
+INFO: [Synth 8-256] done synthesizing module 'srl_fifo_f__parameterized3' (56#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/6039/hdl/lib_srl_fifo_v1_0_rfs.vhd:1000]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_fifo__parameterized3' (56#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:1881]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_sfifo_autord' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:1294]
+INFO: [Synth 8-638] synthesizing module 'sync_fifo_fg' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/5ab6/hdl/lib_fifo_v1_0_rfs.vhd:2097]
+INFO: [Synth 8-256] done synthesizing module 'sync_fifo_fg' (80#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/5ab6/hdl/lib_fifo_v1_0_rfs.vhd:2097]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_sfifo_autord' (81#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:1294]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_rd_sf' (82#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:20200]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_mm2s_full_wrap' (83#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:46666]
+INFO: [Synth 8-638] synthesizing module 'axi_datamover_s2mm_omit_wrap' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:42721]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover_s2mm_omit_wrap' (84#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:42721]
+INFO: [Synth 8-256] done synthesizing module 'axi_datamover' (85#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/bf41/hdl/axi_datamover_v5_1_vh_rfs.vhd:48516]
+INFO: [Synth 8-256] done synthesizing module 'axi_vdma' (86#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/ed72/hdl/axi_vdma_v6_2_rfs.vhd:69480]
+INFO: [Synth 8-256] done synthesizing module 'hdmi_out_axi_vdma_0_0' (87#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axi_vdma_0_0/synth/hdmi_out_axi_vdma_0_0.vhd:105]
+Finished RTL Elaboration : Time (s): cpu = 00:04:54 ; elapsed = 00:05:00 . Memory (MB): peak = 1410.953 ; gain = 480.492 ; free physical = 27180 ; free virtual = 51583
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:04:54 ; elapsed = 00:05:00 . Memory (MB): peak = 1410.953 ; gain = 480.492 ; free physical = 27180 ; free virtual = 51583
+INFO: [Device 21-403] Loading part xc7z020clg400-1
+Constraint Validation Runtime : Time (s): cpu = 00:00:00.14 ; elapsed = 00:00:00.06 . Memory (MB): peak = 1617.828 ; gain = 1.000 ; free physical = 27164 ; free virtual = 51567
+Finished Constraint Validation : Time (s): cpu = 00:05:03 ; elapsed = 00:05:22 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 27157 ; free virtual = 51560
+Finished Loading Part and Timing Information : Time (s): cpu = 00:05:03 ; elapsed = 00:05:22 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 27157 ; free virtual = 51560
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:05:03 ; elapsed = 00:05:22 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 27157 ; free virtual = 51560
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:05:06 ; elapsed = 00:05:26 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 27131 ; free virtual = 51534
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:05:13 ; elapsed = 00:05:33 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 27033 ; free virtual = 51504
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:05:20 ; elapsed = 00:05:40 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 27019 ; free virtual = 51490
+Finished Timing Optimization : Time (s): cpu = 00:05:23 ; elapsed = 00:05:43 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 26967 ; free virtual = 51438
+Finished Technology Mapping : Time (s): cpu = 00:05:25 ; elapsed = 00:05:45 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 26960 ; free virtual = 51431
+Finished IO Insertion : Time (s): cpu = 00:05:26 ; elapsed = 00:05:46 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 26960 ; free virtual = 51431
+Finished Renaming Generated Instances : Time (s): cpu = 00:05:26 ; elapsed = 00:05:46 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 26960 ; free virtual = 51431
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:05:26 ; elapsed = 00:05:46 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 26960 ; free virtual = 51431
+Finished Renaming Generated Ports : Time (s): cpu = 00:05:26 ; elapsed = 00:05:46 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 26960 ; free virtual = 51431
+Finished Handling Custom Attributes : Time (s): cpu = 00:05:26 ; elapsed = 00:05:46 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 26960 ; free virtual = 51431
+Finished Renaming Generated Nets : Time (s): cpu = 00:05:26 ; elapsed = 00:05:46 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 26960 ; free virtual = 51431
+
+Report Cell Usage: 
++------+---------+------+
+|      |Cell     |Count |
++------+---------+------+
+|1     |CARRY4   |    35|
+|2     |FIFO36E1 |     5|
+|3     |LUT1     |   218|
+|4     |LUT2     |   170|
+|5     |LUT3     |   229|
+|6     |LUT4     |   185|
+|7     |LUT5     |   208|
+|8     |LUT6     |   378|
+|9     |MUXF7    |     5|
+|10    |RAMB18E1 |     1|
+|11    |RAMB36E1 |     1|
+|12    |SRL16E   |   121|
+|13    |FDPE     |     5|
+|14    |FDR      |   133|
+|15    |FDRE     |  1663|
+|16    |FDSE     |    48|
++------+---------+------+
+Finished Writing Synthesis Report : Time (s): cpu = 00:05:26 ; elapsed = 00:05:46 . Memory (MB): peak = 1617.828 ; gain = 687.367 ; free physical = 26960 ; free virtual = 51431
+synth_design: Time (s): cpu = 00:05:19 ; elapsed = 00:05:36 . Memory (MB): peak = 1644.664 ; gain = 592.699 ; free physical = 26961 ; free virtual = 51432

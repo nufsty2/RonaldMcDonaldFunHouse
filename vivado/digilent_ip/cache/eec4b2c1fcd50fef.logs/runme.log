@@ -1,0 +1,59 @@
+
+*** Running vivado
+    with args -log hdmi_out_axis_subset_converter_0_0.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source hdmi_out_axis_subset_converter_0_0.tcl
+
+
+****** Vivado v2016.4 (64-bit)
+  **** SW Build 1756540 on Mon Jan 23 19:11:19 MST 2017
+  **** IP Build 1755317 on Mon Jan 23 20:30:07 MST 2017
+    ** Copyright 1986-2016 Xilinx, Inc. All Rights Reserved.
+
+Sourcing tcl script '/home/jgoeders/.Xilinx/Vivado/init.tcl'
+source hdmi_out_axis_subset_converter_0_0.tcl -notrace
+Starting RTL Elaboration : Time (s): cpu = 00:00:16 ; elapsed = 00:00:19 . Memory (MB): peak = 1132.555 ; gain = 202.086 ; free physical = 26880 ; free virtual = 51181
+INFO: [Synth 8-638] synthesizing module 'hdmi_out_axis_subset_converter_0_0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/synth/hdmi_out_axis_subset_converter_0_0.v:58]
+INFO: [Synth 8-638] synthesizing module 'top_hdmi_out_axis_subset_converter_0_0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/top_hdmi_out_axis_subset_converter_0_0.v:60]
+INFO: [Synth 8-638] synthesizing module 'axis_subset_converter_v1_1_11_core' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/8a5f/hdl/axis_subset_converter_v1_1_vl_rfs.v:62]
+INFO: [Synth 8-256] done synthesizing module 'axis_subset_converter_v1_1_11_core' (1#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ipshared/8a5f/hdl/axis_subset_converter_v1_1_vl_rfs.v:62]
+INFO: [Synth 8-638] synthesizing module 'tdata_hdmi_out_axis_subset_converter_0_0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/tdata_hdmi_out_axis_subset_converter_0_0.v:48]
+INFO: [Synth 8-256] done synthesizing module 'tdata_hdmi_out_axis_subset_converter_0_0' (2#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/tdata_hdmi_out_axis_subset_converter_0_0.v:48]
+INFO: [Synth 8-638] synthesizing module 'tuser_hdmi_out_axis_subset_converter_0_0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/tuser_hdmi_out_axis_subset_converter_0_0.v:48]
+INFO: [Synth 8-256] done synthesizing module 'tuser_hdmi_out_axis_subset_converter_0_0' (3#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/tuser_hdmi_out_axis_subset_converter_0_0.v:48]
+INFO: [Synth 8-638] synthesizing module 'tid_hdmi_out_axis_subset_converter_0_0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/tid_hdmi_out_axis_subset_converter_0_0.v:48]
+INFO: [Synth 8-256] done synthesizing module 'tid_hdmi_out_axis_subset_converter_0_0' (4#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/tid_hdmi_out_axis_subset_converter_0_0.v:48]
+INFO: [Synth 8-638] synthesizing module 'tdest_hdmi_out_axis_subset_converter_0_0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/tdest_hdmi_out_axis_subset_converter_0_0.v:48]
+INFO: [Synth 8-256] done synthesizing module 'tdest_hdmi_out_axis_subset_converter_0_0' (5#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/tdest_hdmi_out_axis_subset_converter_0_0.v:48]
+INFO: [Synth 8-638] synthesizing module 'tstrb_hdmi_out_axis_subset_converter_0_0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/tstrb_hdmi_out_axis_subset_converter_0_0.v:48]
+INFO: [Synth 8-256] done synthesizing module 'tstrb_hdmi_out_axis_subset_converter_0_0' (6#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/tstrb_hdmi_out_axis_subset_converter_0_0.v:48]
+INFO: [Synth 8-638] synthesizing module 'tkeep_hdmi_out_axis_subset_converter_0_0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/tkeep_hdmi_out_axis_subset_converter_0_0.v:48]
+INFO: [Synth 8-256] done synthesizing module 'tkeep_hdmi_out_axis_subset_converter_0_0' (7#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/tkeep_hdmi_out_axis_subset_converter_0_0.v:48]
+INFO: [Synth 8-638] synthesizing module 'tlast_hdmi_out_axis_subset_converter_0_0' [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/tlast_hdmi_out_axis_subset_converter_0_0.v:48]
+INFO: [Synth 8-256] done synthesizing module 'tlast_hdmi_out_axis_subset_converter_0_0' (8#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/tlast_hdmi_out_axis_subset_converter_0_0.v:48]
+INFO: [Synth 8-256] done synthesizing module 'top_hdmi_out_axis_subset_converter_0_0' (9#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/hdl/top_hdmi_out_axis_subset_converter_0_0.v:60]
+INFO: [Synth 8-256] done synthesizing module 'hdmi_out_axis_subset_converter_0_0' (10#1) [/home/jgoeders/Arty-Z7-20-hdmi-out/src/bd/hdmi_out/ip/hdmi_out_axis_subset_converter_0_0/synth/hdmi_out_axis_subset_converter_0_0.v:58]
+Finished RTL Elaboration : Time (s): cpu = 00:00:17 ; elapsed = 00:00:22 . Memory (MB): peak = 1173.023 ; gain = 242.555 ; free physical = 26814 ; free virtual = 51132
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:17 ; elapsed = 00:00:22 . Memory (MB): peak = 1173.023 ; gain = 242.555 ; free physical = 26813 ; free virtual = 51131
+INFO: [Device 21-403] Loading part xc7z020clg400-1
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.04 . Memory (MB): peak = 1465.602 ; gain = 0.000 ; free physical = 26228 ; free virtual = 50596
+Finished Constraint Validation : Time (s): cpu = 00:00:33 ; elapsed = 00:00:56 . Memory (MB): peak = 1465.602 ; gain = 535.133 ; free physical = 26226 ; free virtual = 50594
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:33 ; elapsed = 00:00:56 . Memory (MB): peak = 1465.602 ; gain = 535.133 ; free physical = 26226 ; free virtual = 50594
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:33 ; elapsed = 00:00:56 . Memory (MB): peak = 1465.602 ; gain = 535.133 ; free physical = 26226 ; free virtual = 50594
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:33 ; elapsed = 00:00:57 . Memory (MB): peak = 1465.602 ; gain = 535.133 ; free physical = 26219 ; free virtual = 50586
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:33 ; elapsed = 00:00:57 . Memory (MB): peak = 1465.602 ; gain = 535.133 ; free physical = 26218 ; free virtual = 50586
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:47 ; elapsed = 00:01:11 . Memory (MB): peak = 1468.586 ; gain = 538.117 ; free physical = 26148 ; free virtual = 50524
+Finished Timing Optimization : Time (s): cpu = 00:00:47 ; elapsed = 00:01:11 . Memory (MB): peak = 1468.586 ; gain = 538.117 ; free physical = 26148 ; free virtual = 50524
+Finished Technology Mapping : Time (s): cpu = 00:00:47 ; elapsed = 00:01:11 . Memory (MB): peak = 1478.602 ; gain = 548.133 ; free physical = 26139 ; free virtual = 50515
+Finished IO Insertion : Time (s): cpu = 00:00:48 ; elapsed = 00:01:12 . Memory (MB): peak = 1478.602 ; gain = 548.133 ; free physical = 26139 ; free virtual = 50515
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:48 ; elapsed = 00:01:12 . Memory (MB): peak = 1478.602 ; gain = 548.133 ; free physical = 26139 ; free virtual = 50515
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:48 ; elapsed = 00:01:12 . Memory (MB): peak = 1478.602 ; gain = 548.133 ; free physical = 26139 ; free virtual = 50515
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:48 ; elapsed = 00:01:12 . Memory (MB): peak = 1478.602 ; gain = 548.133 ; free physical = 26139 ; free virtual = 50515
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:48 ; elapsed = 00:01:12 . Memory (MB): peak = 1478.602 ; gain = 548.133 ; free physical = 26139 ; free virtual = 50515
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:48 ; elapsed = 00:01:12 . Memory (MB): peak = 1478.602 ; gain = 548.133 ; free physical = 26139 ; free virtual = 50515
+
+Report Cell Usage: 
++-+-----+------+
+| |Cell |Count |
++-+-----+------+
++-+-----+------+
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:48 ; elapsed = 00:01:12 . Memory (MB): peak = 1478.602 ; gain = 548.133 ; free physical = 26139 ; free virtual = 50515
+synth_design: Time (s): cpu = 00:00:40 ; elapsed = 00:01:03 . Memory (MB): peak = 1491.602 ; gain = 442.629 ; free physical = 26129 ; free virtual = 50507
