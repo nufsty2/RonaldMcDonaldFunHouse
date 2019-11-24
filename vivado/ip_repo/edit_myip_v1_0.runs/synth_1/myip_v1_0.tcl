@@ -31,6 +31,7 @@ set_property ip_repo_paths {
 } [current_project]
 set_property ip_output_repo /auto/fse/ddowlin2/J-Drive/ECEn427Shared/vivado/ip_repo/edit_myip_v1_0.cache/ip [current_project]
 set_property ip_cache_permissions {read write} [current_project]
+read_verilog -library xil_defaultlib -sv /auto/fse/ddowlin2/J-Drive/ECEn427Shared/vivado/ip_repo/edit_myip_v1_0.srcs/sources_1/new/tb.sv
 read_verilog -library xil_defaultlib {
   /auto/fse/ddowlin2/J-Drive/ECEn427Shared/vivado/ip_repo/myip_1.0/hdl/myip_v1_0_S00_AXI.v
   /auto/fse/ddowlin2/J-Drive/ECEn427Shared/vivado/ip_repo/myip_1.0/hdl/myip_v1_0.v
