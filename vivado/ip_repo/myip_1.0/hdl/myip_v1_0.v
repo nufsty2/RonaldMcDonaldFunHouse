@@ -15,9 +15,11 @@
 	)
 	(
 		// Users to add ports here
-		// TODO: ADD SIGNALS
-
+        
 		// User ports ends
+		 output INTERRUPT,
+         inout [C_S00_AXI_DATA_WIDTH-1:0] PIT_CONTROL, // FIXME: input?
+         inout [C_S00_AXI_DATA_WIDTH-1:0] DELAY_VALUE,
 		// Do not modify the ports beyond this line
 
 

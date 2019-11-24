@@ -14,10 +14,10 @@
 		parameter integer C_S_AXI_ADDR_WIDTH	= 4
 	)
 	(
-		// Users to add ports here
+		// EDITABLE: Users to add ports here
         output INTERRUPT,
-        input [C_S_AXI_DATA_WIDTH-1:0] PIT_CONTROL, // FIXME: input?
-        input [C_S_AXI_DATA_WIDTH-1:0] DELAY_VALUE, // FIXME: input?
+        inout [C_S_AXI_DATA_WIDTH-1:0] PIT_CONTROL, // PIT CTRL Register inout
+        inout [C_S_AXI_DATA_WIDTH-1:0] DELAY_VALUE, // DELAY VALUE Register inout
 		// User ports ends
 		// Do not modify the ports beyond this line
 
@@ -95,13 +95,13 @@
 	reg [1 : 0] 	axi_rresp;
 	reg  	axi_rvalid;
 	
-	// PIT stuff
-	reg [C_S_AXI_DATA_WIDTH-1:0] timer_counter;
-	reg [C_S_AXI_DATA_WIDTH-1:0] pit_control;
-	reg [C_S_AXI_DATA_WIDTH-1:0] delay_value;
-	reg interrupt;
-	wire dec_enable;
-	wire int_enable;
+	// EDITABLE: PIT stuff
+	reg [C_S_AXI_DATA_WIDTH-1:0] timer_counter; // THIS IS THE MAIN TIMER
+	reg [C_S_AXI_DATA_WIDTH-1:0] pit_control; // PIT ctrl reg
+	reg [C_S_AXI_DATA_WIDTH-1:0] delay_value; // delay value reg
+	reg interrupt; // interrupt
+	wire dec_enable; // enables the decrement
+	wire int_enable; // enables the interrupt
 
 	// Example-specific design signals
 	// local parameter for addressing 32 bit / 64 bit C_S_AXI_DATA_WIDTH
@@ -139,32 +139,51 @@
 	// S_AXI_AWVALID and S_AXI_WVALID are asserted. axi_awready is
 	// de-asserted when reset is low.
 	
-	// PIT connections
+	// EDITABLE: PIT connections
 	assign INTERRUPT = interrupt;
-//	assign pit_control = PIT_CONTROL;
-//	assign delay_value = DELAY_VALUE;
-    assign dec_enable = PIT_CONTROL[0];
-    assign int_enable = PIT_CONTROL[1];
-    initial timer_counter = DELAY_VALUE;
+    //assign pit_control = PIT_CONTROL;
+	initial delay_value = DELAY_VALUE;
+    assign dec_enable = PIT_CONTROL[0]; // If 1, enables the counter to decrement, if 0: hold at its current value
+    assign int_enable = PIT_CONTROL[1]; // If 1, enables interupts, if 0: disables interrupts
+    initial timer_counter = DELAY_VALUE; // Loaded into timer counter
 	
 	
-	// PIT Stuff
-	always @(posedge S_AXI_ACLK) begin
+	// EDITABLE: PIT RUNNING
+	always @(posedge S_AXI_ACLK) 
+	begin
 	    // Check reset first
-        if (S_AXI_ARESETN == 1'b0) begin
+        if (S_AXI_ARESETN == 1'b0) 
+        begin
+            // Timer counter reg is zero
 	       timer_counter <= 0;
+	       // Not Decrement
+	       //dec_enable <= 0;
+	       // Delay value must be 0
 	       delay_value <= 0;
+	       // No interrupts generated
+	       interrupt <= 0;
+	       //int_enable <= 0;
 	    end
+	    
 	    // Decrement timer
-	    else if (dec_enable == 1'b1) begin
+	    else if (dec_enable == 1'b1) 
+	    begin
 	       timer_counter <= timer_counter - 1;
 	    end
-	    // Generate interrupt
-	    if (timer_counter == 0 && int_enable == 1'b1) begin
+
+	    // Generate interrupt once we hit zero
+	    if (timer_counter == 0 && int_enable == 1'b1) 
+	    begin
 	       interrupt <= 1;
-	       timer_counter <= DELAY_VALUE;
+	       timer_counter <= delay_value;
+	    end
+	    // Interrupt must be asserted for one whole clock cycle
+	    if (interrupt == 1'b1)
+	    begin
+	       interrupt <= 0; // This might clobber it? Check waveform
 	    end
 	end
+	// END EDITABLE: PIT RUNNING *****************************************************
 
 	always @( posedge S_AXI_ACLK )
 	begin

@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+# IP Build 2085800 on Fri Dec 15 22:25:07 MST 2017
+# Start of session at: Sat Nov 23 20:14:22 2019
+# Process ID: 2546
+# Current directory: /auto/fse/ddowlin2/J-Drive/ECEn427Shared/vivado/ip_repo/edit_myip_v1_0.runs/synth_1
+# Command line: vivado -log myip_v1_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source myip_v1_0.tcl
+# Log file: /auto/fse/ddowlin2/J-Drive/ECEn427Shared/vivado/ip_repo/edit_myip_v1_0.runs/synth_1/myip_v1_0.vds
+# Journal file: /auto/fse/ddowlin2/J-Drive/ECEn427Shared/vivado/ip_repo/edit_myip_v1_0.runs/synth_1/vivado.jou
+#-----------------------------------------------------------
+source myip_v1_0.tcl -notrace
