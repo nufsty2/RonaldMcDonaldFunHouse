@@ -18,8 +18,6 @@
         
 		// User ports ends
 		 output INTERRUPT,
-         inout [C_S00_AXI_DATA_WIDTH-1:0] PIT_CONTROL, // FIXME: input?
-         inout [C_S00_AXI_DATA_WIDTH-1:0] DELAY_VALUE,
 		// Do not modify the ports beyond this line
 
 
@@ -71,7 +69,8 @@
 		.S_AXI_RDATA(s00_axi_rdata),
 		.S_AXI_RRESP(s00_axi_rresp),
 		.S_AXI_RVALID(s00_axi_rvalid),
-		.S_AXI_RREADY(s00_axi_rready)
+		.S_AXI_RREADY(s00_axi_rready),
+		.INTERRUPT(INTERRUPT)
 	);
 
 	// Add user logic here

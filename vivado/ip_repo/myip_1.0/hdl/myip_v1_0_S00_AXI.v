@@ -16,8 +16,6 @@
 	(
 		// EDITABLE: Users to add ports here
         output INTERRUPT,
-        inout [C_S_AXI_DATA_WIDTH-1:0] PIT_CONTROL, // PIT CTRL Register inout
-        inout [C_S_AXI_DATA_WIDTH-1:0] DELAY_VALUE, // DELAY VALUE Register inout
 		// User ports ends
 		// Do not modify the ports beyond this line
 
@@ -97,11 +95,12 @@
 	
 	// EDITABLE: PIT stuff
 	reg [C_S_AXI_DATA_WIDTH-1:0] timer_counter; // THIS IS THE MAIN TIMER
-	reg [C_S_AXI_DATA_WIDTH-1:0] pit_control; // PIT ctrl reg
-	reg [C_S_AXI_DATA_WIDTH-1:0] delay_value; // delay value reg
-	reg interrupt; // interrupt
+	wire [C_S_AXI_DATA_WIDTH-1:0] pit_control; // PIT ctrl reg
+	wire [C_S_AXI_DATA_WIDTH-1:0] delay_value; // delay value reg
+	//wire interrupt; // interrupt
 	wire dec_enable; // enables the decrement
 	wire int_enable; // enables the interrupt
+	
 
 	// Example-specific design signals
 	// local parameter for addressing 32 bit / 64 bit C_S_AXI_DATA_WIDTH
@@ -140,12 +139,11 @@
 	// de-asserted when reset is low.
 	
 	// EDITABLE: PIT connections
-	assign INTERRUPT = interrupt;
-    //assign pit_control = PIT_CONTROL;
-	initial delay_value = DELAY_VALUE;
-    assign dec_enable = PIT_CONTROL[0]; // If 1, enables the counter to decrement, if 0: hold at its current value
-    assign int_enable = PIT_CONTROL[1]; // If 1, enables interupts, if 0: disables interrupts
-    initial timer_counter = DELAY_VALUE; // Loaded into timer counter
+	//assign INTERRUPT = interrupt;
+	assign delay_value = slv_reg0;
+	assign pit_control = slv_reg1;
+	assign dec_enable = pit_control[0];
+	assign int_enable = pit_control[1];
 	
 	
 	// EDITABLE: PIT RUNNING
@@ -156,13 +154,6 @@
         begin
             // Timer counter reg is zero
 	       timer_counter <= 0;
-	       // Not Decrement
-	       //dec_enable <= 0;
-	       // Delay value must be 0
-	       delay_value <= 0;
-	       // No interrupts generated
-	       interrupt <= 0;
-	       //int_enable <= 0;
 	    end
 	    
 	    // Decrement timer
@@ -172,17 +163,15 @@
 	    end
 
 	    // Generate interrupt once we hit zero
-	    if (timer_counter == 0 && int_enable == 1'b1) 
+	    if (timer_counter == 0 && dec_enable == 1'b1) 
 	    begin
-	       interrupt <= 1;
 	       timer_counter <= delay_value;
 	    end
-	    // Interrupt must be asserted for one whole clock cycle
-	    if (interrupt == 1'b1)
-	    begin
-	       interrupt <= 0; // This might clobber it? Check waveform
-	    end
 	end
+	
+	assign INTERRUPT = (int_enable == 1'b1 && timer_counter == 0) ? 1 : 0;
+	
+	
 	// END EDITABLE: PIT RUNNING *****************************************************
 
 	always @( posedge S_AXI_ACLK )
