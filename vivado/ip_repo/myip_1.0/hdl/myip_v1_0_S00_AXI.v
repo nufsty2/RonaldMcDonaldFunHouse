@@ -169,7 +169,7 @@
 	    end
 	end
 	
-	assign INTERRUPT = (int_enable == 1'b1 && timer_counter == 0) ? 1 : 0;
+	assign INTERRUPT = (int_enable == 1'b1 && timer_counter == 0 && dec_enable == 1'b1 && delay_value > 0) ? 1 : 0;
 	
 	
 	// END EDITABLE: PIT RUNNING *****************************************************

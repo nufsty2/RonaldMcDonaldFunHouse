@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps 
+`timescale 1ns / 1ps
 
 import axi_vip_pkg::*;
 import design_1_axi_vip_0_0_pkg::*;
@@ -13,7 +13,7 @@ module tb(
   design_1_axi_vip_0_0_mst_t              master_agent;
    
   xil_axi_ulong addrCtrl = 32'h44A0_0000;
-  xil_axi_ulong addrPeriod = 32'h44A0_0004;
+  xil_axi_ulong addrPeriod = 32'h44A0_0004; //FFFF
   xil_axi_prot_t prot = 0;
   xil_axi_resp_t resp;
   bit[31:0] data;
@@ -37,12 +37,32 @@ module tb(
     reset_n = 1'b1;
     
     #50ns
-    data = 32'd5;
+    data = 32'd3;
     master_agent.AXI4LITE_WRITE_BURST(addrPeriod, prot, data, resp);
     
     #50ns
-    data = 32'h00000007;
+    data = 32'h00000002;
     master_agent.AXI4LITE_WRITE_BURST(addrCtrl, prot, data, resp);
+
+    #50ns
+    data = 32'h00000008;
+    master_agent.AXI4LITE_WRITE_BURST(addrCtrl, prot, data, resp);
+    
+    #50ns
+    data = 32'h00000002;
+    master_agent.AXI4LITE_WRITE_BURST(addrCtrl, prot, data, resp);
+    
+    #50ns
+    data = 32'd2;
+    master_agent.AXI4LITE_WRITE_BURST(addrPeriod, prot, data, resp);
+    
+    #50ns
+    data = 32'd1;
+    master_agent.AXI4LITE_WRITE_BURST(addrPeriod, prot, data, resp);
+    
+    #50ns
+    data = 32'd3;
+    master_agent.AXI4LITE_WRITE_BURST(addrPeriod, prot, data, resp);
 
   end
 
