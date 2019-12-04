@@ -1,0 +1,98 @@
+#-----------------------------------------------------------
+# hsi v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+# 
+# Start of session at: Wed Jul 25 11:44:46 2018
+# Process ID: 15974
+# Current directory: /home/bjames/pynq/ecen427/linux_device_tree/build
+# Command line: hsi -mode batch -source /home/bjames/pynq/ecen427/linux_device_tree/sdbuild/boot_configs/common/create_zynq_fsbl.tcl
+# Log file: /home/bjames/pynq/ecen427/linux_device_tree/build/hsi.log
+# Journal file: /home/bjames/pynq/ecen427/linux_device_tree/build/hsi.jou
+#-----------------------------------------------------------
+source /home/bjames/pynq/ecen427/linux_device_tree/sdbuild/boot_configs/common/create_zynq_fsbl.tcl
+# set cur_dir [pwd]
+INFO: [Hsi 55-1698] elapsed time for repository loading 0 seconds
+# set hwdesign [open_hw_design "${cur_dir}/pynq.hdf"]
+# generate_app -hw $hwdesign -os standalone -proc ps7_cortexa9_0 -app zynq_fsbl -compile -sw fsbl -dir ${cur_dir}/fsbl
+Running Make include in ps7_cortexa9_0/libsrc/dmaps_v2_3/src
+Running Make include in ps7_cortexa9_0/libsrc/ddrps_v1_0/src
+Running Make include in ps7_cortexa9_0/libsrc/qspips_v3_4/src
+Running Make include in ps7_cortexa9_0/libsrc/xilrsa_v1_4/src
+Running Make include in ps7_cortexa9_0/libsrc/gpiops_v3_3/src
+Running Make include in ps7_cortexa9_0/libsrc/scugic_v3_8/src
+Running Make include in ps7_cortexa9_0/libsrc/scuwdt_v2_1/src
+Running Make include in ps7_cortexa9_0/libsrc/xilffs_v3_7/src
+Running Make include in ps7_cortexa9_0/libsrc/standalone_v6_5/src
+Running Make include in ps7_cortexa9_0/libsrc/cpu_cortexa9_v2_5/src
+Running Make include in ps7_cortexa9_0/libsrc/xadcps_v2_2/src
+Running Make include in ps7_cortexa9_0/libsrc/devcfg_v3_5/src
+Running Make include in ps7_cortexa9_0/libsrc/iicps_v3_5/src
+Running Make include in ps7_cortexa9_0/libsrc/sdps_v3_3/src
+Running Make include in ps7_cortexa9_0/libsrc/emacps_v3_6/src
+Running Make include in ps7_cortexa9_0/libsrc/usbps_v2_4/src
+Running Make include in ps7_cortexa9_0/libsrc/coresightps_dcc_v1_4/src
+Running Make include in ps7_cortexa9_0/libsrc/uartps_v3_5/src
+Running Make include in ps7_cortexa9_0/libsrc/scutimer_v2_1/src
+Running Make libs in ps7_cortexa9_0/libsrc/dmaps_v2_3/src
+Compiling dmaps
+arm-none-eabi-ar: creating ../../../lib/libxil.a
+Running Make libs in ps7_cortexa9_0/libsrc/ddrps_v1_0/src
+Compiling ddrps
+Running Make libs in ps7_cortexa9_0/libsrc/qspips_v3_4/src
+Compiling qspips
+Running Make libs in ps7_cortexa9_0/libsrc/xilrsa_v1_4/src
+Running Make libs in ps7_cortexa9_0/libsrc/gpiops_v3_3/src
+Compiling gpiops
+Running Make libs in ps7_cortexa9_0/libsrc/scugic_v3_8/src
+Compiling scugic
+Running Make libs in ps7_cortexa9_0/libsrc/scuwdt_v2_1/src
+Compiling scuwdt
+Running Make libs in ps7_cortexa9_0/libsrc/xilffs_v3_7/src
+Compiling XilFFs Library
+ff.c: In function 'find_volume':
+ff.c:2610:4: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+    && (LD_DWORD(fs->win+FSI_LeadSig) == 0x41615252U)
+    ^~
+diskio.c:135:11: warning: 'ExtCsd' defined but not used [-Wunused-variable]
+ static u8 ExtCsd[512] __attribute__ ((aligned(32)));
+           ^~~~~~
+Running Make libs in ps7_cortexa9_0/libsrc/standalone_v6_5/src
+Compiling standalone
+Running Make libs in ps7_cortexa9_0/libsrc/cpu_cortexa9_v2_5/src
+Compiling cpu_cortexa9
+Running Make libs in ps7_cortexa9_0/libsrc/xadcps_v2_2/src
+Compiling xadcps
+Running Make libs in ps7_cortexa9_0/libsrc/devcfg_v3_5/src
+Compiling devcfg
+Running Make libs in ps7_cortexa9_0/libsrc/iicps_v3_5/src
+Compiling iicps
+Running Make libs in ps7_cortexa9_0/libsrc/sdps_v3_3/src
+Compiling sdps
+Running Make libs in ps7_cortexa9_0/libsrc/emacps_v3_6/src
+Compiling emacps
+Running Make libs in ps7_cortexa9_0/libsrc/usbps_v2_4/src
+Compiling usbps
+Running Make libs in ps7_cortexa9_0/libsrc/coresightps_dcc_v1_4/src
+Compiling coresightps_dcc
+Running Make libs in ps7_cortexa9_0/libsrc/uartps_v3_5/src
+Compiling uartps
+Running Make libs in ps7_cortexa9_0/libsrc/scutimer_v2_1/src
+Compiling scutimer
+Finished building libraries
+gmake[1]: Entering directory '/home/bjames/pynq/ecen427/linux_device_tree/build/fsbl'
+arm-none-eabi-gcc -MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -c nand.c -o nand.o -Izynq_fsbl_bsp/ps7_cortexa9_0/include -I.
+arm-none-eabi-gcc -MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -c pcap.c -o pcap.o -Izynq_fsbl_bsp/ps7_cortexa9_0/include -I.
+arm-none-eabi-gcc -MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -c ps7_init.c -o ps7_init.o -Izynq_fsbl_bsp/ps7_cortexa9_0/include -I.
+arm-none-eabi-gcc -MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -c qspi.c -o qspi.o -Izynq_fsbl_bsp/ps7_cortexa9_0/include -I.
+arm-none-eabi-gcc -MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -c rsa.c -o rsa.o -Izynq_fsbl_bsp/ps7_cortexa9_0/include -I.
+arm-none-eabi-gcc -MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -c main.c -o main.o -Izynq_fsbl_bsp/ps7_cortexa9_0/include -I.
+arm-none-eabi-gcc -MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -c md5.c -o md5.o -Izynq_fsbl_bsp/ps7_cortexa9_0/include -I.
+arm-none-eabi-gcc -MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -c image_mover.c -o image_mover.o -Izynq_fsbl_bsp/ps7_cortexa9_0/include -I.
+arm-none-eabi-gcc -MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -c nor.c -o nor.o -Izynq_fsbl_bsp/ps7_cortexa9_0/include -I.
+arm-none-eabi-gcc -MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -c fsbl_hooks.c -o fsbl_hooks.o -Izynq_fsbl_bsp/ps7_cortexa9_0/include -I.
+arm-none-eabi-gcc -MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -c sd.c -o sd.o -Izynq_fsbl_bsp/ps7_cortexa9_0/include -I.
+arm-none-eabi-gcc -MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -c fsbl_handoff.S -o fsbl_handoff.o -Izynq_fsbl_bsp/ps7_cortexa9_0/include -I.
+arm-none-eabi-gcc -o executable.elf  nand.o  pcap.o  ps7_init.o  qspi.o  rsa.o  main.o  md5.o  image_mover.o  nor.o  fsbl_hooks.o  sd.o  fsbl_handoff.o  -MMD -MP       -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard   -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -specs=Xilinx.spec  -lrsa -Wl,--start-group,-lxil,-lgcc,-lc,--end-group -Wl,--start-group,-lxilffs,-lxil,-lgcc,-lc,--end-group -Wl,--start-group,-lrsa,-lxil,-lgcc,-lc,--end-group  -Wl,--gc-sections -Lzynq_fsbl_bsp/ps7_cortexa9_0/lib -L./ -Tlscript.ld
+gmake[1]: Leaving directory '/home/bjames/pynq/ecen427/linux_device_tree/build/fsbl'
+generate_app: Time (s): cpu = 00:00:08 ; elapsed = 00:00:09 . Memory (MB): peak = 444.207 ; gain = 0.000 ; free physical = 53041 ; free virtual = 123449
+INFO: [Common 17-206] Exiting hsi at Wed Jul 25 11:44:56 2018...

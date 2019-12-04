@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# hsi v2017.4 (64-bit)
+# SW Build 2086221 on Fri Dec 15 20:54:30 MST 2017
+# 
+# Start of session at: Wed Jul 25 11:44:46 2018
+# Process ID: 15974
+# Current directory: /home/bjames/pynq/ecen427/linux_device_tree/build
+# Command line: hsi -mode batch -source /home/bjames/pynq/ecen427/linux_device_tree/sdbuild/boot_configs/common/create_zynq_fsbl.tcl
+# Log file: /home/bjames/pynq/ecen427/linux_device_tree/build/hsi.log
+# Journal file: /home/bjames/pynq/ecen427/linux_device_tree/build/hsi.jou
+#-----------------------------------------------------------
+source /home/bjames/pynq/ecen427/linux_device_tree/sdbuild/boot_configs/common/create_zynq_fsbl.tcl

@@ -1,0 +1,28 @@
+The makefile in this directory allows you to build the bootloader, the linux device tree, and device tree overlays.
+
+Prereqs:
+	- Install the "libssl-dev flex bison" packages
+	- Make sure the Xilinx SDK binaries are on your path
+	- Source the SDK/settings64.sh file (if you are building the boot image)
+
+
+bootloader
+------------
+run 'make bootimg' to build to bootloader.  It will be placed in boot/BOOT.bin
+
+
+device tree
+-------------
+To modify the device tree for this overlay, first make any desired modifications to the source files (dts/*) and then recompile the binary (dtb/devicetree.dtb) using 'make binary'
+
+run 'make decompile' to decompile the device tree binary.  The produced file will be dtb/decompiled.dts
+
+To re-create a clean base Pynq device tree, run 'make source'.  The source files will be created in build/pynq_dts.  NOTE: For some reason the property "fclk-enable" will be set to 0x0 in the generated system.dts file.  You need to change this to "fclk-enable = <0xf>;".  I'm not sure why this happens -- perhaps some difference in 2017.2 compared to 2016.1.  
+
+
+device tree overlays
+--------------------
+All device tree overlay source files should be placed in dtso/.
+
+To compile these files into binary device tree overlays, run 'make overlays'.  The produces files will be located in dtbo/.
+
