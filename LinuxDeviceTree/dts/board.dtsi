@@ -36,7 +36,7 @@
 		};
 
 		ecen427_user_pit {
-			compatible = "generic-uio";
+			compatible = "xlnx,xps-intc-1.00.b";
 			reg = <0x43C30000 0x10000>;
 		};
 

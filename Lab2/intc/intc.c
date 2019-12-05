@@ -27,7 +27,7 @@
 
 /* Enable interrupts */
 #define UIO_ENABLE_INTS 0x1
-#define ENABLE_BTN_SW_INTC 0x7 // for the irq
+#define ENABLE_BTN_SW_INTC 0xE // for the irq
 #define ENABLE_MER_BITS 0x3
 #define DISABLE_MER_BITS 0x0
 

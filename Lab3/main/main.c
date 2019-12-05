@@ -303,6 +303,11 @@ void isr_fit()
     }
 }
 
+void isr_pit()
+{
+    isr_fit();
+}
+
 
 // This is invoked each time there is a change in the button state (result of a push or a bounce).
 void isr_buttons()
@@ -353,10 +358,20 @@ int main()
         uint32_t num_interrupts = intc_wait_for_interrupt(); // wait
         uint32_t interrupt_value = intc_get_interrupt_val(); // get the ISR
             
-        if (interrupt_value & GLOBALS_FIT_MASK) // if fit is enabled go into isr_fit
+        // if (interrupt_value & GLOBALS_FIT_MASK) // if fit is enabled go into isr_fit = 0x1
+        // {
+        //     isr_fit();
+        // }
+
+        printf("Interrupt value: %d\n\r", interrupt_value);
+
+        // FOR THE PIT
+        if (interrupt_value & 0x8) // TODO - confirm? 
         {
-            isr_fit();
+            printf("hitting isr_pit function\n\r");
+            isr_pit();
         }
+
 
         if (interrupt_value & GLOBALS_BTN_MASK) // if button mask detected an interrupt, go into usr_buttons()
         {
